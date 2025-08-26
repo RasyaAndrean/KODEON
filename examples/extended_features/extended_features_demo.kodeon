@@ -1,0 +1,247 @@
+// Extended Features Demo
+// This file demonstrates the extended language features supported by KODEON
+
+// Go-style concurrency
+fungsi demo_goroutines_dan_kanal() {
+    cetak("=== Demo Goroutines dan Kanal ===")
+
+    // Membuat kanal untuk komunikasi antar goroutine
+    buat kanal_angka = kanal(int)
+    buat kanal_string = kanal(string)
+
+    // Membuat goroutine yang mengirim angka
+    pergi fungsi() {
+        untuk i di 1..5 {
+            kanal_angka <- i * 10
+        }
+    }()
+
+    // Membuat goroutine yang mengirim string
+    pergi fungsi() {
+        kanal_string <- "Halo dari goroutine!"
+        kanal_string <- "Proses selesai"
+    }()
+
+    // Menerima nilai dari kanal
+    buat angka = <-kanal_angka
+    buat pesan = <-kanal_string
+
+    cetak("Diterima angka: " + angka.ke_string())
+    cetak("Diterima pesan: " + pesan)
+
+    // Menggunakan select untuk menangani beberapa kanal
+    pilih {
+        kasus angka = <-kanal_angka:
+            cetak("Diterima angka: " + angka.ke_string())
+        kasus pesan = <-kanal_string:
+            cetak("Diterima pesan: " + pesan)
+        standar:
+            cetak("Tidak ada aktivitas pada kanal")
+    }
+}
+
+// Rust-style traits
+fungsi demo_sifat() {
+    cetak("=== Demo Sifat (Traits) ===")
+
+    // Mendefinisikan sifat
+    sifat Gambar {
+        fungsi gambar(diri)
+        fungsi luas(diri) -> float
+    }
+
+    // Mengimplementasikan sifat untuk Lingkaran
+    terapkan Gambar untuk Lingkaran {
+        fungsi gambar(diri) {
+            cetak("Menggambar lingkaran dengan jari-jari " + diri.jari_jari.ke_string())
+        }
+
+        fungsi luas(diri) -> float {
+            kembali 3.14159 * diri.jari_jari * diri.jari_jari
+        }
+    }
+
+    // Mengimplementasikan sifat untuk Persegi
+    terapkan Gambar untuk Persegi {
+        fungsi gambar(diri) {
+            cetak("Menggambar persegi dengan sisi " + diri.sisi.ke_string())
+        }
+
+        fungsi luas(diri) -> float {
+            kembali (diri.sisi * diri.sisi) sebagai float
+        }
+    }
+
+    // Menggunakan objek dengan sifat
+    buat bentuk1 = Lingkaran { jari_jari: 5 }
+    buat bentuk2 = Persegi { sisi: 4 }
+
+    bentuk1.gambar()
+    cetak("Luas lingkaran: " + bentuk1.luas().ke_string())
+
+    bentuk2.gambar()
+    cetak("Luas persegi: " + bentuk2.luas().ke_string())
+}
+
+// Kotlin-style null safety
+fungsi demo_null_safety() {
+    cetak("=== Demo Null Safety ===")
+
+    // Variabel nullable
+    buat nama?: string = "Budi"
+    buat umur?: int = null
+
+    // Safe call operator
+    jika nama? {
+        cetak("Nama: " + nama)
+    } lain {
+        cetak("Nama tidak tersedia")
+    }
+
+    // Elvis operator
+    buat nama_tampil = nama ?: "Anonim"
+    buat umur_tampil = umur ?: 0
+
+    cetak("Nama tampilan: " + nama_tampil)
+    cetak("Umur tampilan: " + umur_tampil.ke_string())
+
+    // Null assertion
+    jika nama!! {
+        cetak("Nama pasti tidak null: " + nama)
+    }
+}
+
+// C#-style LINQ
+fungsi demo_linq() {
+    cetak("=== Demo LINQ ===")
+
+    // Membuat koleksi data
+    buat angka = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    buat nama = ["Ali", "Budi", "Cici", "Dedi", "Eka"]
+
+    // Operasi LINQ
+    buat genap = angka.dimana(x => x % 2 == 0)
+    buat kuadrat = genap.petakan(x => x * x)
+    buat jumlah = kuadrat.kurangi((acc, x) => acc + x, 0)
+
+    cetak("Angka genap: " + genap.ke_string())
+    cetak("Kuadrat: " + kuadrat.ke_string())
+    cetak("Jumlah kuadrat: " + jumlah.ke_string())
+
+    // Filter dan transformasi nama
+    buat nama_panjang = nama
+        .dimana(n => n.panjang > 3)
+        .petakan(n => n.atas())
+        .urutkan()
+
+    cetak("Nama panjang: " + nama_panjang.ke_string())
+}
+
+// PHP-style features
+fungsi demo_php() {
+    cetak("=== Demo Fitur PHP ===")
+
+    // Array asosiatif
+    buat data = phparray(
+        "nama" => "Budi",
+        "umur" => 25,
+        "kota" => "Jakarta"
+    )
+
+    // Foreach loop
+    phpforeach(data sebagai kunci => nilai) {
+        cetak(kunci + ": " + nilai)
+    }
+
+    // Akses superglobal
+    buat server_info = $_SERVER["HTTP_HOST"] ?: "localhost"
+    cetak("Server: " + server_info)
+}
+
+// Ruby-style blocks
+fungsi demo_ruby() {
+    cetak("=== Demo Blok Ruby ===")
+
+    // Penggunaan blok
+    buat array = [1, 2, 3, 4, 5]
+
+    // Metode each dengan blok
+    array.setiap { |x|
+        cetak("Nilai: " + x.ke_string())
+    }
+
+    // Metode times
+    3.kali {
+        cetak("Iterasi")
+    }
+
+    // Blok dengan parameter
+    buat hasil = array.petakan { |x| x * 2 }
+    cetak("Hasil petakan: " + hasil.ke_string())
+}
+
+// SQL-style queries
+fungsi demo_sql() {
+    cetak("=== Demo Query SQL ===")
+
+    // Query konseptual
+    // buat pengguna = pilih * dari tabel_pengguna dimana umur > 18
+    // buat nama_pengguna = pengguna.petakan(p => p.nama)
+
+    cetak("Query SQL: Sintaks berhasil diurai")
+    cetak("Dalam implementasi penuh, ini akan mengeksekusi query ke database")
+}
+
+// R-style statistical computing
+fungsi demo_r() {
+    cetak("=== Demo Komputasi Statistik R ===")
+
+    // Vektor dan operasi
+    buat v = vektor(1, 2, 3, 4, 5)
+    buat v2 = vektor(2, 4, 6, 8, 10)
+
+    // Operasi vektor
+    buat jumlah = terapkan(v, fungsi(x) { x + 1 })
+    buat rata_rata = mean(v2)
+    buat deviasi = sd(v2)
+
+    cetak("Vektor awal: " + v.ke_string())
+    cetak("Setelah terapkan: " + jumlah.ke_string())
+    cetak("Rata-rata: " + rata_rata.ke_string())
+    cetak("Deviasi standar: " + deviasi.ke_string())
+
+    // Data frame
+    buat df = bingkai_data(
+        nama = vektor("A", "B", "C", "D", "E"),
+        nilai = vektor(10, 20, 30, 40, 50),
+        kategori = vektor("X", "Y", "X", "Y", "X")
+    )
+
+    cetak("Data frame:")
+    cetak(df.ke_string())
+
+    // Analisis data frame
+    buat ringkasan = ringkas(df)
+    cetak("Ringkasan:")
+    cetak(ringkasan.ke_string())
+}
+
+// Fungsi utama
+fungsi utama() {
+    cetak("========================================")
+    cetak("  Demo Fitur Bahasa yang Diperluas")
+    cetak("========================================")
+
+    demo_goroutines_dan_kanal()
+    demo_sifat()
+    demo_null_safety()
+    demo_linq()
+    demo_php()
+    demo_ruby()
+    demo_sql()
+    demo_r()
+
+    cetak("========================================")
+    cetak("  Semua demo berhasil dijalankan!")
+    cetak("========================================")
+}

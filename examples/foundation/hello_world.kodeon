@@ -1,0 +1,31 @@
+// Hello World in KODEON Foundation (v0.1)
+// Simple example showing basic syntax
+
+// Variable assignment
+message = "Hello, World from KODEON Foundation!"
+print(message)
+
+// Function definition
+function greet(name):
+    return "Hello, " + name + "!"
+
+// Function call
+greeting = greet("KODEON Developer")
+print(greeting)
+
+// Conditional statement
+x = 10
+if x > 5:
+    print("x is greater than 5")
+else:
+    print("x is 5 or less")
+
+// Loop
+counter = 0
+while counter < 3:
+    print("Count: " + counter)
+    counter = counter + 1
+
+// For loop (simplified range)
+for i in range(1, 4):
+    print("Number: " + i)

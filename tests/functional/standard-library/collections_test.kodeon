@@ -1,0 +1,217 @@
+// Collections test in KODEON
+
+impor "collections"
+
+// Test List functionality
+fungsi uji_daftar():
+    buat daftar = buat_daftar()
+
+    // Test add and length
+    daftar.tambah(1)
+    daftar.tambah(2)
+    daftar.tambah(3)
+
+    jika daftar.panjang() != 3 maka:
+        lempar "Panjang daftar tidak sesuai"
+
+    // Test get
+    jika daftar.dapatkan(0) != 1 maka:
+        lempar "Nilai pada indeks 0 tidak sesuai"
+
+    jika daftar.dapatkan(1) != 2 maka:
+        lempar "Nilai pada indeks 1 tidak sesuai"
+
+    // Test contains
+    jika tidak daftar.ada(2) maka:
+        lempar "Daftar seharusnya mengandung nilai 2"
+
+    jika daftar.ada(5) maka:
+        lempar "Daftar seharusnya tidak mengandung nilai 5"
+
+    // Test remove
+    daftar.hapus(1)  // Remove element at index 1 (value 2)
+    jika daftar.panjang() != 2 maka:
+        lempar "Panjang daftar setelah penghapusan tidak sesuai"
+
+    jika daftar.dapatkan(1) != 3 maka:
+        lempar "Nilai pada indeks 1 setelah penghapusan tidak sesuai"
+
+    tampilkan("Uji daftar berhasil")
+
+function test_list():
+    create list = create_list()
+
+    // Test add and length
+    list.add(1)
+    list.add(2)
+    list.add(3)
+
+    if list.length() != 3 then:
+        throw "List length mismatch"
+
+    // Test get
+    if list.get(0) != 1 then:
+        throw "Value at index 0 mismatch"
+
+    if list.get(1) != 2 then:
+        throw "Value at index 1 mismatch"
+
+    // Test contains
+    if not list.contains(2) then:
+        throw "List should contain value 2"
+
+    if list.contains(5) then:
+        throw "List should not contain value 5"
+
+    // Test remove
+    list.remove(1)  // Remove element at index 1 (value 2)
+    if list.length() != 2 then:
+        throw "List length after removal mismatch"
+
+    if list.get(1) != 3 then:
+        throw "Value at index 1 after removal mismatch"
+
+    show("List test passed")
+
+// Test Map functionality
+fungsi uji_peta():
+    buat peta = buat_peta()
+
+    // Test set and get
+    peta.atur("nama", "Andi")
+    peta.atur("umur", 25)
+    peta.atur("kota", "Jakarta")
+
+    jika peta.dapatkan("nama") != "Andi" maka:
+        lempar "Nilai nama tidak sesuai"
+
+    jika peta.dapatkan("umur") != 25 maka:
+        lempar "Nilai umur tidak sesuai"
+
+    // Test size
+    jika peta.ukuran() != 3 maka:
+        lempar "Ukuran peta tidak sesuai"
+
+    // Test has_key
+    jika tidak peta.ada_kunci("kota") maka:
+        lempar "Peta seharusnya memiliki kunci 'kota'"
+
+    jika peta.ada_kunci("pekerjaan") maka:
+        lempar "Peta seharusnya tidak memiliki kunci 'pekerjaan'"
+
+    // Test delete
+    peta.hapus("umur")
+    jika peta.ukuran() != 2 maka:
+        lempar "Ukuran peta setelah penghapusan tidak sesuai"
+
+    tampilkan("Uji peta berhasil")
+
+function test_map():
+    create map = create_map()
+
+    // Test set and get
+    map.set("name", "John")
+    map.set("age", 30)
+    map.set("city", "New York")
+
+    if map.get("name") != "John" then:
+        throw "Name value mismatch"
+
+    if map.get("age") != 30 then:
+        throw "Age value mismatch"
+
+    // Test size
+    if map.size() != 3 then:
+        throw "Map size mismatch"
+
+    // Test has_key
+    if not map.has_key("city") then:
+        throw "Map should have key 'city'"
+
+    if map.has_key("job") then:
+        throw "Map should not have key 'job'"
+
+    // Test delete
+    map.delete("age")
+    if map.size() != 2 then:
+        throw "Map size after deletion mismatch"
+
+    show("Map test passed")
+
+// Test Set functionality
+fungsi uji_himpunan():
+    buat himpunan = buat_himpunan()
+
+    // Test add
+    himpunan.tambah(1)
+    himpunan.tambah(2)
+    himpunan.tambah(3)
+    himpunan.tambah(2)  // Should not add duplicate
+
+    jika himpunan.ukuran() != 3 maka:
+        lempar "Ukuran himpunan tidak sesuai"
+
+    // Test contains
+    jika tidak himpunan.ada(2) maka:
+        lempar "Himpunan seharusnya mengandung nilai 2"
+
+    jika himpunan.ada(5) maka:
+        lempar "Himpunan seharusnya tidak mengandung nilai 5"
+
+    // Test remove
+    himpunan.hapus(2)
+    jika himpunan.ukuran() != 2 maka:
+        lempar "Ukuran himpunan setelah penghapusan tidak sesuai"
+
+    jika himpunan.ada(2) maka:
+        lempar "Himpunan seharusnya tidak mengandung nilai 2 setelah penghapusan"
+
+    tampilkan("Uji himpunan berhasil")
+
+function test_set():
+    create set = create_set()
+
+    // Test add
+    set.add(1)
+    set.add(2)
+    set.add(3)
+    set.add(2)  // Should not add duplicate
+
+    if set.size() != 3 then:
+        throw "Set size mismatch"
+
+    // Test contains
+    if not set.contains(2) then:
+        throw "Set should contain value 2"
+
+    if set.contains(5) then:
+        throw "Set should not contain value 5"
+
+    // Test remove
+    set.remove(2)
+    if set.size() != 2 then:
+        throw "Set size after removal mismatch"
+
+    if set.contains(2) then:
+        throw "Set should not contain value 2 after removal"
+
+    show("Set test passed")
+
+// Main test execution
+fungsi utama():
+    uji_daftar()
+    uji_peta()
+    uji_himpunan()
+    test_list()
+    test_map()
+    test_set()
+    tampilkan("Semua uji koleksi berhasil!")
+
+function main():
+    test_list()
+    test_map()
+    test_set()
+    show("All collection tests passed!")
+
+// Run the tests
+utama()

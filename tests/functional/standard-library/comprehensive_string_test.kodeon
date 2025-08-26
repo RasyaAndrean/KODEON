@@ -1,0 +1,446 @@
+// Comprehensive string functions test in KODEON
+
+impor "text/string"
+
+fungsi uji_komprehensif_string():
+    tampilkan("=== Comprehensive String Functions Test ===")
+
+    // Test 1: String length
+    buat panjang1 = panjang_string("")
+    buat panjang2 = panjang_string("a")
+    buat panjang3 = panjang_string("Hello World")
+
+    jika panjang1 != 0 maka:
+        lempar "String length test 1 failed"
+    jika panjang2 != 1 maka:
+        lempar "String length test 2 failed"
+    jika panjang3 != 11 maka:
+        lempar "String length test 3 failed"
+
+    tampilkan("✓ String length tests passed")
+
+    // Test 2: String concatenation
+    buat concat1 = gabung_string()
+    buat concat2 = gabung_string("Hello")
+    buat concat3 = gabung_string("Hello", " ", "World")
+    buat concat4 = gabung_string("a", "b", "c", "d")
+
+    jika concat1 != "" maka:
+        lempar "String concatenation test 1 failed"
+    jika concat2 != "Hello" maka:
+        lempar "String concatenation test 2 failed"
+    jika concat3 != "Hello World" maka:
+        lempar "String concatenation test 3 failed"
+    jika concat4 != "abcd" maka:
+        lempar "String concatenation test 4 failed"
+
+    tampilkan("✓ String concatenation tests passed")
+
+    // Test 3: Case conversion
+    buat upper1 = besar_string("")
+    buat upper2 = besar_string("hello")
+    buat upper3 = besar_string("Hello World")
+    buat upper4 = besar_string("123ABC")
+
+    jika upper1 != "" maka:
+        lempar "Uppercase test 1 failed"
+    jika upper2 != "HELLO" maka:
+        lempar "Uppercase test 2 failed"
+    jika upper3 != "HELLO WORLD" maka:
+        lempar "Uppercase test 3 failed"
+    jika upper4 != "123ABC" maka:
+        lempar "Uppercase test 4 failed"
+
+    buat lower1 = kecil_string("")
+    buat lower2 = kecil_string("HELLO")
+    buat lower3 = kecil_string("Hello World")
+    buat lower4 = kecil_string("123abc")
+
+    jika lower1 != "" maka:
+        lempar "Lowercase test 1 failed"
+    jika lower2 != "hello" maka:
+        lempar "Lowercase test 2 failed"
+    jika lower3 != "hello world" maka:
+        lempar "Lowercase test 3 failed"
+    jika lower4 != "123abc" maka:
+        lempar "Lowercase test 4 failed"
+
+    tampilkan("✓ Case conversion tests passed")
+
+    // Test 4: String trimming
+    buat trim1 = potong_string("")
+    buat trim2 = potong_string("hello")
+    buat trim3 = potong_string("  hello  ")
+    buat trim4 = potong_string(" \t\n hello \t\n ")
+
+    jika trim1 != "" maka:
+        lempar "Trim test 1 failed"
+    jika trim2 != "hello" maka:
+        lempar "Trim test 2 failed"
+    jika trim3 != "hello" maka:
+        lempar "Trim test 3 failed"
+    // We can't test trim4 exactly since it depends on implementation
+
+    tampilkan("✓ String trimming tests passed")
+
+    // Test 5: String splitting
+    buat split1 = bagi_string("", ",")
+    buat split2 = bagi_string("hello", ",")
+    buat split3 = bagi_string("a,b,c", ",")
+    buat split4 = bagi_string("a,,b", ",")
+
+    jika split1.panjang() != 1 maka:
+        lempar "Split test 1 failed"
+    jika split2.panjang() != 1 maka:
+        lempar "Split test 2 failed"
+    jika split3.panjang() != 3 maka:
+        lempar "Split test 3 failed"
+    jika split3.dapatkan(0) != "a" maka:
+        lempar "Split test 3a failed"
+    jika split3.dapatkan(1) != "b" maka:
+        lempar "Split test 3b failed"
+    jika split3.dapatkan(2) != "c" maka:
+        lempar "Split test 3c failed"
+    jika split4.panjang() != 3 maka:
+        lempar "Split test 4 failed"
+
+    tampilkan("✓ String splitting tests passed")
+
+    // Test 6: String replacement
+    buat replace1 = ganti_string("", "a", "b")
+    buat replace2 = ganti_string("hello", "l", "x")
+    buat replace3 = ganti_string("hello", "xyz", "abc")
+    buat replace4 = ganti_string("a a a", "a", "b")
+
+    jika replace1 != "" maka:
+        lempar "Replace test 1 failed"
+    jika replace2 != "hexxo" maka:
+        lempar "Replace test 2 failed"
+    jika replace3 != "hello" maka:
+        lempar "Replace test 3 failed"
+    jika replace4 != "b b b" maka:
+        lempar "Replace test 4 failed"
+
+    tampilkan("✓ String replacement tests passed")
+
+    // Test 7: Substring extraction
+    buat sub1 = sub_string("hello", 0, 5)
+    buat sub2 = sub_string("hello", 1, 4)
+    buat sub3 = sub_string("hello", 0, 0)
+    buat sub4 = sub_string("hello", 2, 5)
+
+    jika sub1 != "hello" maka:
+        lempar "Substring test 1 failed"
+    jika sub2 != "ell" maka:
+        lempar "Substring test 2 failed"
+    jika sub3 != "" maka:
+        lempar "Substring test 3 failed"
+    jika sub4 != "llo" maka:
+        lempar "Substring test 4 failed"
+
+    tampilkan("✓ Substring extraction tests passed")
+
+    // Test 8: String searching
+    buat find1 = cari_string("hello", "h")
+    buat find2 = cari_string("hello", "l")
+    buat find3 = cari_string("hello", "o")
+    buat find4 = cari_string("hello", "x")
+    buat find5 = cari_string("hello", "ll")
+
+    jika find1 != 0 maka:
+        lempar "Find test 1 failed"
+    jika find2 != 2 maka:
+        lempar "Find test 2 failed"
+    jika find3 != 4 maka:
+        lempar "Find test 3 failed"
+    jika find4 != -1 maka:
+        lempar "Find test 4 failed"
+    jika find5 != 2 maka:
+        lempar "Find test 5 failed"
+
+    tampilkan("✓ String searching tests passed")
+
+    // Test 9: String comparison
+    buat cmp1 = bandingkan_string("a", "a")
+    buat cmp2 = bandingkan_string("a", "b")
+    buat cmp3 = bandingkan_string("b", "a")
+    buat cmp4 = bandingkan_string("", "a")
+    buat cmp5 = bandingkan_string("a", "")
+
+    jika cmp1 != 0 maka:
+        lempar "Compare test 1 failed"
+    jika cmp2 != -1 maka:
+        lempar "Compare test 2 failed"
+    jika cmp3 != 1 maka:
+        lempar "Compare test 3 failed"
+    jika cmp4 != -1 maka:
+        lempar "Compare test 4 failed"
+    jika cmp5 != 1 maka:
+        lempar "Compare test 5 failed"
+
+    tampilkan("✓ String comparison tests passed")
+
+    // Test 10: String contains
+    buat contains1 = berisi_string("hello", "h")
+    buat contains2 = berisi_string("hello", "ll")
+    buat contains3 = berisi_string("hello", "x")
+    buat contains4 = berisi_string("", "h")
+    buat contains5 = berisi_string("hello", "")
+
+    jika tidak contains1 maka:
+        lempar "Contains test 1 failed"
+    jika tidak contains2 maka:
+        lempar "Contains test 2 failed"
+    jika contains3 maka:
+        lempar "Contains test 3 failed"
+    jika contains4 maka:
+        lempar "Contains test 4 failed"
+    jika tidak contains5 maka:
+        lempar "Contains test 5 failed"
+
+    tampilkan("✓ String contains tests passed")
+
+    // Test 11: String reverse
+    buat reverse1 = balik_string("")
+    buat reverse2 = balik_string("a")
+    buat reverse3 = balik_string("ab")
+    buat reverse4 = balik_string("hello")
+
+    jika reverse1 != "" maka:
+        lempar "Reverse test 1 failed"
+    jika reverse2 != "a" maka:
+        lempar "Reverse test 2 failed"
+    jika reverse3 != "ba" maka:
+        lempar "Reverse test 3 failed"
+    jika reverse4 != "olleh" maka:
+        lempar "Reverse test 4 failed"
+
+    tampilkan("✓ String reverse tests passed")
+
+    tampilkan("=== All comprehensive string tests passed! ===")
+
+function test_comprehensive_string():
+    show("=== Comprehensive String Functions Test ===")
+
+    // Test 1: String length
+    create length1 = string_length("")
+    create length2 = string_length("a")
+    create length3 = string_length("Hello World")
+
+    if length1 != 0 then:
+        throw "String length test 1 failed"
+    if length2 != 1 then:
+        throw "String length test 2 failed"
+    if length3 != 11 then:
+        throw "String length test 3 failed"
+
+    show("✓ String length tests passed")
+
+    // Test 2: String concatenation
+    create concat1 = concat_string()
+    create concat2 = concat_string("Hello")
+    create concat3 = concat_string("Hello", " ", "World")
+    create concat4 = concat_string("a", "b", "c", "d")
+
+    if concat1 != "" then:
+        throw "String concatenation test 1 failed"
+    if concat2 != "Hello" then:
+        throw "String concatenation test 2 failed"
+    if concat3 != "Hello World" then:
+        throw "String concatenation test 3 failed"
+    if concat4 != "abcd" then:
+        throw "String concatenation test 4 failed"
+
+    show("✓ String concatenation tests passed")
+
+    // Test 3: Case conversion
+    create upper1 = string_upper("")
+    create upper2 = string_upper("hello")
+    create upper3 = string_upper("Hello World")
+    create upper4 = string_upper("123ABC")
+
+    if upper1 != "" then:
+        throw "Uppercase test 1 failed"
+    if upper2 != "HELLO" then:
+        throw "Uppercase test 2 failed"
+    if upper3 != "HELLO WORLD" then:
+        throw "Uppercase test 3 failed"
+    if upper4 != "123ABC" then:
+        throw "Uppercase test 4 failed"
+
+    create lower1 = string_lower("")
+    create lower2 = string_lower("HELLO")
+    create lower3 = string_lower("Hello World")
+    create lower4 = string_lower("123abc")
+
+    if lower1 != "" then:
+        throw "Lowercase test 1 failed"
+    if lower2 != "hello" then:
+        throw "Lowercase test 2 failed"
+    if lower3 != "hello world" then:
+        throw "Lowercase test 3 failed"
+    if lower4 != "123abc" then:
+        throw "Lowercase test 4 failed"
+
+    show("✓ Case conversion tests passed")
+
+    // Test 4: String trimming
+    create trim1 = string_trim("")
+    create trim2 = string_trim("hello")
+    create trim3 = string_trim("  hello  ")
+    create trim4 = string_trim(" \t\n hello \t\n ")
+
+    if trim1 != "" then:
+        throw "Trim test 1 failed"
+    if trim2 != "hello" then:
+        throw "Trim test 2 failed"
+    if trim3 != "hello" then:
+        throw "Trim test 3 failed"
+    // We can't test trim4 exactly since it depends on implementation
+
+    show("✓ String trimming tests passed")
+
+    // Test 5: String splitting
+    create split1 = string_split("", ",")
+    create split2 = string_split("hello", ",")
+    create split3 = string_split("a,b,c", ",")
+    create split4 = string_split("a,,b", ",")
+
+    if split1.length() != 1 then:
+        throw "Split test 1 failed"
+    if split2.length() != 1 then:
+        throw "Split test 2 failed"
+    if split3.length() != 3 then:
+        throw "Split test 3 failed"
+    if split3.get(0) != "a" then:
+        throw "Split test 3a failed"
+    if split3.get(1) != "b" then:
+        throw "Split test 3b failed"
+    if split3.get(2) != "c" then:
+        throw "Split test 3c failed"
+    if split4.length() != 3 then:
+        throw "Split test 4 failed"
+
+    show("✓ String splitting tests passed")
+
+    // Test 6: String replacement
+    create replace1 = string_replace("", "a", "b")
+    create replace2 = string_replace("hello", "l", "x")
+    create replace3 = string_replace("hello", "xyz", "abc")
+    create replace4 = string_replace("a a a", "a", "b")
+
+    if replace1 != "" then:
+        throw "Replace test 1 failed"
+    if replace2 != "hexxo" then:
+        throw "Replace test 2 failed"
+    if replace3 != "hello" then:
+        throw "Replace test 3 failed"
+    if replace4 != "b b b" then:
+        throw "Replace test 4 failed"
+
+    show("✓ String replacement tests passed")
+
+    // Test 7: Substring extraction
+    create sub1 = substring("hello", 0, 5)
+    create sub2 = substring("hello", 1, 4)
+    create sub3 = substring("hello", 0, 0)
+    create sub4 = substring("hello", 2, 5)
+
+    if sub1 != "hello" then:
+        throw "Substring test 1 failed"
+    if sub2 != "ell" then:
+        throw "Substring test 2 failed"
+    if sub3 != "" then:
+        throw "Substring test 3 failed"
+    if sub4 != "llo" then:
+        throw "Substring test 4 failed"
+
+    show("✓ Substring extraction tests passed")
+
+    // Test 8: String searching
+    create find1 = string_find("hello", "h")
+    create find2 = string_find("hello", "l")
+    create find3 = string_find("hello", "o")
+    create find4 = string_find("hello", "x")
+    create find5 = string_find("hello", "ll")
+
+    if find1 != 0 then:
+        throw "Find test 1 failed"
+    if find2 != 2 then:
+        throw "Find test 2 failed"
+    if find3 != 4 then:
+        throw "Find test 3 failed"
+    if find4 != -1 then:
+        throw "Find test 4 failed"
+    if find5 != 2 then:
+        throw "Find test 5 failed"
+
+    show("✓ String searching tests passed")
+
+    // Test 9: String comparison
+    create cmp1 = string_compare("a", "a")
+    create cmp2 = string_compare("a", "b")
+    create cmp3 = string_compare("b", "a")
+    create cmp4 = string_compare("", "a")
+    create cmp5 = string_compare("a", "")
+
+    if cmp1 != 0 then:
+        throw "Compare test 1 failed"
+    if cmp2 != -1 then:
+        throw "Compare test 2 failed"
+    if cmp3 != 1 then:
+        throw "Compare test 3 failed"
+    if cmp4 != -1 then:
+        throw "Compare test 4 failed"
+    if cmp5 != 1 then:
+        throw "Compare test 5 failed"
+
+    show("✓ String comparison tests passed")
+
+    // Test 10: String contains
+    create contains1 = string_contains("hello", "h")
+    create contains2 = string_contains("hello", "ll")
+    create contains3 = string_contains("hello", "x")
+    create contains4 = string_contains("", "h")
+    create contains5 = string_contains("hello", "")
+
+    if not contains1 then:
+        throw "Contains test 1 failed"
+    if not contains2 then:
+        throw "Contains test 2 failed"
+    if contains3 then:
+        throw "Contains test 3 failed"
+    if contains4 then:
+        throw "Contains test 4 failed"
+    if not contains5 then:
+        throw "Contains test 5 failed"
+
+    show("✓ String contains tests passed")
+
+    // Test 11: String reverse
+    create reverse1 = string_reverse("")
+    create reverse2 = string_reverse("a")
+    create reverse3 = string_reverse("ab")
+    create reverse4 = string_reverse("hello")
+
+    if reverse1 != "" then:
+        throw "Reverse test 1 failed"
+    if reverse2 != "a" then:
+        throw "Reverse test 2 failed"
+    if reverse3 != "ba" then:
+        throw "Reverse test 3 failed"
+    if reverse4 != "olleh" then:
+        throw "Reverse test 4 failed"
+
+    show("✓ String reverse tests passed")
+
+    show("=== All comprehensive string tests passed! ===")
+
+fungsi utama():
+    uji_komprehensif_string()
+
+function main():
+    test_comprehensive_string()
+
+// Run the tests
+utama()

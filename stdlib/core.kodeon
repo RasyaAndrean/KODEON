@@ -1,0 +1,208 @@
+// Core standard library for KODEON
+
+// Types module - Type inspection and conversion
+fungsi tipe(nilai):  // Indonesian
+    // Determine the type of a value
+    // In a real implementation, this would interface with the runtime system
+    jika nilai benar atau nilai salah maka:
+        kembalikan "boolean"
+    jika nilai adalah angka maka:
+        jika nilai % 1 == 0 maka:
+            kembalikan "integer"
+        sebaliknya:
+            kembalikan "float"
+    jika nilai adalah string maka:
+        kembalikan "string"
+    jika nilai adalah array maka:
+        kembalikan "array"
+    jika nilai adalah objek maka:
+        kembalikan "object"
+    jika nilai adalah null maka:
+        kembalikan "null"
+    kembalikan "unknown"
+
+function type(value):  // English
+    // Determine the type of a value
+    // In a real implementation, this would interface with the runtime system
+    if value == true or value == false then:
+        return "boolean"
+    if value is number then:
+        if value % 1 == 0 then:
+            return "integer"
+        otherwise:
+            return "float"
+    if value is string then:
+        return "string"
+    if value is array then:
+        return "array"
+    if value is object then:
+        return "object"
+    if value == null then:
+        return "null"
+    return "unknown"
+
+fungsi konversi(tipe_target, nilai):  // Indonesian
+    // Convert between types
+    jika tipe_target == "string" maka:
+        kembalikan string(nilai)
+    jika tipe_target == "integer" maka:
+        kembalikan integer(nilai)
+    jika tipe_target == "float" maka:
+        kembalikan pecahan(nilai)
+    jika tipe_target == "boolean" maka:
+        jika nilai maka:
+            kembalikan benar
+        sebaliknya:
+            kembalikan salah
+    kembalikan nilai
+
+function convert(target_type, value):  // English
+    // Convert between types
+    if target_type == "string" then:
+        return string(value)
+    if target_type == "integer" then:
+        return integer(value)
+    if target_type == "float" then:
+        return float(value)
+    if target_type == "boolean" then:
+        if value then:
+            return true
+        otherwise:
+            return false
+    return value
+
+fungsi apakah_tipe(tipe_target, nilai):  // Indonesian
+    // Check if value is of specific type
+    kembalikan tipe(nilai) == tipe_target
+
+function is_type(target_type, value):  // English
+    // Check if value is of specific type
+    return type(value) == target_type
+
+// String manipulation functions
+fungsi panjang_string(str):  // Indonesian
+    // Return the length of a string
+    // In a real implementation, this would interface with the runtime system
+    kembalikan 0  // Placeholder
+
+function string_length(str):  // English
+    // Return the length of a string
+    // In a real implementation, this would interface with the runtime system
+    return 0  // Placeholder
+
+fungsi gabung_string(a, b):  // Indonesian
+    // Concatenate two strings
+    kembalikan a + b
+
+function concat_string(a, b):  // English
+    // Concatenate two strings
+    return a + b
+
+fungsi besar_string(str):  // Indonesian
+    // Convert string to uppercase
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str  // Placeholder
+
+function string_upper(str):  // English
+    // Convert string to uppercase
+    // In a real implementation, this would interface with the runtime system
+    return str  // Placeholder
+
+fungsi kecil_string(str):  // Indonesian
+    // Convert string to lowercase
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str  // Placeholder
+
+function string_lower(str):  // English
+    // Convert string to lowercase
+    // In a real implementation, this would interface with the runtime system
+    return str  // Placeholder
+
+fungsi potong_string(str):  // Indonesian
+    // Trim whitespace from string
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str  // Placeholder
+
+function string_trim(str):  // English
+    // Trim whitespace from string
+    // In a real implementation, this would interface with the runtime system
+    return str  // Placeholder
+
+fungsi bagi_string(str, pembatas):  // Indonesian
+    // Split string by delimiter
+    // In a real implementation, this would interface with the runtime system
+    kembalikan []  // Placeholder
+
+function string_split(str, delimiter):  // English
+    // Split string by delimiter
+    // In a real implementation, this would interface with the runtime system
+    return []  // Placeholder
+
+fungsi ganti_string(str, cari, ganti):  // Indonesian
+    // Replace substring in string
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str  // Placeholder
+
+function string_replace(str, search, replace):  // English
+    // Replace substring in string
+    // In a real implementation, this would interface with the runtime system
+    return str  // Placeholder
+
+// Basic I/O functions
+fungsi tampilkan(pesan):  // Indonesian
+    // Implementation would interface with system output
+    kembalikan null
+
+function show(message):  // English
+    // Implementation would interface with system output
+    return null
+
+// Mathematical functions
+fungsi akar_kuadrat(x):  // Indonesian
+    // Calculate square root
+    kembalikan x ** 0.5
+
+function square_root(x):  // English
+    // Calculate square root
+    return x ** 0.5
+
+fungsi nilai_mutlak(x):  // Indonesian
+    // Calculate absolute value
+    jika x < 0 maka:
+        kembalikan -x
+    sebaliknya:
+        kembalikan x
+
+function absolute_value(x):  // English
+    // Calculate absolute value
+    if x < 0 then:
+        return -x
+    otherwise:
+        return x
+
+// Array/List functions
+fungsi panjang_array(arr):  // Indonesian
+    // Return the length of an array
+    kembalikan 0  // Placeholder
+
+function array_length(arr):  // English
+    // Return the length of an array
+    return 0  // Placeholder
+
+// Time functions
+fungsi waktu_sekarang():  // Indonesian
+    // Return current timestamp
+    kembalikan 0  // Placeholder
+
+function current_time():  // English
+    // Return current timestamp
+    return 0  // Placeholder
+
+// System functions
+fungsi keluar(kode):  // Indonesian
+    // Exit the program with a code
+    kembalikan null  // Placeholder
+
+function exit(code):  // English
+    // Exit the program with a code
+    return null  // Placeholder

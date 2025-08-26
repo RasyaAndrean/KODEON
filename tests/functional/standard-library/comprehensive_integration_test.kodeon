@@ -1,0 +1,194 @@
+// Comprehensive integration test for KODEON standard library
+
+impor "types"
+impor "math"
+impor "collections"
+impor "io"
+impor "system"
+impor "time"
+impor "json"
+impor "concurrent"
+impor "encoding"
+impor "reflect"
+impor "testing"
+
+fungsi uji_integrasi_komprehensif():
+    tampilkan("=== Comprehensive Standard Library Integration Test ===")
+
+    // Test Types module
+    buat angka = 42
+    buat tipe_angka = tipe(angka)
+    tampilkan("Type of 42: ", tipe_angka)
+
+    // Test Math module
+    buat hasil = pangkat(2, 3)
+    tampilkan("2^3 = ", hasil)
+
+    // Test Collections module
+    buat daftar = buat_daftar()
+    daftar.tambah("satu")
+    daftar.tambah("dua")
+    daftar.tambah("tiga")
+    tampilkan("List length: ", daftar.panjang())
+
+    // Test Time module
+    buat waktu_sekarang = sekarang()
+    tampilkan("Current timestamp: ", waktu_sekarang)
+
+    // Test JSON module
+    buat objek = buat_peta()
+    objek.atur("nama", "KODEON")
+    objek.atur("versi", 1.0)
+    buat json_str = stringify_json(objek)
+    tampilkan("JSON string: ", json_str)
+
+    // Test Encoding module
+    buat teks = "Hello, KODEON!"
+    buat encoded = encode_base64(teks)
+    buat decoded = decode_base64(encoded)
+    tampilkan("Base64 encoded: ", encoded)
+    tampilkan("Base64 decoded: ", decoded)
+
+    // Test Reflection module
+    buat tipe_daftar = dapatkan_tipe(daftar)
+    buat metode_daftar = dapatkan_metode(daftar)
+    tampilkan("List type: ", tipe_daftar)
+    tampilkan("List methods count: ", metode_daftar.panjang())
+
+    tampilkan("=== Comprehensive integration test completed ===")
+
+function test_comprehensive_integration():
+    show("=== Comprehensive Standard Library Integration Test ===")
+
+    // Test Types module
+    create number = 42
+    create type_number = type(number)
+    show("Type of 42: ", type_number)
+
+    // Test Math module
+    create result = pow(2, 3)
+    show("2^3 = ", result)
+
+    // Test Collections module
+    create list = create_list()
+    list.add("one")
+    list.add("two")
+    list.add("three")
+    show("List length: ", list.length())
+
+    // Test Time module
+    create current_time = now()
+    show("Current timestamp: ", current_time)
+
+    // Test JSON module
+    create object = create_map()
+    object.set("name", "KODEON")
+    object.set("version", 1.0)
+    create json_str = stringify_json(object)
+    show("JSON string: ", json_str)
+
+    // Test Encoding module
+    create text = "Hello, KODEON!"
+    create encoded = encode_base64(text)
+    create decoded = decode_base64(encoded)
+    show("Base64 encoded: ", encoded)
+    show("Base64 decoded: ", decoded)
+
+    // Test Reflection module
+    create type_list = get_type(list)
+    create list_methods = get_methods(list)
+    show("List type: ", type_list)
+    show("List methods count: ", list_methods.length())
+
+    show("=== Comprehensive integration test completed ===")
+
+fungsi uji_konkurensi_dan_sistem():
+    tampilkan("=== Concurrency and System Integration Test ===")
+
+    // Test System module
+    buat waktu_awal = sekarang()
+    tampilkan("Start time: ", waktu_awal)
+
+    // Test sleep function
+    tampilkan("Sleeping for 0.1 seconds...")
+    tidur(100)
+    buat waktu_akhir = sekarang()
+    tampilkan("End time: ", waktu_akhir)
+
+    // Test Concurrent module
+    // In a real implementation, this would start a goroutine
+    // pergi(fungsi():
+    //     tampilkan("Hello from goroutine!")
+    // akhir)
+
+    tampilkan("=== Concurrency and System integration test completed ===")
+
+function test_concurrency_and_system():
+    show("=== Concurrency and System Integration Test ===")
+
+    // Test System module
+    create start_time = now()
+    show("Start time: ", start_time)
+
+    // Test sleep function
+    show("Sleeping for 0.1 seconds...")
+    sleep(100)
+    create end_time = now()
+    show("End time: ", end_time)
+
+    // Test Concurrent module
+    // In a real implementation, this would start a goroutine
+    // go(function():
+    //     show("Hello from goroutine!")
+    // end)
+
+    show("=== Concurrency and System integration test completed ===")
+
+fungsi uji_pengujian_dan_refleksi():
+    tampilkan("=== Testing and Reflection Integration Test ===")
+
+    // Test Testing module
+    pernyataan_benar(1 + 1 == 2, "Basic math should work")
+    pernyataan_sama("test", "test", "Strings should match")
+
+    // Test Reflection module with testing
+    buat fungsi_test = fungsi():
+        kembalikan "hasil"
+    akhir
+
+    buat tipe_fungsi = dapatkan_tipe(fungsi_test)
+    tampilkan("Function type: ", tipe_fungsi)
+
+    tampilkan("=== Testing and Reflection integration test completed ===")
+
+function test_testing_and_reflection():
+    show("=== Testing and Reflection Integration Test ===")
+
+    // Test Testing module
+    assert_true(1 + 1 == 2, "Basic math should work")
+    assert_equal("test", "test", "Strings should match")
+
+    // Test Reflection module with testing
+    create test_function = function():
+        return "result"
+    end
+
+    create function_type = get_type(test_function)
+    show("Function type: ", function_type)
+
+    show("=== Testing and Reflection integration test completed ===")
+
+fungsi utama():
+    uji_integrasi_komprehensif()
+    uji_konkurensi_dan_sistem()
+    uji_pengujian_dan_refleksi()
+    tampilkan("All comprehensive integration tests completed successfully!")
+
+function main():
+    test_comprehensive_integration()
+    test_concurrency_and_system()
+    test_testing_and_reflection()
+    show("All comprehensive integration tests completed successfully!")
+
+// Run the tests
+utama()

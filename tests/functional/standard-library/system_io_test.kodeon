@@ -1,0 +1,79 @@
+// Combined System and IO library test in KODEON
+
+impor "system"
+impor "io"
+
+fungsi uji_sistem_io():
+    // Test getting current time and displaying it
+    buat waktu_sekarang = sekarang()
+    tampilkan("Current timestamp: ", waktu_sekarang)
+
+    // Test environment variables
+    // buat path = ambil_lingkungan("PATH")
+    // tampilkan("PATH length: ", panjang(path))
+
+    // Test file operations with timestamp
+    // buat nama_file = "test_" + string(waktu_sekarang) + ".txt"
+    // buat file = buka(nama_file, "w")
+    // tulis(file, "Test file created at: " + string(waktu_sekarang))
+    // tutup(file)
+    // tampilkan("Created test file: ", nama_file)
+
+    tampilkan("System and IO integration test completed")
+
+function test_system_io():
+    // Test getting current time and displaying it
+    create current_time = now()
+    show("Current timestamp: ", current_time)
+
+    // Test environment variables
+    // create path = get_env("PATH")
+    // show("PATH length: ", length(path))
+
+    // Test file operations with timestamp
+    // create filename = "test_" + string(current_time) + ".txt"
+    // create file = open(filename, "w")
+    // write(file, "Test file created at: " + string(current_time))
+    // close(file)
+    // show("Created test file: ", filename)
+
+    show("System and IO integration test completed")
+
+fungsi uji_interaksi_pengguna():
+    // Test user interaction
+    tampilkan("Testing user interaction...")
+    // buat nama = baca("Enter your name: ")
+    // tampilkan("Hello, ", nama, "!")
+
+    // Test sleep function
+    tampilkan("Sleeping for 0.5 seconds...")
+    tidur(500)
+    tampilkan("Awake!")
+
+    tampilkan("User interaction test completed")
+
+function test_user_interaction():
+    // Test user interaction
+    show("Testing user interaction...")
+    // create name = read("Enter your name: ")
+    // show("Hello, ", name, "!")
+
+    // Test sleep function
+    show("Sleeping for 0.5 seconds...")
+    sleep(500)
+    show("Awake!")
+
+    show("User interaction test completed")
+
+fungsi utama():
+    uji_sistem_io()
+    uji_interaksi_pengguna()
+    tampilkan("All system and IO integration tests completed!")
+
+function main():
+    test_system_io()
+    test_user_interaction()
+    show("All system and IO integration tests completed!")
+
+// Run the tests
+utama()

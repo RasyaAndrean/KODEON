@@ -1,0 +1,92 @@
+// Comprehensive example showcasing KODEON language features
+
+// Variable declarations in both languages
+buat pesan = "Halo, Dunia!"  // Indonesian
+create message = "Hello, World!"  // English
+
+// Function definitions
+fungsi faktorial(n):  // Indonesian
+    jika n <= 1 maka:
+        kembalikan 1
+    sebaliknya:
+        kembalikan n * faktorial(n - 1)
+
+function factorial(n):  // English
+    if n <= 1 then:
+        return 1
+    otherwise:
+        return n * factorial(n - 1)
+
+// Class definitions
+kelas Kalkulator:  // Indonesian
+    buat hasil = 0
+
+    fungsi tambah(a, b):
+        hasil = a + b
+        kembalikan hasil
+
+    fungsi kurang(a, b):
+        hasil = a - b
+        kembalikan hasil
+
+class Calculator:  // English
+    create result = 0
+
+    function add(a, b):
+        result = a + b
+        return result
+
+    function subtract(a, b):
+        result = a - b
+        return result
+
+// Control structures
+// While loop
+buat counter = 0
+selama counter < 5 maka:
+    tampilkan "Counter: " + counter
+    counter = counter + 1
+
+// For loop
+untuk i dari 1 sampai 10 lakukan:
+    tampilkan "Number: " + i
+
+// Try-catch block
+coba:
+    buat hasil = 10 / 0
+tangkap:
+    tampilkan "Error occurred"
+akhirnya:
+    tampilkan "Cleanup operations"
+
+// Complex expressions with unary operators
+buat x = 5
+++x  // Increment
+tampilkan "x after increment: " + x
+
+buat y = 10
+--y  // Decrement
+tampilkan "y after decrement: " + y
+
+// Boolean operations
+buat benar = benar
+buat salah = salah
+buat hasil_boolean = benar dan tidak salah atau (benar == salah)
+tampilkan "Boolean result: " + hasil_boolean
+
+// Function calls
+buat fact5 = faktorial(5)
+tampilkan "Factorial of 5: " + fact5
+
+// Object instantiation
+buat calc = Kalkulator()
+buat hasil_tambah = calc.tambah(15, 25)
+tampilkan "Addition result: " + hasil_tambah
+
+// Comments
+// This is a single-line comment
+/* This is a
+   multi-line comment */
+
+tampilkan pesan
+tampilkan message

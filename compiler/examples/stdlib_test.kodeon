@@ -1,0 +1,38 @@
+// Simple test to verify standard library implementation
+
+impor "core"
+impor "math"
+impor "collections"
+
+fungsi utama() {
+    // Test type functions
+    var angka = 42
+    var teks = "KODEON"
+    var benar = benar
+
+    cetak("Tipe angka: ", tipe(angka))
+    cetak("Tipe teks: ", tipe(teks))
+    cetak("Tipe boolean: ", tipe(benar))
+
+    // Test math functions
+    cetak("PI: ", Matematika.PI)
+    cetak("sin(0): ", sin(0))
+    cetak("cos(0): ", cos(0))
+    cetak("2^3: ", pangkat(2, 3))
+
+    // Test collections
+    var daftar = buat_daftar()
+    daftar.tambah("satu")
+    daftar.tambah("dua")
+    daftar.tambah("tiga")
+    cetak("Panjang daftar: ", daftar.panjang())
+    cetak("Item pertama: ", daftar.dapatkan(0))
+
+    var peta = buat_peta()
+    peta.atur("bahasa", "KODEON")
+    peta.atur("versi", "1.0")
+    cetak("Bahasa: ", peta.dapatkan("bahasa"))
+    cetak("Versi: ", peta.dapatkan("versi"))
+
+    kembali 0
+}

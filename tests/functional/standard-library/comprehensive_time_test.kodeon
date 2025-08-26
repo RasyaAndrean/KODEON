@@ -1,0 +1,174 @@
+// Comprehensive time functions test in KODEON
+
+impor "system/time"
+
+fungsi uji_komprehensif_waktu():
+    tampilkan("=== Comprehensive Time Functions Test ===")
+
+    // Test 1: Current timestamp
+    buat waktu1 = sekarang()
+    tidur(10)  // Sleep for 10ms
+    buat waktu2 = sekarang()
+
+    jika waktu2 <= waktu1 maka:
+        lempar "Timestamp should increase after sleep"
+
+    tampilkan("✓ Current timestamp test passed")
+
+    // Test 2: Sleep function
+    buat waktu_awal = sekarang()
+    tidur(50)  // Sleep for 50ms
+    buat waktu_akhir = sekarang()
+
+    buat durasi = waktu_akhir - waktu_awal
+    jika durasi < 45 maka:  // Allow some tolerance
+        lempar "Sleep duration too short"
+
+    tampilkan("✓ Sleep function test passed")
+
+    // Test 3: Time formatting
+    buat ts = sekarang()
+    buat format_str = format_waktu(ts)
+
+    jika panjang(format_str) == 0 maka:
+        lempar "Time formatting failed"
+
+    tampilkan("✓ Time formatting test passed")
+
+    // Test 4: Time parsing
+    buat parsed_ts = parse_waktu("1234567890")
+
+    jika parsed_ts != 1234567890 maka:
+        lempar "Time parsing failed"
+
+    tampilkan("✓ Time parsing test passed")
+
+    // Test 5: Date components
+    buat tanggal_obj = Waktu.tanggal()
+
+    jika tidak ada_kunci(tanggal_obj, "tahun") maka:
+        lempar "Date object missing 'tahun' key"
+    jika tidak ada_kunci(tanggal_obj, "bulan") maka:
+        lempar "Date object missing 'bulan' key"
+    jika tidak ada_kunci(tanggal_obj, "hari") maka:
+        lempar "Date object missing 'hari' key"
+
+    tampilkan("✓ Date components test passed")
+
+    // Test 6: Time components
+    buat jam_obj = Waktu.jam()
+
+    jika tidak ada_kunci(jam_obj, "jam") maka:
+        lempar "Time object missing 'jam' key"
+    jika tidak ada_kunci(jam_obj, "menit") maka:
+        lempar "Time object missing 'menit' key"
+    jika tidak ada_kunci(jam_obj, "detik") maka:
+        lempar "Time object missing 'detik' key"
+
+    tampilkan("✓ Time components test passed")
+
+    // Test 7: English functions
+    buat time1 = now()
+    sleep(10)  // Sleep for 10ms
+    buat time2 = now()
+
+    jika time2 <= time1 maka:
+        lempar "Timestamp should increase after sleep (English functions)"
+
+    buat format_str_en = format_time(time1)
+    jika panjang(format_str_en) == 0 maka:
+        lempar "Time formatting failed (English functions)"
+
+    tampilkan("✓ English functions test passed")
+
+    tampilkan("=== All comprehensive time tests passed! ===")
+
+function test_comprehensive_time():
+    show("=== Comprehensive Time Functions Test ===")
+
+    // Test 1: Current timestamp
+    create time1 = now()
+    sleep(10)  // Sleep for 10ms
+    create time2 = now()
+
+    if time2 <= time1 then:
+        throw "Timestamp should increase after sleep"
+
+    show("✓ Current timestamp test passed")
+
+    // Test 2: Sleep function
+    create start_time = now()
+    sleep(50)  // Sleep for 50ms
+    create end_time = now()
+
+    create duration = end_time - start_time
+    if duration < 45 then:  // Allow some tolerance
+        throw "Sleep duration too short"
+
+    show("✓ Sleep function test passed")
+
+    // Test 3: Time formatting
+    create ts = now()
+    create format_str = format_time(ts)
+
+    if length(format_str) == 0 then:
+        throw "Time formatting failed"
+
+    show("✓ Time formatting test passed")
+
+    // Test 4: Time parsing
+    create parsed_ts = parse_time("1234567890")
+
+    if parsed_ts != 1234567890 then:
+        throw "Time parsing failed"
+
+    show("✓ Time parsing test passed")
+
+    // Test 5: Date components
+    create date_obj = Time.date()
+
+    if not has_key(date_obj, "year") then:
+        throw "Date object missing 'year' key"
+    if not has_key(date_obj, "month") then:
+        throw "Date object missing 'month' key"
+    if not has_key(date_obj, "day") then:
+        throw "Date object missing 'day' key"
+
+    show("✓ Date components test passed")
+
+    // Test 6: Time components
+    create time_obj = Time.time()
+
+    if not has_key(time_obj, "hour") then:
+        throw "Time object missing 'hour' key"
+    if not has_key(time_obj, "minute") then:
+        throw "Time object missing 'minute' key"
+    if not has_key(time_obj, "second") then:
+        throw "Time object missing 'second' key"
+
+    show("✓ Time components test passed")
+
+    // Test 7: Indonesian functions
+    create waktu1 = sekarang()
+    tidur(10)  // Sleep for 10ms
+    create waktu2 = sekarang()
+
+    if waktu2 <= waktu1 then:
+        throw "Timestamp should increase after sleep (Indonesian functions)"
+
+    create format_str_id = format_waktu(waktu1)
+    if length(format_str_id) == 0 then:
+        throw "Time formatting failed (Indonesian functions)"
+
+    show("✓ Indonesian functions test passed")
+
+    show("=== All comprehensive time tests passed! ===")
+
+fungsi utama():
+    uji_komprehensif_waktu()
+
+function main():
+    test_comprehensive_time()
+
+// Run the tests
+utama()

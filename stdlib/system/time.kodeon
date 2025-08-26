@@ -1,0 +1,108 @@
+// Time standard library for KODEON
+
+kelas Waktu:  // Indonesian
+    // Get current timestamp
+    fungsi sekarang():
+        // Interface with system time function
+        kembalikan sekarang()
+
+    // Sleep for specified duration (in milliseconds)
+    fungsi tidur(durasi):
+        // Interface with system sleep function
+        kembalikan tidur(durasi)
+
+    // Format timestamp to readable string
+    fungsi format(timestamp):
+        // Format timestamp to readable string
+        kembalikan string(timestamp)
+
+    // Parse string to timestamp
+    fungsi parse(tanggal_waktu):
+        // Parse datetime string to timestamp
+        kembalikan integer(tanggal_waktu)
+
+    // Get current date components
+    fungsi tanggal():
+        // Return current date components
+        buat ts = sekarang()
+        kembalikan {
+            tahun: 1970 + (ts / 31536000000),  // Approximate year calculation
+            bulan: 1,
+            hari: 1
+        }
+
+    // Get current time components
+    fungsi jam():
+        // Return current time components
+        buat ts = sekarang()
+        kembalikan {
+            jam: 0,
+            menit: 0,
+            detik: (ts / 1000) % 60
+        }
+
+class Time:  // English
+    // Get current timestamp
+    function now():
+        // Interface with system time function
+        return now()
+
+    // Sleep for specified duration (in milliseconds)
+    function sleep(duration):
+        // Interface with system sleep function
+        return sleep(duration)
+
+    // Format timestamp to readable string
+    function format(timestamp):
+        // Format timestamp to readable string
+        return str(timestamp)
+
+    // Parse string to timestamp
+    function parse(datetime):
+        // Parse datetime string to timestamp
+        return int(datetime)
+
+    // Get current date components
+    function date():
+        // Return current date components
+        create ts = now()
+        return {
+            year: 1970 + (ts / 31536000000),  // Approximate year calculation
+            month: 1,
+            day: 1
+        }
+
+    // Get current time components
+    function time():
+        // Return current time components
+        create ts = now()
+        return {
+            hour: 0,
+            minute: 0,
+            second: (ts / 1000) % 60
+        }
+
+// Factory functions for easier access
+fungsi sekarang():
+    kembalikan Waktu.sekarang()
+
+fungsi tidur(durasi):
+    kembalikan Waktu.tidur(durasi)
+
+fungsi format_waktu(timestamp):
+    kembalikan Waktu.format(timestamp)
+
+fungsi parse_waktu(tanggal_waktu):
+    kembalikan Waktu.parse(tanggal_waktu)
+
+function now():
+    return Time.now()
+
+function sleep(duration):
+    return Time.sleep(duration)
+
+function format_time(timestamp):
+    return Time.format(timestamp)
+
+function parse_time(datetime):
+    return Time.parse(datetime)

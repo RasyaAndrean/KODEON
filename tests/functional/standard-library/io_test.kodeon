@@ -1,0 +1,52 @@
+// IO library test in KODEON
+
+impor "io"
+
+fungsi uji_io_dasar():
+    // Test show function
+    tampilkan("Testing IO functionality")
+
+    // Test read function
+    // buat input = baca("Enter something: ")
+    // tampilkan("You entered: ", input)
+
+    tampilkan("Basic IO test completed")
+
+function test_basic_io():
+    // Test show function
+    show("Testing IO functionality")
+
+    // Test read function
+    // create input = read("Enter something: ")
+    // show("You entered: ", input)
+
+    show("Basic IO test completed")
+
+fungsi uji_file():
+    // Test file operations
+    // buat file = buka("test.txt", "w")
+    // tulis(file, "Hello, KODEON!")
+    // tutup(file)
+
+    tampilkan("File operations test completed")
+
+function test_file():
+    // Test file operations
+    // create file = open("test.txt", "w")
+    // write(file, "Hello, KODEON!")
+    // close(file)
+
+    show("File operations test completed")
+
+fungsi utama():
+    uji_io_dasar()
+    uji_file()
+    tampilkan("All IO tests completed!")
+
+function main():
+    test_basic_io()
+    test_file()
+    show("All IO tests completed!")
+
+// Run the tests
+utama()

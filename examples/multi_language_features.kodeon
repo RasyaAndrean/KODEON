@@ -1,0 +1,108 @@
+// Multi-language features example demonstrating features from Python, C/C++, Java, Swift, and JavaScript
+
+// Python-like features
+// List comprehensions
+buat squares = [x * x untuk x di rentang(1, 10)]
+buat even_squares = [x * x untuk x di rentang(1, 20) jika x % 2 == 0]
+
+// Range syntax
+buat angka = 1..10  // 1 to 9
+buat angka_inclusive = 1...10  // 1 to 10
+
+// Dictionary/Object literals (JavaScript-like)
+buat person = {
+    nama: "John Doe",
+    umur: 30,
+    aktif: benar
+}
+
+// JavaScript-like array methods
+buat numbers = [1, 2, 3, 4, 5]
+buat doubled = numbers.petakan(x => x * 2)
+buat evens = numbers.saring(x => x % 2 == 0)
+
+// Java-like class with access modifiers
+kelas Mobil publik:
+    pribadi merek, model
+    terlindungi tahun
+
+    fungsi Mobil(merek_baru, model_baru, tahun_baru):
+        ini.merek = merek_baru
+        ini.model = model_baru
+        ini.tahun = tahun_baru
+
+    publik fungsi dapatkanDeskripsi():
+        kembalikan "{merek} {model} ({tahun})"
+
+    statis fungsi bandingkanTahun(mobil1, mobil2):
+        kembalikan mobil1.tahun - mobil2.tahun
+
+// C++-like pointers and references
+buat nilai = 42
+buat ref_nilai = &nilai  // reference
+// Note: Pointer implementation would require more complex backend support
+
+// Swift-like optionals
+// opsional<String> nama = "John"  // Would need more complex type system
+
+// Async/await (JavaScript/Python-like)
+async fungsi ambilData():
+    tunggu suatuOperasiAsync()
+    kembalikan "Data diterima"
+
+// Pattern matching (Swift/Rust-like)
+fungsi evaluasiNilai(nilai):
+    ketika nilai:
+        100 => "Sempurna"
+        90..100 => "Sangat Baik"
+        80..90 => "Baik"
+        70..80 => "Cukup"
+        sebaliknya => "Perlu belajar lebih"
+
+// For-each loop (Java/C#/JavaScript-like)
+buat daftar = [1, 2, 3, 4, 5]
+untuk setiap angka di daftar:
+    tampilkan "Angka: {angka}"
+
+// Enhanced function features
+fungsi tambah(a, b):
+    kembalikan a + b
+
+// Function with default parameters (Python-like)
+fungsi sapa(nama, salam = "Halo"):
+    kembalikan "{salam}, {nama}!"
+
+// Function with variable arguments (Python/JavaScript-like)
+fungsi jumlahkan(...angka):
+    buat total = 0
+    untuk setiap n di angka:
+        total += n
+    kembalikan total
+
+// Main execution
+buat mobil1 = Mobil("Toyota", "Camry", 2020)
+buat mobil2 = Mobil("Honda", "Civic", 2022)
+
+tampilkan mobil1.dapatkanDeskripsi()
+tampilkan mobil2.dapatkanDeskripsi()
+
+// Using the static method
+buat perbedaan = Mobil.bandingkanTahun(mobil1, mobil2)
+tampilkan "Perbedaan tahun: {perbedaan}"
+
+// Using list comprehensions
+tampilkan "Kuadrat: {squares}"
+tampilkan "Kuadrat genap: {even_squares}"
+
+// Using range
+tampilkan "Rentang angka: {angka}"
+tampilkan "Rentang inklusif: {angka_inclusive}"
+
+// Using pattern matching
+tampilkan evaluasiNilai(95)
+tampilkan evaluasiNilai(75)
+
+// Using enhanced functions
+tampilkan sapa("Alice")
+tampilkan sapa("Bob", "Selamat pagi")
+tampilkan jumlahkan(1, 2, 3, 4, 5)

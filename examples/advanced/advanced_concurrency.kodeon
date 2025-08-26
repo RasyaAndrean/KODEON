@@ -1,0 +1,102 @@
+// Advanced concurrency example demonstrating KODEON's concurrency features
+
+kelas Penghitung {
+    var nilai: int
+    var mutex: mutex
+
+    fungsi baru() {
+        nilai = 0
+    }
+
+    fungsi tambah(s: int) {
+        kunci_mutex(mutex)
+        nilai = nilai + s
+        buka_kunci_mutex(mutex)
+    }
+
+    fungsi ambil(): int {
+        kunci_mutex(mutex)
+        var hasil = nilai
+        buka_kunci_mutex(mutex)
+        kembali hasil
+    }
+}
+
+fungsi produsen(ch: channel<int>, jumlah: int) {
+    untuk i dalam 0..jumlah {
+        kirim ch <- i
+    }
+}
+
+fungsi konsumen(ch: channel<int>, hasil: alamat<int>, mtx: mutex) {
+    var jumlah = 0
+    var selesai = salah
+
+    selama !selesai {
+        var nilai = terima <- ch
+        jika nilai >= 0 {
+            kunci_mutex(mtx)
+            jumlah = jumlah + nilai
+            buka_kunci_mutex(mtx)
+        } lainnya {
+            selesai = benar
+        }
+    }
+
+    kunci_mutex(mtx)
+    var nilai_sekarang = muat_atomik(hasil)
+    simpan_atomik(hasil, nilai_sekarang + jumlah)
+    buka_kunci_mutex(mtx)
+}
+
+fungsi utama() {
+    var penghitung = Penghitung.baru()
+    var kondisi = buat_kondisi()
+    var selesai = buat_alamat(salah)
+    var hasil = buat_alamat(0)
+    var mutex = buat_mutex()
+    var ch = buat_channel(int)
+
+    // Goroutine untuk menambah nilai
+    jalan {
+        untuk i dalam 0..1000 {
+            penghitung.tambah(1)
+        }
+        simpan_atomik(selesai, benar)
+        sinyal_kondisi(kondisi)
+    }
+
+    // Goroutine lain untuk menambah nilai
+    jalan {
+        untuk i dalam 0..500 {
+            penghitung.tambah(2)
+        }
+        simpan_atomik(selesai, benar)
+        sinyal_kondisi(kondisi)
+    }
+
+    // Producer-consumer example
+    jalan {
+        produsen(ch, 100)
+        // Send sentinel value to signal end
+        kirim ch <- -1
+    }
+
+    jalan {
+        konsumen(ch, hasil, mutex)
+    }
+
+    // Tunggu sampai semua goroutine selesai
+    var selesai_hitung = muat_atomik(selesai)
+    selama !selesai_hitung {
+        tunggu_kondisi(kondisi, penghitung.mutex)
+        selesai_hitung = muat_atomik(selesai)
+    }
+
+    var hasil_penghitung = penghitung.ambil()
+    var hasil_konsumen = muat_atomik(hasil)
+    cetak("Hasil akhir penghitung: ", hasil_penghitung)
+    cetak("Hasil akhir konsumen: ", hasil_konsumen)
+
+    kembali 0
+}

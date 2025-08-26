@@ -1,0 +1,7 @@
+// Simple addition test
+
+buat a = 10
+buat b = 20
+buat c = a + b
+
+kembalikan c

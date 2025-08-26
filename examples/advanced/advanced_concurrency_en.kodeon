@@ -1,0 +1,102 @@
+// Advanced concurrency example demonstrating KODEON's concurrency features (English version)
+
+class Counter {
+    var value: int
+    var mutex: mutex
+
+    function new() {
+        value = 0
+    }
+
+    function add(s: int) {
+        lock_mutex(mutex)
+        value = value + s
+        unlock_mutex(mutex)
+    }
+
+    function get(): int {
+        lock_mutex(mutex)
+        var result = value
+        unlock_mutex(mutex)
+        return result
+    }
+}
+
+function producer(ch: channel<int>, count: int) {
+    for i in 0..count {
+        send ch <- i
+    }
+}
+
+function consumer(ch: channel<int>, result: address<int>, mtx: mutex) {
+    var sum = 0
+    var done = false
+
+    while !done {
+        var value = receive <- ch
+        if value >= 0 {
+            lock_mutex(mtx)
+            sum = sum + value
+            unlock_mutex(mtx)
+        } else {
+            done = true
+        }
+    }
+
+    lock_mutex(mtx)
+    var current_value = atomic_load(result)
+    atomic_store(result, current_value + sum)
+    unlock_mutex(mtx)
+}
+
+function main() {
+    var counter = Counter.new()
+    var condition = create_condition()
+    var done = create_address(false)
+    var result = create_address(0)
+    var mutex = create_mutex()
+    var ch = make_channel(int)
+
+    // Goroutine to increment value
+    go {
+        for i in 0..1000 {
+            counter.add(1)
+        }
+        atomic_store(done, true)
+        signal_condition(condition)
+    }
+
+    // Another goroutine to increment value
+    go {
+        for i in 0..500 {
+            counter.add(2)
+        }
+        atomic_store(done, true)
+        signal_condition(condition)
+    }
+
+    // Producer-consumer example
+    go {
+        producer(ch, 100)
+        // Send sentinel value to signal end
+        send ch <- -1
+    }
+
+    go {
+        consumer(ch, result, mutex)
+    }
+
+    // Wait until all goroutines are done
+    var counting_done = atomic_load(done)
+    while !counting_done {
+        wait_condition(condition, counter.mutex)
+        counting_done = atomic_load(done)
+    }
+
+    var counter_result = counter.get()
+    var consumer_result = atomic_load(result)
+    print("Final counter result: ", counter_result)
+    print("Final consumer result: ", consumer_result)
+
+    return 0
+}

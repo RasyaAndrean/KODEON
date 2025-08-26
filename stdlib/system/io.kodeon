@@ -1,0 +1,78 @@
+// IO standard library for KODEON
+
+kelas IO:  // Indonesian
+    // Console functions
+    fungsi tampilkan(...pesan):
+        // Implementation would output to console
+        kembalikan null  // Placeholder
+
+    fungsi baca(prompt):
+        // Implementation would read from console
+        kembalikan ""  // Placeholder
+
+    // File functions
+    fungsi buka(nama_file, mode):
+        // Implementation would open a file
+        kembalikan null  // Placeholder
+
+    fungsi tulis(file, data):
+        // Implementation would write to file
+        kembalikan null  // Placeholder
+
+    fungsi tutup(file):
+        // Implementation would close file
+        kembalikan null  // Placeholder
+
+class IO:  // English
+    // Console functions
+    function show(...message):
+        // Implementation would output to console
+        return null  // Placeholder
+
+    function read(prompt):
+        // Implementation would read from console
+        return ""  // Placeholder
+
+    // File functions
+    function open(filename, mode):
+        // Implementation would open a file
+        return null  // Placeholder
+
+    function write(file, data):
+        // Implementation would write to file
+        return null  // Placeholder
+
+    function close(file):
+        // Implementation would close file
+        return null  // Placeholder
+
+// Factory functions for easier access
+fungsi tampilkan(...pesan):
+    kembalikan IO.tampilkan(...pesan)
+
+fungsi baca(prompt):
+    kembalikan IO.baca(prompt)
+
+fungsi buka(nama_file, mode):
+    kembalikan IO.buka(nama_file, mode)
+
+fungsi tulis(file, data):
+    kembalikan IO.tulis(file, data)
+
+fungsi tutup(file):
+    kembalikan IO.tutup(file)
+
+function show(...message):
+    return IO.show(...message)
+
+function read(prompt):
+    return IO.read(prompt)
+
+function open(filename, mode):
+    return IO.open(filename, mode)
+
+function write(file, data):
+    return IO.write(file, data)
+
+function close(file):
+    return IO.close(file)

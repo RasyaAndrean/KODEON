@@ -1,0 +1,57 @@
+// Test file for standard library imports
+
+// Test all standard library imports
+impor "core"
+impor "math"
+impor "collections"
+impor "string"
+impor "json"
+impor "system"
+impor "io"
+impor "time"
+impor "concurrent"
+
+// Test imports with aliases
+impor "math" sebagai m
+import "string" as s
+
+fungsi uji_impor_modul() {
+    tampilkan("=== Testing Module Imports ===")
+
+    // Test core functionality
+    buat nilai = 42
+    tampilkan("Type of 42: " + tipe(nilai))
+
+    // Test math functionality
+    tampilkan("PI: " + string(Matematika.PI))
+    tampilkan("Math with alias PI: " + string(m.PI))
+
+    // Test collections
+    buat daftar = buat_daftar()
+    daftar.tambah("item1")
+    tampilkan("List length: " + string(daftar.panjang()))
+
+    // Test string functions
+    buat teks = "Hello"
+    tampilkan("Uppercase: " + besar_string(teks))
+    tampilkan("Uppercase with alias: " + s.string_upper(teks))
+
+    // Test JSON
+    buat data = {test: "value"}
+    buat json_str = stringifikasi_json(data)
+    tampilkan("JSON: " + json_str)
+
+    // Test system
+    buat waktu = sekarang()
+    tampilkan("Current time: " + string(waktu))
+
+    // Test time
+    tampilkan("Formatted time: " + format_waktu(waktu))
+
+    tampilkan("All imports working correctly!")
+}
+
+fungsi utama() {
+    uji_impor_modul()
+    kembalikan 0
+}

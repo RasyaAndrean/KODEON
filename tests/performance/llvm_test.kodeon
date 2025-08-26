@@ -1,0 +1,7 @@
+// LLVM test in KODEON
+
+buat a = 42
+buat b = 8
+buat c = a + b
+
+kembalikan c

@@ -1,0 +1,59 @@
+// Example demonstrating KODEON's advanced concurrency features (English version)
+
+class Counter {
+    var value: int
+    var mutex: mutex
+
+    function new() {
+        value = 0
+    }
+
+    function add(s: int) {
+        lock_mutex(mutex)
+        value = value + s
+        unlock_mutex(mutex)
+    }
+
+    function get(): int {
+        lock_mutex(mutex)
+        var result = value
+        unlock_mutex(mutex)
+        return result
+    }
+}
+
+function main() {
+    var counter = Counter.new()
+    var condition = create_condition()
+    var done = create_address(false)
+
+    // Goroutine to increment value
+    go {
+        for i in 0..1000 {
+            counter.add(1)
+        }
+        atomic_store(done, true)
+        signal_condition(condition)
+    }
+
+    // Another goroutine to increment value
+    go {
+        for i in 0..500 {
+            counter.add(2)
+        }
+        atomic_store(done, true)
+        signal_condition(condition)
+    }
+
+    // Wait until all goroutines are done
+    var counting_done = atomic_load(done)
+    while !counting_done {
+        wait_condition(condition, counter.mutex)
+        counting_done = atomic_load(done)
+    }
+
+    var result = counter.get()
+    print("Final result: ", result)
+
+    return 0
+}

@@ -1,0 +1,34 @@
+{
+  "name": "kodeon-ide",
+  "version": "0.1.0",
+  "description": "Integrated Development Environment for the KODEON programming language",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder",
+    "dev": "electron . --dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon/kodeon-ide"
+  },
+  "keywords": [
+    "kodeon",
+    "ide",
+    "editor",
+    "programming-language"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.38.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vscode-languageserver": "^8.1.0"
+  }
+}

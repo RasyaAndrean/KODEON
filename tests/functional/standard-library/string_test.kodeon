@@ -1,0 +1,158 @@
+// String functions test in KODEON
+
+impor "text/string"
+
+fungsi uji_fungsi_string():
+    // Test string concatenation
+    buat hasil_gabung = gabung_string("Halo", " ", "Dunia")
+    jika hasil_gabung != "Halo Dunia" maka:
+        lempar "Gabung string tidak berhasil"
+
+    // Test string length
+    buat panjang = panjang_string("KODEON")
+    jika panjang != 6 maka:
+        lempar "Panjang string tidak sesuai"
+
+    // Test string case conversion
+    buat besar = besar_string("kodeon")
+    jika besar != "KODEON" maka:
+        lempar "Konversi ke huruf besar tidak berhasil"
+
+    buat kecil = kecil_string("KODEON")
+    jika kecil != "kodeon" maka:
+        lempar "Konversi ke huruf kecil tidak berhasil"
+
+    // Test string trim
+    buat dipotong = potong_string("  kodeon  ")
+    jika dipotong != "kodeon" maka:
+        lempar "Pemotongan string tidak berhasil"
+
+    // Test string splitting
+    buat hasil_bagi = bagi_string("a,b,c", ",")
+    jika hasil_bagi.panjang() != 3 maka:
+        lempar "Pembagian string tidak berhasil"
+    jika hasil_bagi.dapatkan(0) != "a" maka:
+        lempar "Elemen pertama pembagian string tidak sesuai"
+
+    // Test string replacement
+    buat hasil_ganti = ganti_string("Hello World", "World", "KODEON")
+    jika hasil_ganti != "Hello KODEON" maka:
+        lempar "Penggantian string tidak berhasil"
+
+    // Test string formatting
+    buat hasil_format = format_string("Hello {}", "KODEON")
+    // We can't test the exact value since it depends on implementation
+
+    // Test substring extraction
+    buat hasil_sub = sub_string("KODEON", 0, 3)
+    jika hasil_sub != "KOD" maka:
+        lempar "Ekstraksi substring tidak berhasil"
+
+    // Test string searching
+    buat posisi_cari = cari_string("KODEON", "DE")
+    jika posisi_cari != 2 maka:
+        lempar "Pencarian string tidak berhasil"
+
+    // Test string comparison
+    buat hasil_banding = bandingkan_string("abc", "abc")
+    jika hasil_banding != 0 maka:
+        lempar "Perbandingan string sama tidak berhasil"
+
+    buat hasil_banding2 = bandingkan_string("abc", "def")
+    jika hasil_banding2 != -1 maka:
+        lempar "Perbandingan string kurang tidak berhasil"
+
+    // Test string contains
+    buat hasil_berisi = berisi_string("KODEON", "ODE")
+    jika tidak hasil_berisi maka:
+        lempar "Pemeriksaan isi string tidak berhasil"
+
+    // Test string reverse
+    buat hasil_balik = balik_string("KODEON")
+    jika hasil_balik != "NODEOK" maka:
+        lempar "Pembalikan string tidak berhasil"
+
+    tampilkan("Fungsi string diuji")
+
+function test_string_functions():
+    // Test string concatenation
+    create concat_result = concat_string("Hello", " ", "World")
+    if concat_result != "Hello World" then:
+        throw "String concatenation failed"
+
+    // Test string length
+    create length = string_length("KODEON")
+    if length != 6 then:
+        throw "String length mismatch"
+
+    // Test string case conversion
+    create upper = string_upper("kodeon")
+    if upper != "KODEON" then:
+        throw "Uppercase conversion failed"
+
+    create lower = string_lower("KODEON")
+    if lower != "kodeon" then:
+        throw "Lowercase conversion failed"
+
+    // Test string trim
+    create trimmed = string_trim("  kodeon  ")
+    if trimmed != "kodeon" then:
+        throw "String trimming failed"
+
+    // Test string splitting
+    create split_result = string_split("a,b,c", ",")
+    if split_result.length() != 3 then:
+        throw "String splitting failed"
+    if split_result.get(0) != "a" then:
+        throw "First element of split string mismatch"
+
+    // Test string replacement
+    create replace_result = string_replace("Hello World", "World", "KODEON")
+    if replace_result != "Hello KODEON" then:
+        throw "String replacement failed"
+
+    // Test string formatting
+    create format_result = string_format("Hello {}", "KODEON")
+    // We can't test the exact value since it depends on implementation
+
+    // Test substring extraction
+    create sub_result = substring("KODEON", 0, 3)
+    if sub_result != "KOD" then:
+        throw "Substring extraction failed"
+
+    // Test string searching
+    create find_result = string_find("KODEON", "DE")
+    if find_result != 2 then:
+        throw "String searching failed"
+
+    // Test string comparison
+    create compare_result = string_compare("abc", "abc")
+    if compare_result != 0 then:
+        throw "String comparison for equality failed"
+
+    create compare_result2 = string_compare("abc", "def")
+    if compare_result2 != -1 then:
+        throw "String comparison for less than failed"
+
+    // Test string contains
+    create contains_result = string_contains("KODEON", "ODE")
+    if not contains_result then:
+        throw "String contains check failed"
+
+    // Test string reverse
+    create reverse_result = string_reverse("KODEON")
+    if reverse_result != "NODEOK" then:
+        throw "String reverse failed"
+
+    show("String functions tested")
+
+fungsi utama():
+    uji_fungsi_string()
+    tampilkan("Uji string selesai")
+
+function main():
+    test_string_functions()
+    show("String test completed")
+
+// Run the tests
+utama()

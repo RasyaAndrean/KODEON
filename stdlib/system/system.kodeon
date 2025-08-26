@@ -1,0 +1,94 @@
+// System standard library for KODEON
+
+kelas Sistem:  // Indonesian
+    // Environment functions
+    fungsi ambil_lingkungan(nama):
+        // Implementation would get environment variable
+        kembalikan ""  // Placeholder
+
+    fungsi atur_lingkungan(nama, nilai):
+        // Implementation would set environment variable
+        kembalikan null  // Placeholder
+
+    // Process functions
+    fungsi jalankan(perintah):
+        // Implementation would execute command
+        kembalikan null  // Placeholder
+
+    fungsi henti(kode):
+        // Implementation would exit program
+        kembalikan null  // Placeholder
+
+    // Time functions
+    fungsi sekarang():
+        // Implementation would get current timestamp
+        kembalikan 0  // Placeholder
+
+    fungsi tidur(milidetik):
+        // Implementation would sleep for specified time
+        kembalikan null  // Placeholder
+
+class System:  // English
+    // Environment functions
+    function get_env(name):
+        // Implementation would get environment variable
+        return ""  // Placeholder
+
+    function set_env(name, value):
+        // Implementation would set environment variable
+        return null  // Placeholder
+
+    // Process functions
+    function run(command):
+        // Implementation would execute command
+        return null  // Placeholder
+
+    function stop(code):
+        // Implementation would exit program
+        return null  // Placeholder
+
+    // Time functions
+    function now():
+        // Implementation would get current timestamp
+        return 0  // Placeholder
+
+    function sleep(milliseconds):
+        // Implementation would sleep for specified time
+        return null  // Placeholder
+
+// Factory functions for easier access
+fungsi ambil_lingkungan(nama):
+    kembalikan Sistem.ambil_lingkungan(nama)
+
+fungsi atur_lingkungan(nama, nilai):
+    kembalikan Sistem.atur_lingkungan(nama, nilai)
+
+fungsi jalankan(perintah):
+    kembalikan Sistem.jalankan(perintah)
+
+fungsi henti(kode):
+    kembalikan Sistem.henti(kode)
+
+fungsi sekarang():
+    kembalikan Sistem.sekarang()
+
+fungsi tidur(milidetik):
+    kembalikan Sistem.tidur(milidetik)
+
+function get_env(name):
+    return System.get_env(name)
+
+function set_env(name, value):
+    return System.set_env(name, value)
+
+function run(command):
+    return System.run(command)
+
+function stop(code):
+    return System.stop(code)
+
+function now():
+    return System.now()
+
+function sleep(milliseconds):
+    return System.sleep(milliseconds)

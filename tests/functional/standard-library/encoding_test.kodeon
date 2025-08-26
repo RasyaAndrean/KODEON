@@ -1,0 +1,102 @@
+// Encoding library test in KODEON
+
+impor "encoding"
+
+fungsi uji_base64():
+    buat teks = "Hello, KODEON!"
+    buat encoded = encode_base64(teks)
+    buat decoded = decode_base64(encoded)
+
+    tampilkan("Original: ", teks)
+    tampilkan("Base64 Encoded: ", encoded)
+    tampilkan("Base64 Decoded: ", decoded)
+
+    jika teks == decoded maka:
+        tampilkan("Base64 encoding/decoding test passed!")
+    sebaliknya:
+        lempar "Base64 encoding/decoding test failed!"
+
+function test_base64():
+    create text = "Hello, KODEON!"
+    create encoded = encode_base64(text)
+    create decoded = decode_base64(encoded)
+
+    show("Original: ", text)
+    show("Base64 Encoded: ", encoded)
+    show("Base64 Decoded: ", decoded)
+
+    if text == decoded then:
+        show("Base64 encoding/decoding test passed!")
+    otherwise:
+        throw "Base64 encoding/decoding test failed!"
+
+fungsi uji_url_encoding():
+    buat url = "https://example.com/search?q=hello world"
+    buat encoded = encode_url(url)
+    buat decoded = decode_url(encoded)
+
+    tampilkan("Original URL: ", url)
+    tampilkan("URL Encoded: ", encoded)
+    tampilkan("URL Decoded: ", decoded)
+
+    jika url == decoded maka:
+        tampilkan("URL encoding/decoding test passed!")
+    sebaliknya:
+        lempar "URL encoding/decoding test failed!"
+
+function test_url_encoding():
+    create url = "https://example.com/search?q=hello world"
+    create encoded = encode_url(url)
+    create decoded = decode_url(encoded)
+
+    show("Original URL: ", url)
+    show("URL Encoded: ", encoded)
+    show("URL Decoded: ", decoded)
+
+    if url == decoded then:
+        show("URL encoding/decoding test passed!")
+    otherwise:
+        throw "URL encoding/decoding test failed!"
+
+fungsi uji_hex_encoding():
+    buat teks = "KODEON"
+    buat encoded = encode_hex(teks)
+    buat decoded = decode_hex(encoded)
+
+    tampilkan("Original: ", teks)
+    tampilkan("Hex Encoded: ", encoded)
+    tampilkan("Hex Decoded: ", decoded)
+
+    jika teks == decoded maka:
+        tampilkan("Hex encoding/decoding test passed!")
+    sebaliknya:
+        lempar "Hex encoding/decoding test failed!"
+
+function test_hex_encoding():
+    create text = "KODEON"
+    create encoded = encode_hex(text)
+    create decoded = decode_hex(encoded)
+
+    show("Original: ", text)
+    show("Hex Encoded: ", encoded)
+    show("Hex Decoded: ", decoded)
+
+    if text == decoded then:
+        show("Hex encoding/decoding test passed!")
+    otherwise:
+        throw "Hex encoding/decoding test failed!"
+
+fungsi utama():
+    uji_base64()
+    uji_url_encoding()
+    uji_hex_encoding()
+    tampilkan("All encoding tests completed!")
+
+function main():
+    test_base64()
+    test_url_encoding()
+    test_hex_encoding()
+    show("All encoding tests completed!")
+
+// Run the tests
+utama()

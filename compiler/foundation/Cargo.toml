@@ -1,0 +1,23 @@
+[package]
+name = "kodeon-foundation"
+version = "0.1.0"
+edition = "2021"
+authors = ["KODEON Team"]
+description = "Foundation version of the KODEON programming language"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/kodeon-lang/kodeon"
+homepage = "https://kodeon.dev"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+
+[dev-dependencies]
+tempfile = "3.0"
+
+[[bin]]
+name = "kodeon"
+path = "src/main_foundation.rs"
+
+[lib]
+name = "kodeon_foundation"
+path = "src/lib.rs"

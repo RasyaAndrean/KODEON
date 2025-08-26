@@ -1,0 +1,76 @@
+// Standard Library Integration Demo
+
+// Import core modules
+impor "core"
+impor "math"
+impor "collections"
+impor "string"
+impor "json"
+impor "system"
+impor "io"
+impor "time"
+impor "concurrent"
+
+fungsi utama() {
+    // Demonstrate core functionality
+    tampilkan("=== Core Module Demo ===")
+    buat angka = 42
+    buat teks = "KODEON"
+    tampilkan("Tipe angka: " + tipe(angka))
+    tampilkan("Tipe teks: " + tipe(teks))
+
+    // Demonstrate math functionality
+    tampilkan("\n=== Math Module Demo ===")
+    tampilkan("PI: " + string(Matematika.PI))
+    tampilkan("sin(0): " + string(sin(0)))
+    tampilkan("cos(0): " + string(cos(0)))
+    tampilkan("2^3: " + string(pangkat(2, 3)))
+
+    // Demonstrate collections functionality
+    tampilkan("\n=== Collections Module Demo ===")
+    buat daftar = buat_daftar()
+    daftar.tambah("satu")
+    daftar.tambah("dua")
+    daftar.tambah("tiga")
+    tampilkan("Panjang daftar: " + string(daftar.panjang()))
+
+    buat peta = buat_peta()
+    peta.atur("bahasa", "KODEON")
+    peta.atur("versi", "1.0")
+    tampilkan("Bahasa: " + peta.dapatkan("bahasa"))
+
+    // Demonstrate string functionality
+    tampilkan("\n=== String Module Demo ===")
+    buat teks_awal = "Halo Dunia"
+    buat teks_besar = besar_string(teks_awal)
+    buat teks_gabung = gabung_string(teks_awal, "!")
+    tampilkan("Teks awal: " + teks_awal)
+    tampilkan("Teks besar: " + teks_besar)
+    tampilkan("Teks gabung: " + teks_gabung)
+
+    // Demonstrate JSON functionality
+    tampilkan("\n=== JSON Module Demo ===")
+    buat objek = {
+        nama: "KODEON",
+        versi: "1.0",
+        aktif: benar
+    }
+    buat json_str = stringifikasi_json(objek)
+    tampilkan("Objek sebagai JSON: " + json_str)
+
+    // Demonstrate system functionality
+    tampilkan("\n=== System Module Demo ===")
+    buat waktu = sekarang()
+    tampilkan("Waktu sekarang: " + string(waktu))
+
+    // Demonstrate time functionality
+    tampilkan("\n=== Time Module Demo ===")
+    buat waktu_format = format_waktu(waktu)
+    tampilkan("Waktu diformat: " + waktu_format)
+
+    // Demonstrate IO functionality
+    tampilkan("\n=== IO Module Demo ===")
+    tampilkan("Demo IO selesai!")
+
+    kembalikan 0
+}

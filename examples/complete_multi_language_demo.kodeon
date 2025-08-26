@@ -1,0 +1,276 @@
+// Complete Multi-Language Features Demo
+// This example demonstrates features from Python, JavaScript, Java, C++, Swift, Go, Rust, Kotlin, C#, PHP, Ruby, SQL, and R
+
+// === Python Features ===
+// List comprehensions
+buat kuadrat_genap = [x * x untuk x di 1..10 jika x % 2 == 0]
+cetak("Kuadrat angka genap:", kuadrat_genap)
+
+// Range syntax
+buat rentang = 1...5  // Inclusive range 1 to 5
+cetak("Rentang:", rentang)
+
+// === JavaScript Features ===
+// Object literals
+buat pengguna = {
+    nama: "Budi",
+    umur: 25,
+    alamat: {
+        jalan: "Jl. Merdeka",
+        kota: "Jakarta"
+    }
+}
+cetak("Pengguna:", pengguna)
+
+// Array methods
+buat angka = [1, 2, 3, 4, 5]
+buat kali_dua = angka.petakan(x => x * 2)
+cetak("Dikali dua:", kali_dua)
+
+// === Java Features ===
+// Access modifiers and static methods
+kelas Kalkulator {
+    publik statis fungsi tambah(a, b) {
+        kembalikan a + b
+    }
+
+    pribadi fungsi kurang(a, b) {
+        kembalikan a - b
+    }
+}
+
+buat hasil = Kalkulator::tambah(5, 3)
+cetak("Hasil tambah:", hasil)
+
+// === C++ Features ===
+// References
+fungsi ubah_nilai(&ref) {
+    ref = 100
+}
+
+buat nilai = 10
+ubah_nilai(nilai)
+cetak("Nilai setelah diubah:", nilai)
+
+// === Swift Features ===
+// Pattern matching
+fungsi deskripsi_nilai(nilai) {
+    ketika nilai:
+        kasus 100: kembalikan "Sempurna"
+        kasus 80...99: kembalikan "Baik sekali"
+        kasus 60...79: kembalikan "Baik"
+        standar: kembalikan "Perlu belajar lebih giat"
+}
+
+cetak("Deskripsi nilai 85:", deskripsi_nilai(85))
+
+// === Go Language Features ===
+// Goroutines and channels (conceptual)
+fungsi penghitung(kanal hasil, mulai, akhir) {
+    // In a full implementation, this would run concurrently
+    untuk i dalam mulai..akhir {
+        hasil <- i
+    }
+}
+
+fungsi demo_goroutines() {
+    cetak("=== Demo Goroutines ===")
+    // This is conceptual syntax - actual implementation would require runtime support
+    buat ch = kanal(int)
+    // pergi penghitung(ch, 1, 5)
+    // pergi penghitung(ch, 6, 10)
+    cetak("Goroutines siap (konsep)")
+}
+
+demo_goroutines()
+
+// Defer example
+fungsi demo_defer() {
+    tunda cetak("Ini dicetak terakhir (defer)")
+    cetak("Ini dicetak pertama")
+}
+demo_defer()
+
+// === Rust Language Features ===
+// Traits
+sifat Tampil {
+    fungsi tampilkan(diri) {
+        cetak("Nilai:", diri)
+    }
+}
+
+kelas Titik {
+    buat x, y
+
+    fungsi baru(x, y) {
+        kembalikan Titik { x: x, y: y }
+    }
+
+    fungsi jarak_dari_asal(diri) {
+        kembalikan akar_kuadrat(diri.x * diri.x + diri.y * diri.y)
+    }
+}
+
+terapkan Tampil untuk Titik {
+    fungsi tampilkan(diri) {
+        cetak("Titik(", diri.x, ",", diri.y, ")")
+    }
+}
+
+buat titik = Titik::baru(3, 4)
+titik.tampilkan()
+cetak("Jarak dari asal:", titik.jarak_dari_asal())
+
+// === Kotlin Language Features ===
+// Null safety
+kelas PenggunaNullable {
+    buat nama?
+    buat umur?
+
+    fungsi tampilkan(diri) {
+        cetak("Nama:", diri.nama ?: "Tidak diketahui")
+        cetak("Umur:", diri.umur ?: "Tidak diketahui")
+    }
+}
+
+buat pengguna_null = PenggunaNullable::baru(null, null)
+pengguna_null.tampilkan()
+
+// Data class (conceptual)
+data kelas Koordinat {
+    buat x, y
+}
+
+// === C# Language Features ===
+// LINQ-style operations
+buat data_angka = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+// LINQ methods
+buat genap = data_angka.dimana(x => x % 2 == 0)
+buat kuadrat_genap = genap.petakan(x => x * x)
+buat jumlah_kuadrat = kuadrat_genap.kurangi((acc, x) => acc + x, 0)
+
+cetak("Angka genap:", genap)
+cetak("Kuadrat genap:", kuadrat_genap)
+cetak("Jumlah kuadrat:", jumlah_kuadrat)
+
+// Properties (conceptual)
+kelas Produk {
+    properti Nama: String
+    properti Harga: int
+}
+
+// === PHP Language Features ===
+// Superglobals (conceptual)
+fungsi tangani_form() {
+    // In a web environment:
+    // jika $_POST["nama"] tidak kosong {
+    //     cetak("Halo,", $_POST["nama"])
+    // }
+    cetak("Fungsi tangani_form() siap untuk lingkungan web")
+}
+
+tangani_form()
+
+// Array functions
+fungsi demo_array_php() {
+    cetak("=== Demo Array PHP ===")
+    // In full implementation:
+    // buat arr = phparray("a", "b", "c")
+    // phparray_dorong(arr, "d")
+    // cetak("Array PHP:", arr)
+    cetak("Array PHP: Konsep siap")
+}
+demo_array_php()
+
+// === Ruby Language Features ===
+// Blocks and iterators
+fungsi demo_ruby() {
+    cetak("=== Demo Ruby ===")
+    buat array = [1, 2, 3, 4, 5]
+    // Ruby-style blocks:
+    // buat hasil = array.setiap { |x| x * 2 }
+    // cetak("Hasil Ruby:", hasil)
+    cetak("Blocks Ruby: Konsep siap")
+}
+demo_ruby()
+
+// === SQL Language Features ===
+// Query syntax (conceptual)
+fungsi demo_sql() {
+    cetak("=== Demo SQL ===")
+    // In full implementation:
+    // buat hasil = pilih nama, umur dari pengguna dimana umur > 18
+    // cetak("Pengguna dewasa:", hasil)
+    cetak("Query SQL: Konsep siap")
+}
+demo_sql()
+
+// === R Language Features ===
+// Statistical computing
+fungsi demo_r() {
+    cetak("=== Demo R ===")
+    // In full implementation:
+    // buat v = vektor(1, 2, 3, 4, 5)
+    // buat mean = rata_rata(v)
+    // buat median = median(v)
+    // cetak("Rata-rata:", mean)
+    // cetak("Median:", median)
+    cetak("Statistik R: Konsep siap")
+}
+demo_r()
+
+// === Combined Example ===
+// Using features from multiple languages together
+fungsi aplikasi_lengkap() {
+    cetak("=== Aplikasi Lengkap Multi-Bahasa ===")
+
+    // Create data using Python-style list comprehension
+    buat skor = [85, 92, 78, 96, 88, 76, 89, 94, 82, 90]
+
+    // Process with C#-style LINQ
+    buat skor_tinggi = skor.dimana(x => x > 85)
+    buat skor_dikali = skor_tinggi.petakan(x => x * 1.1)  // 10% bonus
+
+    // Analyze with R-style statistics
+    buat rata_rata = skor_dikali.kurangi((acc, x) => acc + x, 0) / panjang(skor_dikali)
+
+    // Display with Ruby-style iteration
+    cetak("Skor setelah bonus:")
+    skor_dikali.setiap { |skor|
+        cetak("-", skor)
+    }
+
+    cetak("Rata-rata skor setelah bonus:", rata_rata)
+
+    // Use Go-style concurrency (conceptual)
+    buat hasil_kanal = kanal(string)
+    // pergi fungsi() {
+    //     hasil_kanal <- "Proses selesai"
+    // }()
+    // buat pesan = <-hasil_kanal
+    // cetak(pesan)
+
+    // Use Rust-style traits
+    sifat Ringkasan {
+        fungsi ringkas(diri) {
+            cetak("Ringkasan data statistik")
+        }
+    }
+
+    terapkan Ringkasan untuk array {
+        fungsi ringkas(diri) {
+            cetak("Jumlah data:", panjang(diri))
+            cetak("Nilai maksimum:", diri.dimana(x => benar).urutkan().balik()[0])
+            cetak("Nilai minimum:", diri.dimanya(x => benar).urutkan()[0])
+        }
+    }
+
+    skor.ringkas()
+}
+
+// Run the complete application
+aplikasi_lengkap()
+
+cetak("=== Demo Selesai ===")
+cetak("Semua fitur multi-bahasa telah ditampilkan!")

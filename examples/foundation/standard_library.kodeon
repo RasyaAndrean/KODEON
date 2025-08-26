@@ -1,0 +1,78 @@
+// Standard Library Example in KODEON Foundation (v0.1)
+// Demonstrating core standard library functions
+
+// String operations
+greeting = "Hello, KODEON Foundation!"
+print("Original message:", greeting)
+
+length = len(greeting)
+print("Length of message:", length)
+
+// Range function examples
+print("Numbers from 0 to 4:")
+numbers = range(5)
+print(numbers)
+
+print("Numbers from 2 to 7:")
+numbers2 = range(2, 8)
+print(numbers2)
+
+print("Even numbers from 0 to 10:")
+even_numbers = range(0, 11, 2)
+print(even_numbers)
+
+// Mathematical operations using standard library
+function add(a, b):
+    return a + b
+
+function multiply(a, b):
+    return a * b
+
+sum_result = add(15, 25)
+print("15 + 25 =", sum_result)
+
+product_result = multiply(7, 8)
+print("7 * 8 =", product_result)
+
+// Function with multiple parameters
+function calculate_area(length, width):
+    return multiply(length, width)
+
+area = calculate_area(12, 8)
+print("Area of rectangle (12x8):", area)
+
+// Conditional logic with standard library
+message_length = len(greeting)
+if message_length > 20:
+    print("That's a long message!")
+else:
+    print("That's a short message!")
+
+// Loop with range
+print("Counting down from 5:")
+countdown = range(5, 0, -1)
+for i in countdown:
+    print(i)
+
+print("Blast off! 🚀")
+
+// Working with different data types
+integer_value = 42
+float_value = 3.14159
+boolean_value = true
+
+print("Integer:", integer_value)
+print("Float:", float_value)
+print("Boolean:", boolean_value)
+
+// String concatenation
+first_name = "KODEON"
+last_name = "Developer"
+full_name = first_name + " " + last_name
+print("Full name:", full_name)
+
+// Nested function calls
+greeting_message = "Hello, " + full_name + "!"
+greeting_length = len(greeting_message)
+print(greeting_message)
+print("Length of greeting:", greeting_length)

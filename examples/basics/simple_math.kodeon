@@ -1,0 +1,13 @@
+// Simple math example in KODEON
+
+buat x = 10
+buat y = 20
+buat z = x + y
+
+tampilkan "Hasil penjumlahan: " + z
+
+fungsi tambah(a, b):
+    kembalikan a + b
+
+buat hasil = tambah(5, 3)
+tampilkan "Hasil fungsi tambah: " + hasil

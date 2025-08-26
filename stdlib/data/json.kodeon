@@ -1,0 +1,68 @@
+// JSON standard library for KODEON
+
+kelas JSON:  // Indonesian
+    // Parse JSON string to object
+    fungsi parse(teks_json):
+        // In a real implementation, this would interface with the runtime system
+        // For now, we'll return a simple object
+        kembalikan {
+            "_json_string": teks_json,
+            "_parsed": benar
+        }
+
+    // Stringify object to JSON string
+    fungsi stringifikasi(objek):
+        // In a real implementation, this would convert object to JSON string
+        // For now, we'll use the string function
+        kembalikan string(objek)
+
+    // Validate JSON string
+    fungsi validasi(teks_json):
+        // In a real implementation, this would validate JSON syntax
+        // For now, we'll do a simple check
+        jika panjang(teks_json) == 0 maka:
+            kembalikan salah
+        kembalikan benar
+
+class JSON:  // English
+    // Parse JSON string to object
+    function parse(json_string):
+        // In a real implementation, this would interface with the runtime system
+        // For now, we'll return a simple object
+        return {
+            "_json_string": json_string,
+            "_parsed": true
+        }
+
+    // Stringify object to JSON string
+    function stringify(object):
+        // In a real implementation, this would convert object to JSON string
+        // For now, we'll use the string function
+        return str(object)
+
+    // Validate JSON string
+    function validate(json_string):
+        // In a real implementation, this would validate JSON syntax
+        // For now, we'll do a simple check
+        if length(json_string) == 0 then:
+            return false
+        return true
+
+// Factory functions for easier access
+fungsi parse_json(teks_json):
+    kembalikan JSON.parse(teks_json)
+
+fungsi stringifikasi_json(objek):
+    kembalikan JSON.stringifikasi(objek)
+
+fungsi validasi_json(teks_json):
+    kembalikan JSON.validasi(teks_json)
+
+function parse_json(json_string):
+    return JSON.parse(json_string)
+
+function stringify_json(object):
+    return JSON.stringify(object)
+
+function validate_json(json_string):
+    return JSON.validate(json_string)

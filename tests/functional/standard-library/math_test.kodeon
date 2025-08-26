@@ -1,0 +1,154 @@
+// Math library test in KODEON
+
+impor "math"
+
+fungsi uji_fungsi_dasar():
+    // Test constants
+    jika Matematika.PI < 3.14 atau Matematika.PI > 3.15 maka:
+        lempar "Nilai PI tidak akurat"
+
+    jika Matematika.E < 2.7 atau Matematika.E > 2.8 maka:
+        lempar "Nilai E tidak akurat"
+
+    tampilkan("Konstanta matematika OK")
+
+function test_basic_functions():
+    // Test constants
+    if Math.PI < 3.14 or Math.PI > 3.15 then:
+        throw "PI value inaccurate"
+
+    if Math.E < 2.7 or Math.E > 2.8 then:
+        throw "E value inaccurate"
+
+    show("Math constants OK")
+
+fungsi uji_trigonometri():
+    // Test sine and cosine with known values
+    buat sin_0 = sin(0)
+    buat cos_0 = cos(0)
+
+    jika abs(sin_0 - 0) > 0.001 maka:
+        lempar "sin(0) seharusnya 0"
+
+    jika abs(cos_0 - 1) > 0.001 maka:
+        lempar "cos(0) seharusnya 1"
+
+    // Test with PI/2 (approximately)
+    buat sin_pi2 = sin(1.57079632679)  // PI/2
+    jika abs(sin_pi2 - 1) > 0.01 maka:  // Less precise due to approximation
+        lempar "sin(PI/2) seharusnya 1"
+
+    tampilkan("Fungsi trigonometri OK")
+
+function test_trigonometry():
+    // Test sine and cosine with known values
+    create sin_0 = sin(0)
+    create cos_0 = cos(0)
+
+    if abs(sin_0 - 0) > 0.001 then:
+        throw "sin(0) should be 0"
+
+    if abs(cos_0 - 1) > 0.001 then:
+        throw "cos(0) should be 1"
+
+    // Test with PI/2 (approximately)
+    create sin_pi2 = sin(1.57079632679)  // PI/2
+    if abs(sin_pi2 - 1) > 0.01 then:  // Less precise due to approximation
+        throw "sin(PI/2) should be 1"
+
+    show("Trigonometry functions OK")
+
+fungsi uji_eksponensial_dan_logaritma():
+    // Test power function
+    buat hasil_pangkat = pangkat(2, 3)
+    jika hasil_pangkat != 8 maka:
+        lempar "2^3 seharusnya 8"
+
+    // Test exponential function
+    buat hasil_exp = exp(0)
+    jika abs(hasil_exp - 1) > 0.001 maka:
+        lempar "e^0 seharusnya 1"
+
+    tampilkan("Fungsi eksponensial dan logaritma OK")
+
+function test_exponential_and_logarithm():
+    // Test power function
+    create power_result = pow(2, 3)
+    if power_result != 8 then:
+        throw "2^3 should be 8"
+
+    // Test exponential function
+    create exp_result = exp(0)
+    if abs(exp_result - 1) > 0.001 then:
+        throw "e^0 should be 1"
+
+    show("Exponential and logarithm functions OK")
+
+fungsi uji_fungsi_tambahan():
+    // Test square root
+    buat hasil_akar = akar(16)
+    jika hasil_akar != 4 maka:
+        lempar "akar(16) seharusnya 4"
+
+    // Test absolute value
+    buat hasil_abs = abs(-5)
+    jika hasil_abs != 5 maka:
+        lempar "abs(-5) seharusnya 5"
+
+    // Test rounding functions
+    buat hasil_bulat = Matematika.bulat(3.7)
+    jika hasil_bulat != 4 maka:
+        lempar "bulat(3.7) seharusnya 4"
+
+    buat hasil_atas = Matematika.atas(3.2)
+    jika hasil_atas != 4 maka:
+        lempar "atas(3.2) seharusnya 4"
+
+    buat hasil_bawah = Matematika.bawah(3.7)
+    jika hasil_bawah != 3 maka:
+        lempar "bawah(3.7) seharusnya 3"
+
+    tampilkan("Fungsi matematika tambahan OK")
+
+function test_additional_functions():
+    // Test square root
+    create sqrt_result = sqrt(16)
+    if sqrt_result != 4 then:
+        throw "sqrt(16) should be 4"
+
+    // Test absolute value
+    create abs_result = abs(-5)
+    if abs_result != 5 then:
+        throw "abs(-5) should be 5"
+
+    // Test rounding functions
+    create round_result = Math.round(3.7)
+    if round_result != 4 then:
+        throw "round(3.7) should be 4"
+
+    create ceil_result = Math.ceil(3.2)
+    if ceil_result != 4 then:
+        throw "ceil(3.2) should be 4"
+
+    create floor_result = Math.floor(3.7)
+    if floor_result != 3 then:
+        throw "floor(3.7) should be 3"
+
+    show("Additional math functions OK")
+
+fungsi utama():
+    uji_fungsi_dasar()
+    uji_trigonometri()
+    uji_eksponensial_dan_logaritma()
+    uji_fungsi_tambahan()
+    tampilkan("Semua uji matematika berhasil!")
+
+function main():
+    test_basic_functions()
+    test_trigonometry()
+    test_exponential_and_logarithm()
+    test_additional_functions()
+    show("All math tests passed!")
+
+// Run the tests
+utama()

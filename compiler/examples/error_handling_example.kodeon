@@ -1,0 +1,31 @@
+// Example KODEON program demonstrating enhanced error handling
+
+fungsi utama():
+    // Valid code
+    buat x = 42
+    buat y = "Halo, KODEON!"
+    tampilkan("x =", x)
+    tampilkan("y =", y)
+
+    // This will cause a semantic error - undeclared variable
+    // tampilkan(z)  // Uncommenting this would show an error at the correct line/column
+
+    // This will cause a semantic error - duplicate declaration
+    // buat x = 43  // Uncommenting this would show a duplicate declaration error
+
+    tampilkan("Program executed successfully!")
+
+function main():
+    // Valid code
+    create x = 42
+    create y = "Hello, KODEON!"
+    show("x =", x)
+    show("y =", y)
+
+    // This will cause a semantic error - undeclared variable
+    // show(z)  // Uncommenting this would show an error at the correct line/column
+
+    // This will cause a semantic error - duplicate declaration
+    // create x = 43  // Uncommenting this would show a duplicate declaration error
+
+    show("Program executed successfully!")

@@ -1,0 +1,48 @@
+// System library test in KODEON
+
+impor "system"
+
+fungsi uji_sistem_dasar():
+    // Test environment functions
+    // buat path = ambil_lingkungan("PATH")
+    // tampilkan("PATH environment variable: ", path)
+
+    // Test time functions
+    buat waktu_sekarang = sekarang()
+    tampilkan("Current timestamp: ", waktu_sekarang)
+
+    tampilkan("Basic system test completed")
+
+function test_basic_system():
+    // Test environment functions
+    // create path = get_env("PATH")
+    // show("PATH environment variable: ", path)
+
+    // Test time functions
+    create current_time = now()
+    show("Current timestamp: ", current_time)
+
+    show("Basic system test completed")
+
+fungsi uji_tidur():
+    tampilkan("Testing sleep function...")
+    tidur(1000)  // Sleep for 1 second
+    tampilkan("Woke up after 1 second!")
+
+function test_sleep():
+    show("Testing sleep function...")
+    sleep(1000)  // Sleep for 1 second
+    show("Woke up after 1 second!")
+
+fungsi utama():
+    uji_sistem_dasar()
+    uji_tidur()
+    tampilkan("All system tests completed!")
+
+function main():
+    test_basic_system()
+    test_sleep()
+    show("All system tests completed!")
+
+// Run the tests
+utama()

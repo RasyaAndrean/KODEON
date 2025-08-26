@@ -1,0 +1,189 @@
+// Multi-Language Features Extended Example
+// This file demonstrates features from Go, Rust, Kotlin, C#, PHP, Ruby, SQL, and R
+
+// Go-style goroutines and channels
+fungsi penghitung(kanal hasil, nilai awal) {
+    // Simulate some work
+    untuk i dalam awal..awal+10 {
+        hasil <- i  // Send value to channel
+    }
+}
+
+fungsi utama() {
+    // Create channels
+    buat kanal1 = kanal(int)
+    buat kanal2 = kanal(int)
+
+    // Start goroutines
+    pergi penghitung(kanal1, 1)
+    pergi penghitung(kanal2, 100)
+
+    // Select from channels
+    pilih {
+        kasus nilai := <-kanal1:
+            cetak("Dari kanal1: ", nilai)
+        kasus nilai := <-kanal2:
+            cetak("Dari kanal2: ", nilai)
+    }
+
+    // Defer example
+    tunda cetak("Ini dicetak terakhir")
+    cetak("Ini dicetak pertama")
+}
+
+// Rust-style ownership and traits
+sifat Tampil {
+    fungsi tampilkan(diri) {
+        cetak("Nilai: ", diri)
+    }
+}
+
+kelas Titik {
+    buat x, y
+
+    fungsi baru(x, y) {
+        buat titik = Titik { x: x, y: y }
+        kembalikan titik
+    }
+
+    fungsi jarak_dari_asal(diri) {
+        kembalikan akar_kuadrat(diri.x * diri.x + diri.y * diri.y)
+    }
+}
+
+terapkan Tampil untuk Titik {
+    fungsi tampilkan(diri) {
+        cetak("Titik(", diri.x, ", ", diri.y, ")")
+    }
+}
+
+// Kotlin-style null safety and data classes
+kelas DataPengguna {
+    buat nama?
+    buat umur?
+    buat email?
+
+    fungsi baru(nama?, umur?, email?) {
+        diri.nama = nama
+        diri.umur = umur
+        diri.email = email
+    }
+
+    fungsi tampilkan_profil(diri) {
+        cetak("Nama: ", diri.nama ?: "Tidak diketahui")
+        cetak("Umur: ", diri.umur ?: "Tidak diketahui")
+        cetak("Email: ", diri.email ?: "Tidak diketahui")
+    }
+}
+
+// C#-style LINQ operations
+buat angka = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+// LINQ-style query
+buat genap = angka.dimana(x => x % 2 == 0)
+buat kuadrat_genap = genap.petakan(x => x * x)
+buat jumlah_kuadrat = kuadrat_genap.kurangi((akumulator, x) => akumulator + x, 0)
+
+cetak("Jumlah kuadrat angka genap: ", jumlah_kuadrat)
+
+// PHP-style web development features
+fungsi tangani_permintaan() {
+    jika $_POST["nama"] tidak kosong {
+        cetak("Halo, ", $_POST["nama"])
+    } selainnya {
+        cetak("Silakan masukkan nama Anda")
+    }
+}
+
+// Ruby-style blocks and iterators
+fungsi kali_dengan_indeks(array) {
+    kembalikan array.setiap_dengan_indeks { |nilai, indeks| nilai * indeks }
+}
+
+buat hasil = kali_dengan_indeks([1, 2, 3, 4, 5])
+cetak(hasil)  // [0, 2, 6, 12, 20]
+
+// SQL-style queries (conceptual)
+fungsi pilih_pengguna_berdasarkan_umur(min_umur) {
+    kembalikan pilih * dari pengguna dimana umur >= min_umur
+}
+
+// R-style statistical functions
+fungsi hitung_rata_rata(data) {
+    jika panjang(data) == 0 {
+        kembalikan 0
+    }
+
+    buat jumlah = data.kurangi((akumulator, x) => akumulator + x, 0)
+    kembalikan jumlah / panjang(data)
+}
+
+fungsi hitung_median(data) {
+    buat diurutkan = data.urutkan()
+    buat panjang = panjang(diurutkan)
+
+    jika panjang % 2 == 0 {
+        kembalikan (diurutkan[panjang/2 - 1] + diurutkan[panjang/2]) / 2
+    } selainnya {
+        kembalikan diurutkan[panjang/2]
+    }
+}
+
+// Example usage of statistical functions
+buat nilai_ujian = [85, 92, 78, 96, 88, 76, 89, 94, 82, 90]
+cetak("Rata-rata nilai: ", hitung_rata_rata(nilai_ujian))
+cetak("Median nilai: ", hitung_median(nilai_ujian))
+
+// Demonstrate all features together
+fungsi demo_lengkap() {
+    // Go-style concurrency
+    buat hasil_kanal = kanal(string)
+    pergi fungsi() {
+        hasil_kanal <- "Hasil dari goroutine 1"
+    }()
+
+    pergi fungsi() {
+        hasil_kanal <- "Hasil dari goroutine 2"
+    }()
+
+    // Receive from channels
+    buat hasil1 = <-hasil_kanal
+    buat hasil2 = <-hasil_kanal
+    cetak(hasil1)
+    cetak(hasil2)
+
+    // Rust-style traits
+    buat titik = Titik::baru(3, 4)
+    titik.tampilkan()
+    cetak("Jarak dari asal: ", titik.jarak_dari_asal())
+
+    // Kotlin-style null safety
+    buat pengguna = DataPengguna::baru("Budi", 25, "budi@email.com")
+    pengguna.tampilkan_profil()
+
+    // C#-style LINQ
+    buat angka_besar = [10, 20, 30, 40, 50]
+    buat hasil_linq = angka_besar.dimana(x => x > 25).petakan(x => x * 2)
+    cetak("Hasil LINQ: ", hasil_linq)
+
+    // PHP-style web handling
+    $_POST["nama"] = "Andi"
+    tangani_permintaan()
+
+    // Ruby-style blocks
+    buat array = [1, 2, 3, 4, 5]
+    buat hasil_ruby = array.setiap { |x| x * 2 }
+    cetak("Hasil Ruby-style: ", hasil_ruby)
+
+    // SQL-style query (conceptual)
+    buat pengguna_dewasa = pilih_pengguna_berdasarkan_umur(18)
+    cetak("Pengguna dewasa: ", pengguna_dewasa)
+
+    // R-style statistics
+    buat data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    cetak("Rata-rata: ", hitung_rata_rata(data))
+    cetak("Median: ", hitung_median(data))
+}
+
+// Run the complete demo
+demo_lengkap()

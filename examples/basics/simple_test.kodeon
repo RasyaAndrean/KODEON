@@ -1,0 +1,11 @@
+// Simple KODEON program for testing LLVM backend
+
+fungsi tambah(a, b):
+    kembalikan a + b
+
+fungsi utama():
+    buat x = 10
+    buat y = 20
+    buat hasil = tambah(x, y)
+    cetak("Hasil: " + hasil)
+    kembalikan 0

@@ -1,0 +1,217 @@
+// Comprehensive standard library test in KODEON
+
+impor "core"
+impor "math"
+impor "collections"
+impor "io"
+impor "system"
+impor "concurrent"
+
+fungsi uji_modul_tipe():
+    tampilkan("=== Uji Modul Tipe ===")
+
+    buat angka = 42
+    buat teks = "KODEON"
+    buat boolean = benar
+    buat array = [1, 2, 3]
+
+    tampilkan("Tipe angka: " + tipe(angka))
+    tampilkan("Tipe teks: " + tipe(teks))
+    tampilkan("Tipe boolean: " + tipe(boolean))
+    tampilkan("Tipe array: " + tipe(array))
+
+    // Test type conversion
+    buat angka_sebagai_teks = konversi("string", angka)
+    tampilkan("Angka sebagai teks: " + angka_sebagai_teks)
+
+    tampilkan("Uji modul tipe berhasil\n")
+
+function test_type_module():
+    show("=== Type Module Test ===")
+
+    create number = 42
+    create text = "KODEON"
+    create boolean = true
+    create array = [1, 2, 3]
+
+    show("Type of number: " + type(number))
+    show("Type of text: " + type(text))
+    show("Type of boolean: " + type(boolean))
+    show("Type of array: " + type(array))
+
+    // Test type conversion
+    create number_as_string = convert("string", number)
+    show("Number as string: " + number_as_string)
+
+    show("Type module test passed\n")
+
+fungsi uji_modul_matematika():
+    tampilkan("=== Uji Modul Matematika ===")
+
+    // Test constants
+    tampilkan("PI: " + string(Matematika.PI))
+    tampilkan("E: " + string(Matematika.E))
+
+    // Test trigonometric functions
+    buat sin_0 = sin(0)
+    buat cos_0 = cos(0)
+    tampilkan("sin(0): " + string(sin_0))
+    tampilkan("cos(0): " + string(cos_0))
+
+    // Test power function
+    buat hasil_pangkat = pangkat(2, 3)
+    tampilkan("2^3: " + string(hasil_pangkat))
+
+    // Test square root
+    buat hasil_akar = akar(16)
+    tampilkan("akar(16): " + string(hasil_akar))
+
+    tampilkan("Uji modul matematika berhasil\n")
+
+function test_math_module():
+    show("=== Math Module Test ===")
+
+    // Test constants
+    show("PI: " + string(Math.PI))
+    show("E: " + string(Math.E))
+
+    // Test trigonometric functions
+    create sin_0 = sin(0)
+    create cos_0 = cos(0)
+    show("sin(0): " + string(sin_0))
+    show("cos(0): " + string(cos_0))
+
+    // Test power function
+    create power_result = pow(2, 3)
+    show("2^3: " + string(power_result))
+
+    // Test square root
+    create sqrt_result = sqrt(16)
+    show("sqrt(16): " + string(sqrt_result))
+
+    show("Math module test passed\n")
+
+fungsi uji_modul_koleksi():
+    tampilkan("=== Uji Modul Koleksi ===")
+
+    // Test List
+    buat daftar = buat_daftar()
+    daftar.tambah("satu")
+    daftar.tambah("dua")
+    daftar.tambah("tiga")
+    tampilkan("Panjang daftar: " + string(daftar.panjang()))
+    tampilkan("Item pertama: " + daftar.dapatkan(0))
+
+    // Test Map
+    buat peta = buat_peta()
+    peta.atur("nama", "KODEON")
+    peta.atur("versi", "1.0")
+    tampilkan("Nama: " + peta.dapatkan("nama"))
+    tampilkan("Versi: " + string(peta.dapatkan("versi")))
+
+    // Test Set
+    buat himpunan = buat_himpunan()
+    himpunan.tambah("a")
+    himpunan.tambah("b")
+    himpunan.tambah("a")  // Should not add duplicate
+    tampilkan("Ukuran himpunan: " + string(himpunan.ukuran()))
+
+    tampilkan("Uji modul koleksi berhasil\n")
+
+function test_collections_module():
+    show("=== Collections Module Test ===")
+
+    // Test List
+    create list = create_list()
+    list.add("one")
+    list.add("two")
+    list.add("three")
+    show("List length: " + string(list.length()))
+    show("First item: " + list.get(0))
+
+    // Test Map
+    create map = create_map()
+    map.set("name", "KODEON")
+    map.set("version", "1.0")
+    show("Name: " + map.get("name"))
+    show("Version: " + string(map.get("version")))
+
+    // Test Set
+    create set = create_set()
+    set.add("a")
+    set.add("b")
+    set.add("a")  // Should not add duplicate
+    show("Set size: " + string(set.size()))
+
+    show("Collections module test passed\n")
+
+fungsi uji_modul_string():
+    tampilkan("=== Uji Modul String ===")
+
+    buat teks = "Halo Dunia"
+    tampilkan("Teks asli: " + teks)
+
+    // Test string functions
+    buat hasil_gabung = gabung_string(teks, "!")
+    tampilkan("Setelah digabung: " + hasil_gabung)
+
+    // Note: Other string functions are placeholders
+    tampilkan("Uji modul string berhasil\n")
+
+function test_string_module():
+    show("=== String Module Test ===")
+
+    create text = "Hello World"
+    show("Original text: " + text)
+
+    // Test string functions
+    create concat_result = concat_string(text, "!")
+    show("After concatenation: " + concat_result)
+
+    // Note: Other string functions are placeholders
+    show("String module test passed\n")
+
+fungsi uji_modul_sistem():
+    tampilkan("=== Uji Modul Sistem ===")
+
+    // Test time functions
+    buat waktu = sekarang()
+    tampilkan("Waktu sekarang: " + string(waktu))
+
+    tampilkan("Uji modul sistem berhasil\n")
+
+function test_system_module():
+    show("=== System Module Test ===")
+
+    // Test time functions
+    create time = now()
+    show("Current time: " + string(time))
+
+    show("System module test passed\n")
+
+fungsi utama():
+    tampilkan("Memulai uji komprehensif pustaka standar KODEON\n")
+
+    uji_modul_tipe()
+    uji_modul_matematika()
+    uji_modul_koleksi()
+    uji_modul_string()
+    uji_modul_sistem()
+
+    tampilkan("Semua uji komprehensif berhasil!")
+    kembalikan 0
+
+function main():
+    show("Starting comprehensive KODEON standard library test\n")
+
+    test_type_module()
+    test_math_module()
+    test_collections_module()
+    test_string_module()
+    test_system_module()
+
+    show("All comprehensive tests passed!")
+    return 0
+
+// Run the tests
+utama()

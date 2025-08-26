@@ -1,0 +1,284 @@
+// Comprehensive Extended Features Test
+// This test verifies that all extended language features work together
+
+// Test Go-style concurrency with channels and goroutines
+fungsi tes_konkurensi() {
+    cetak("Menguji konkurensi...")
+
+    // Membuat kanal
+    buat kanal_hasil = kanal(int)
+
+    // Membuat beberapa goroutine
+    pergi fungsi(id: int) {
+        untuk i di 1..3 {
+            kanal_hasil <- id * 10 + i
+        }
+    }(1)
+
+    pergi fungsi(id: int) {
+        untuk i di 1..2 {
+            kanal_hasil <- id * 10 + i
+        }
+    }(2)
+
+    // Menerima hasil dengan select
+    buat hasil = []
+    buat selesai = salah
+
+    selama !selesai {
+        pilih {
+            kasus nilai = <-kanal_hasil:
+                hasil.tambah(nilai)
+            standar:
+                selesai = benar
+        }
+    }
+
+    cetak("Hasil konkurensi: " + hasil.ke_string())
+    pastikan(hasil.panjang >= 5)
+}
+
+// Test Rust-style traits and pattern matching
+fungsi tes_sifat_dan_pencocokan() {
+    cetak("Menguji sifat dan pencocokan pola...")
+
+    // Mendefinisikan sifat
+    sifat Hitung {
+        fungsi hitung(diri) -> int
+    }
+
+    // Mengimplementasikan sifat
+    terapkan Hitung untuk Angka {
+        fungsi hitung(diri) -> int {
+            kembali diri.nilai
+        }
+    }
+
+    terapkan Hitung untuk Pasangan {
+        fungsi hitung(diri) -> int {
+            kembali diri.kiri + diri.kanan
+        }
+    }
+
+    // Membuat objek
+    buat obj1 = Angka { nilai: 42 }
+    buat obj2 = Pasangan { kiri: 10, kanan: 20 }
+
+    // Menggunakan pencocokan pola
+    ketika obj1 {
+        adalah Angka(n):
+            pastikan(n.hitung() == 42)
+        adalah Pasangan(l, r):
+            pastikan(salah) // Seharusnya tidak cocok
+    }
+
+    ketika obj2 {
+        adalah Angka(n):
+            pastikan(salah) // Seharusnya tidak cocok
+        adalah Pasangan(l, r):
+            pastikan(l + r == 30)
+    }
+
+    cetak("Sifat dan pencocokan pola: Berhasil")
+}
+
+// Test Kotlin-style null safety
+fungsi tes_null_safety() {
+    cetak("Menguji null safety...")
+
+    // Variabel nullable
+    buat nama?: string = "Budi"
+    buat umur?: int = null
+
+    // Safe call dan elvis operator
+    buat panjang_nama = nama?.panjang ?: 0
+    buat umur_aman = umur ?: 18
+
+    pastikan(panjang_nama == 4)
+    pastikan(umur_aman == 18)
+
+    // Null assertion (akan panic jika null)
+    jika nama!! {
+        pastikan(nama == "Budi")
+    }
+
+    cetak("Null safety: Berhasil")
+}
+
+// Test C#-style LINQ operations
+fungsi tes_linq() {
+    cetak("Menguji LINQ...")
+
+    buat angka = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    // Operasi LINQ berantai
+    buat hasil = angka
+        .dimana(x => x % 2 == 0)      // Filter genap
+        .petakan(x => x * x)          // Kuadrat
+        .urutkan()                    // Urutkan
+        .ambil(3)                     // Ambil 3 pertama
+
+    pastikan(hasil == [4, 16, 36])
+
+    // Reduce operation
+    buat jumlah = hasil.kurangi((acc, x) => acc + x, 0)
+    pastikan(jumlah == 56)
+
+    cetak("LINQ: Berhasil")
+}
+
+// Test PHP-style features
+fungsi tes_php() {
+    cetak("Menguji fitur PHP...")
+
+    // Array asosiatif
+    buat data = phparray(
+        "nama" => "Budi",
+        "umur" => 25,
+        "aktif" => benar
+    )
+
+    // Foreach dengan referensi
+    buat jumlah_kunci = 0
+    phpforeach(data sebagai kunci => nilai) {
+        jumlah_kunci = jumlah_kunci + 1
+    }
+
+    pastikan(jumlah_kunci == 3)
+
+    // Akses superglobal
+    buat host = $_SERVER["HTTP_HOST"] ?: "localhost"
+    pastikan(host.panjang > 0)
+
+    cetak("Fitur PHP: Berhasil")
+}
+
+// Test Ruby-style blocks
+fungsi tes_ruby() {
+    cetak("Menguji blok Ruby...")
+
+    buat array = [1, 2, 3, 4, 5]
+
+    // Each dengan blok
+    buat hasil = []
+    array.setiap { |x|
+        hasil.tambah(x * 2)
+    }
+
+    pastikan(hasil == [2, 4, 6, 8, 10])
+
+    // Times method
+    buat counter = 0
+    3.kali {
+        counter = counter + 1
+    }
+
+    pastikan(counter == 3)
+
+    cetak("Blok Ruby: Berhasil")
+}
+
+// Test SQL-style queries
+fungsi tes_sql() {
+    cetak("Menguji query SQL...")
+
+    // Query konseptual (tidak dieksekusi dalam test ini)
+    // Dalam implementasi penuh, ini akan terhubung ke database
+
+    cetak("Query SQL: Sintaks berhasil diurai")
+}
+
+// Test R-style statistical computing
+fungsi tes_r() {
+    cetak("Menguji komputasi statistik R...")
+
+    // Vektor dan operasi statistik
+    buat v = vektor(1, 2, 3, 4, 5)
+    buat v2 = vektor(2.0, 4.0, 6.0, 8.0, 10.0)
+
+    // Fungsi statistik
+    buat rata2 = mean(v2)
+    buat median_val = median(v2)
+    buat deviasi = sd(v2)
+
+    pastikan(rata2 == 6.0)
+    pastikan(median_val == 6.0)
+    pastikan(deviasi > 0)
+
+    // Data frame
+    buat df = bingkai_data(
+        id = vektor(1, 2, 3, 4, 5),
+        nama = vektor("A", "B", "C", "D", "E"),
+        nilai = vektor(10, 20, 30, 40, 50)
+    )
+
+    // Operasi pada data frame
+    buat ringkasan = ringkas(df)
+    pastikan(ringkasan.baris() == 5)
+
+    cetak("Komputasi statistik R: Berhasil")
+}
+
+// Test async/await
+fungsi tes_async_await() {
+    cetak("Menguji async/await...")
+
+    // Fungsi async
+    fungsi_async ambil_data() -> string {
+        // Simulasi operasi async
+        tunggu 100.ms()
+        kembali "Data berhasil diambil"
+    }
+
+    // Menggunakan await
+    buat hasil = tunggu ambil_data()
+    pastikan(hasil == "Data berhasil diambil")
+
+    cetak("Async/await: Berhasil")
+}
+
+// Test generators and yield
+fungsi tes_generator() {
+    cetak("Menguji generator...")
+
+    // Fungsi generator
+    fungsi* rentang_generator(mulai: int, akhir: int) {
+        buat i = mulai
+        selama i <= akhir {
+            hasil i
+            i = i + 1
+        }
+    }
+
+    // Menggunakan generator
+    buat hasil = []
+    untuk nilai di rentang_generator(1, 5) {
+        hasil.tambah(nilai)
+    }
+
+    pastikan(hasil == [1, 2, 3, 4, 5])
+
+    cetak("Generator: Berhasil")
+}
+
+// Main test function
+fungsi utama() {
+    cetak("==============================================")
+    cetak("  Test Komprehensif Fitur yang Diperluas")
+    cetak("==============================================")
+
+    tes_konkurensi()
+    tes_sifat_dan_pencocokan()
+    tes_null_safety()
+    tes_linq()
+    tes_php()
+    tes_ruby()
+    tes_sql()
+    tes_r()
+    tes_async_await()
+    tes_generator()
+
+    cetak("==============================================")
+    cetak("  Semua test berhasil!")
+    cetak("==============================================")
+}

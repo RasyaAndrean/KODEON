@@ -1,0 +1,64 @@
+// Reflection standard library for KODEON
+
+kelas Refleksi:  // Indonesian
+    // Type introspection functions
+    fungsi dapatkan_tipe(objek):
+        // Implementation would return the type of an object
+        kembalikan "unknown"  // Placeholder
+
+    fungsi dapatkan_properti(objek):
+        // Implementation would return object properties
+        kembalikan buat_daftar()  // Placeholder
+
+    fungsi dapatkan_metode(objek):
+        // Implementation would return object methods
+        kembalikan buat_daftar()  // Placeholder
+
+    // Dynamic invocation functions
+    fungsi panggil_fungsi(nama_fungsi, ...parameter):
+        // Implementation would dynamically call a function
+        kembalikan null  // Placeholder
+
+class Reflection:  // English
+    // Type introspection functions
+    function get_type(object):
+        // Implementation would return the type of an object
+        return "unknown"  // Placeholder
+
+    function get_properties(object):
+        // Implementation would return object properties
+        return create_list()  // Placeholder
+
+    function get_methods(object):
+        // Implementation would return object methods
+        return create_list()  // Placeholder
+
+    // Dynamic invocation functions
+    function call_function(function_name, ...parameters):
+        // Implementation would dynamically call a function
+        return null  // Placeholder
+
+// Factory functions for easier access
+fungsi dapatkan_tipe(objek):
+    kembalikan Refleksi.dapatkan_tipe(objek)
+
+fungsi dapatkan_properti(objek):
+    kembalikan Refleksi.dapatkan_properti(objek)
+
+fungsi dapatkan_metode(objek):
+    kembalikan Refleksi.dapatkan_metode(objek)
+
+fungsi panggil_fungsi(nama_fungsi, ...parameter):
+    kembalikan Refleksi.panggil_fungsi(nama_fungsi, ...parameter)
+
+function get_type(object):
+    return Reflection.get_type(object)
+
+function get_properties(object):
+    return Reflection.get_properties(object)
+
+function get_methods(object):
+    return Reflection.get_methods(object)
+
+function call_function(function_name, ...parameters):
+    return Reflection.call_function(function_name, ...parameters)

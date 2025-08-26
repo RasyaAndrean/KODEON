@@ -1,0 +1,98 @@
+// Logging standard library for KODEON
+
+kelas Pencatatan:  // Indonesian
+    // Log debug message
+    fungsi debug(pesan):
+        // Implementation would log debug message
+        kembalikan null  // Placeholder
+
+    // Log info message
+    fungsi info(pesan):
+        // Implementation would log info message
+        kembalikan null  // Placeholder
+
+    // Log warning message
+    fungsi peringatan(pesan):
+        // Implementation would log warning message
+        kembalikan null  // Placeholder
+
+    // Log error message
+    fungsi error(pesan):
+        // Implementation would log error message
+        kembalikan null  // Placeholder
+
+    // Log fatal message
+    fungsi fatal(pesan):
+        // Implementation would log fatal message
+        kembalikan null  // Placeholder
+
+    // Set log level
+    fungsi atur_tingkat(tingkat):
+        // Implementation would set log level
+        kembalikan null  // Placeholder
+
+    // Set log output file
+    fungsi atur_file_berkas(nama_file):
+        // Implementation would set log output file
+        kembalikan null  // Placeholder
+
+class Logging:  // English
+    // Log debug message
+    function debug(message):
+        // Implementation would log debug message
+        return null  // Placeholder
+
+    // Log info message
+    function info(message):
+        // Implementation would log info message
+        return null  // Placeholder
+
+    // Log warning message
+    function warning(message):
+        // Implementation would log warning message
+        return null  // Placeholder
+
+    // Log error message
+    function error(message):
+        // Implementation would log error message
+        return null  // Placeholder
+
+    // Log fatal message
+    function fatal(message):
+        // Implementation would log fatal message
+        return null  // Placeholder
+
+    // Set log level
+    function set_level(level):
+        // Implementation would set log level
+        return null  // Placeholder
+
+    // Set log output file
+    function set_output_file(filename):
+        // Implementation would set log output file
+        return null  // Placeholder
+
+// Factory functions for easier access
+fungsi catat_debug(pesan):
+    kembalikan Pencatatan.debug(pesan)
+
+fungsi catat_info(pesan):
+    kembalikan Pencatatan.info(pesan)
+
+fungsi catat_peringatan(pesan):
+    kembalikan Pencatatan.peringatan(pesan)
+
+fungsi catat_error(pesan):
+    kembalikan Pencatatan.error(pesan)
+
+function log_debug(message):
+    return Logging.debug(message)
+
+function log_info(message):
+    return Logging.info(message)
+
+function log_warning(message):
+    return Logging.warning(message)
+
+function log_error(message):
+    return Logging.error(message)

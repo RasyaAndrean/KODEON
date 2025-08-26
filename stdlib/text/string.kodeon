@@ -1,0 +1,139 @@
+// String manipulation standard library for KODEON
+
+// String length function
+fungsi panjang_string(str):  // Indonesian
+    // Return the length of a string
+    kembalikan panjang(str)
+
+function string_length(str):  // English
+    // Return the length of a string
+    return len(str)
+
+// String concatenation
+fungsi gabung_string(...strings):  // Indonesian
+    // Concatenate multiple strings
+    kembalikan gabung(strings)
+
+function concat_string(...strings):  // English
+    // Concatenate multiple strings
+    return join(strings)
+
+// String case conversion
+fungsi besar_string(str):  // Indonesian
+    // Convert string to uppercase
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str.besar()
+
+function string_upper(str):  // English
+    // Convert string to uppercase
+    // In a real implementation, this would interface with the runtime system
+    return str.upper()
+
+fungsi kecil_string(str):  // Indonesian
+    // Convert string to lowercase
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str.kecil()
+
+function string_lower(str):  // English
+    // Convert string to lowercase
+    // In a real implementation, this would interface with the runtime system
+    return str.lower()
+
+// String trimming
+fungsi potong_string(str):  // Indonesian
+    // Trim whitespace from string
+    // In a real implementation, this would interface with the runtime system
+    kembalikan str.potong()
+
+function string_trim(str):  // English
+    // Trim whitespace from string
+    // In a real implementation, this would interface with the runtime system
+    return str.trim()
+
+// String splitting
+fungsi bagi_string(str, pembatas):  // Indonesian
+    // Split string by delimiter
+    kembalikan str.bagi(pembatas)
+
+function string_split(str, delimiter):  // English
+    // Split string by delimiter
+    return str.split(delimiter)
+
+// String replacement
+fungsi ganti_string(str, cari, ganti):  // Indonesian
+    // Replace substring in string
+    kembalikan str.ganti(cari, ganti)
+
+function string_replace(str, search, replace):  // English
+    // Replace substring in string
+    return str.replace(search, replace)
+
+// String formatting
+fungsi format_string(pola, ...args):  // Indonesian
+    // Format string with arguments
+    kembalikan format(pola, ...args)
+
+function string_format(pattern, ...args):  // English
+    // Format string with arguments
+    return format(pattern, ...args)
+
+// Substring extraction
+fungsi sub_string(str, awal, akhir):  // Indonesian
+    // Extract substring
+    kembalikan str.sub(awal, akhir)
+
+function substring(str, start, end):  // English
+    // Extract substring
+    return str.sub(start, end)
+
+// String searching
+fungsi cari_string(str, cari):  // Indonesian
+    // Find substring in string
+    kembalikan str.cari(cari)
+
+function string_find(str, search):  // English
+    // Find substring in string
+    return str.find(search)
+
+// String comparison
+fungsi bandingkan_string(a, b):  // Indonesian
+    // Compare two strings
+    jika a == b maka:
+        kembalikan 0
+    jika a < b maka:
+        kembalikan -1
+    sebaliknya:
+        kembalikan 1
+
+function string_compare(a, b):  // English
+    // Compare two strings
+    if a == b then:
+        return 0
+    if a < b then:
+        return -1
+    otherwise:
+        return 1
+
+// Check if string contains substring
+fungsi berisi_string(str, cari):  // Indonesian
+    // Check if string contains substring
+    kembalikan str.ada(cari)
+
+function string_contains(str, search):  // English
+    // Check if string contains substring
+    return str.contains(search)
+
+// Reverse string
+fungsi balik_string(str):  // Indonesian
+    // Reverse string
+    buat hasil = ""
+    untuk i dari panjang(str) - 1 turun ke 0:
+        hasil = hasil + str[i]
+    kembalikan hasil
+
+function string_reverse(str):  // English
+    // Reverse string
+    create result = ""
+    for i from length(str) - 1 down to 0:
+        result = result + str[i]
+    return result

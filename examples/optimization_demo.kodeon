@@ -1,0 +1,33 @@
+// Optimization Support Demo
+
+fungsi hitung_matematika() {
+    // These expressions can be optimized with constant folding
+    buat a = 2 + 3 * 4  // Should be optimized to 14
+    buat b = 10 / 2     // Should be optimized to 5
+    buat c = benar dan salah  // Should be optimized to salah (false)
+    buat d = tidak benar      // Should be optimized to salah (false)
+
+    tampilkan("a = " + string(a))
+    tampilkan("b = " + string(b))
+    tampilkan("c = " + string(c))
+    tampilkan("d = " + string(d))
+
+    kembalikan a + b
+}
+
+fungsi faktorial(n) {
+    jika n <= 1 maka:
+        kembalikan 1
+    sebaliknya:
+        kembalikan n * faktorial(n - 1)
+}
+
+fungsi utama() {
+    buat hasil = hitung_matematika()
+    tampilkan("Hasil perhitungan: " + string(hasil))
+
+    buat fakt = faktorial(5)
+    tampilkan("5! = " + string(fakt))
+
+    kembalikan 0
+}

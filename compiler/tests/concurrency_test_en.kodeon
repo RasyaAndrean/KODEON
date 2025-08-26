@@ -1,0 +1,25 @@
+// Test file for KODEON concurrency features (English version)
+
+function main() {
+    // Test mutex operations
+    var mutex = create_mutex()
+    lock_mutex(mutex)
+    unlock_mutex(mutex)
+
+    // Test condition variable operations
+    var condition = create_condition()
+    wait_condition(condition, mutex)
+    signal_condition(condition)
+    broadcast_condition(condition)
+
+    // Test atomic operations
+    var address = create_address(0)
+    var value = atomic_load(address)
+    atomic_store(address, 42)
+    var old = atomic_exchange(address, 100)
+    var result = atomic_compare_exchange(address, 100, 200)
+    var add = atomic_fetch_add(address, 10)
+    var sub = atomic_fetch_sub(address, 5)
+
+    return 0
+}

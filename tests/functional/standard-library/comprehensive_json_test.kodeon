@@ -1,0 +1,146 @@
+// Comprehensive JSON functions test in KODEON
+
+impor "data/json"
+
+fungsi uji_komprehensif_json():
+    tampilkan("=== Comprehensive JSON Functions Test ===")
+
+    // Test 1: JSON validation
+    buat valid1 = validasi_json("")
+    buat valid2 = validasi_json("{}")
+    buat valid3 = validasi_json("{\"name\":\"KODEON\"}")
+
+    jika valid1 maka:
+        lempar "JSON validation test 1 failed"
+    jika tidak valid2 maka:
+        lempar "JSON validation test 2 failed"
+    jika tidak valid3 maka:
+        lempar "JSON validation test 3 failed"
+
+    tampilkan("✓ JSON validation tests passed")
+
+    // Test 2: JSON stringification
+    buat obj1 = {}
+    buat obj2 = {"name": "KODEON"}
+    buat obj3 = {"name": "KODEON", "version": 1.0, "active": benar}
+
+    buat str1 = stringifikasi_json(obj1)
+    buat str2 = stringifikasi_json(obj2)
+    buat str3 = stringifikasi_json(obj3)
+
+    jika panjang(str1) == 0 maka:
+        lempar "JSON stringification test 1 failed"
+    jika panjang(str2) == 0 maka:
+        lempar "JSON stringification test 2 failed"
+    jika panjang(str3) == 0 maka:
+        lempar "JSON stringification test 3 failed"
+
+    tampilkan("✓ JSON stringification tests passed")
+
+    // Test 3: JSON parsing
+    buat json_str = "{\"name\":\"KODEON\",\"version\":1.0}"
+    buat parsed = parse_json(json_str)
+
+    jika tidak ada_kunci(parsed, "_parsed") maka:
+        lempar "JSON parsing test failed"
+    jika parsed._parsed != benar maka:
+        lempar "JSON parsing test failed"
+
+    tampilkan("✓ JSON parsing tests passed")
+
+    // Test 4: Round-trip conversion
+    buat original_obj = {"test": "value", "number": 42}
+    buat json_str2 = stringifikasi_json(original_obj)
+    buat parsed_obj = parse_json(json_str2)
+
+    jika tidak ada_kunci(parsed_obj, "_parsed") maka:
+        lempar "JSON round-trip test failed"
+
+    tampilkan("✓ JSON round-trip conversion tests passed")
+
+    // Test 5: Edge cases
+    buat empty_obj_str = stringifikasi_json({})
+    buat empty_valid = validasi_json(empty_obj_str)
+
+    jika tidak empty_valid maka:
+        lempar "JSON edge case test failed"
+
+    tampilkan("✓ JSON edge case tests passed")
+
+    tampilkan("=== All comprehensive JSON tests passed! ===")
+
+function test_comprehensive_json():
+    show("=== Comprehensive JSON Functions Test ===")
+
+    // Test 1: JSON validation
+    create valid1 = validate_json("")
+    create valid2 = validate_json("{}")
+    create valid3 = validate_json("{\"name\":\"KODEON\"}")
+
+    if valid1 then:
+        throw "JSON validation test 1 failed"
+    if not valid2 then:
+        throw "JSON validation test 2 failed"
+    if not valid3 then:
+        throw "JSON validation test 3 failed"
+
+    show("✓ JSON validation tests passed")
+
+    // Test 2: JSON stringification
+    create obj1 = {}
+    create obj2 = {"name": "KODEON"}
+    create obj3 = {"name": "KODEON", "version": 1.0, "active": true}
+
+    create str1 = stringify_json(obj1)
+    create str2 = stringify_json(obj2)
+    create str3 = stringify_json(obj3)
+
+    if length(str1) == 0 then:
+        throw "JSON stringification test 1 failed"
+    if length(str2) == 0 then:
+        throw "JSON stringification test 2 failed"
+    if length(str3) == 0 then:
+        throw "JSON stringification test 3 failed"
+
+    show("✓ JSON stringification tests passed")
+
+    // Test 3: JSON parsing
+    create json_str = "{\"name\":\"KODEON\",\"version\":1.0}"
+    create parsed = parse_json(json_str)
+
+    if not has_key(parsed, "_parsed") then:
+        throw "JSON parsing test failed"
+    if parsed._parsed != true then:
+        throw "JSON parsing test failed"
+
+    show("✓ JSON parsing tests passed")
+
+    // Test 4: Round-trip conversion
+    create original_obj = {"test": "value", "number": 42}
+    create json_str2 = stringify_json(original_obj)
+    create parsed_obj = parse_json(json_str2)
+
+    if not has_key(parsed_obj, "_parsed") then:
+        throw "JSON round-trip test failed"
+
+    show("✓ JSON round-trip conversion tests passed")
+
+    // Test 5: Edge cases
+    create empty_obj_str = stringify_json({})
+    create empty_valid = validate_json(empty_obj_str)
+
+    if not empty_valid then:
+        throw "JSON edge case test failed"
+
+    show("✓ JSON edge case tests passed")
+
+    show("=== All comprehensive JSON tests passed! ===")
+
+fungsi utama():
+    uji_komprehensif_json()
+
+function main():
+    test_comprehensive_json()
+
+// Run the tests
+utama()

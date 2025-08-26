@@ -1,0 +1,74 @@
+// Reflection library test in KODEON
+
+impor "reflect"
+
+fungsi uji_refleksi_dasar():
+    // Test type introspection
+    buat angka = 42
+    buat teks = "Hello"
+    buat daftar = buat_daftar()
+
+    buat tipe_angka = dapatkan_tipe(angka)
+    buat tipe_teks = dapatkan_tipe(teks)
+    buat tipe_daftar = dapatkan_tipe(daftar)
+
+    tampilkan("Type of number: ", tipe_angka)
+    tampilkan("Type of string: ", tipe_teks)
+    tampilkan("Type of list: ", tipe_daftar)
+
+    // Test property enumeration
+    buat properti_daftar = dapatkan_properti(daftar)
+    tampilkan("List properties count: ", properti_daftar.panjang())
+
+    // Test method enumeration
+    buat metode_daftar = dapatkan_metode(daftar)
+    tampilkan("List methods count: ", metode_daftar.panjang())
+
+    tampilkan("Basic reflection test completed")
+
+function test_basic_reflection():
+    // Test type introspection
+    create number = 42
+    create text = "Hello"
+    create list = create_list()
+
+    create type_number = get_type(number)
+    create type_text = get_type(text)
+    create type_list = get_type(list)
+
+    show("Type of number: ", type_number)
+    show("Type of string: ", type_text)
+    show("Type of list: ", type_list)
+
+    // Test property enumeration
+    create list_properties = get_properties(list)
+    show("List properties count: ", list_properties.length())
+
+    // Test method enumeration
+    create list_methods = get_methods(list)
+    show("List methods count: ", list_methods.length())
+
+    show("Basic reflection test completed")
+
+fungsi uji_pemanggilan_dinamis():
+    // Test dynamic function calling
+    // This would require a more complex implementation in the actual library
+    tampilkan("Dynamic function calling test completed (placeholder)")
+
+function test_dynamic_calling():
+    // Test dynamic function calling
+    // This would require a more complex implementation in the actual library
+    show("Dynamic function calling test completed (placeholder)")
+
+fungsi utama():
+    uji_refleksi_dasar()
+    uji_pemanggilan_dinamis()
+    tampilkan("All reflection tests completed!")
+
+function main():
+    test_basic_reflection()
+    test_dynamic_calling()
+    show("All reflection tests completed!")
+
+// Run the tests
+utama()

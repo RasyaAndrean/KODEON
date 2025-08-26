@@ -1,0 +1,25 @@
+// Main program demonstrating package usage
+
+impor "math_utils" sebagai matematika
+
+fungsi utama():
+    buat a = 10
+    buat b = 5
+    
+    buat hasil_tambah = matematika.tambah(a, b)
+    buat hasil_kurang = matematika.kurang(a, b)
+    buat hasil_kali = matematika.kali(a, b)
+    buat hasil_bagi = matematika.bagi(a, b)
+    
+    tampilkan("Hasil tambah: " + string(hasil_tambah))
+    tampilkan("Hasil kurang: " + string(hasil_kurang))
+    tampilkan("Hasil kali: " + string(hasil_kali))
+    tampilkan("Hasil bagi: " + string(hasil_bagi))
+    
+    buat pangkat = matematika.pangkat(2, 8)
+    tampilkan("2 pangkat 8: " + string(pangkat))
+    
+    buat akar = matematika.akar_kuadrat(16)
+    tampilkan("Akar kuadrat dari 16: " + string(akar))
+    
+    kembalikan 0

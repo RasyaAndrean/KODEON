@@ -1,0 +1,49 @@
+// LLVM Backend Demo - KODEON Programming Language
+
+// Function demonstrating basic arithmetic
+fungsi hitung(a, b):
+    buat hasil = a + b
+    kembalikan hasil
+
+// Function demonstrating channel usage (Go-style concurrency)
+fungsi contoh_channel():
+    // Create a channel for integers
+    buat ch = buat_channel(int)
+
+    // Start a goroutine to send values
+    go kirim_data(ch, 42)
+
+    // Receive value from channel
+    buat nilai = terima(ch)
+    cetak("Diterima: " + nilai)
+
+    kembalikan nilai
+
+fungsi kirim_data(ch, nilai):
+    kirim(ch, nilai)
+
+// Function demonstrating null safety (Kotlin-style)
+fungsi contoh_null_safety():
+    buat nilai = null
+    // Using elvis operator to provide default value
+    buat hasil = nilai ?: 100
+    cetak("Hasil: " + hasil)
+    kembalikan hasil
+
+// Main function
+fungsi utama():
+    cetak("Demo LLVM Backend KODEON")
+
+    // Basic arithmetic
+    buat x = 10
+    buat y = 20
+    buat z = hitung(x, y)
+    cetak("Hasil hitung: " + z)
+
+    // Channel example
+    contoh_channel()
+
+    // Null safety example
+    contoh_null_safety()
+
+    kembalikan 0

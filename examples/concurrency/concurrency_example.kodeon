@@ -1,0 +1,59 @@
+// Example demonstrating KODEON's advanced concurrency features
+
+kelas Penghitung {
+    var nilai: int
+    var mutex: mutex
+
+    fungsi baru() {
+        nilai = 0
+    }
+
+    fungsi tambah(s: int) {
+        kunci_mutex(mutex)
+        nilai = nilai + s
+        buka_kunci_mutex(mutex)
+    }
+
+    fungsi ambil(): int {
+        kunci_mutex(mutex)
+        var hasil = nilai
+        buka_kunci_mutex(mutex)
+        kembali hasil
+    }
+}
+
+fungsi utama() {
+    var penghitung = Penghitung.baru()
+    var kondisi = buat_kondisi()
+    var selesai = buat_alamat(salah)
+
+    // Goroutine untuk menambah nilai
+    jalan {
+        untuk i dalam 0..1000 {
+            penghitung.tambah(1)
+        }
+        simpan_atomik(selesai, benar)
+        sinyal_kondisi(kondisi)
+    }
+
+    // Goroutine lain untuk menambah nilai
+    jalan {
+        untuk i dalam 0..500 {
+            penghitung.tambah(2)
+        }
+        simpan_atomik(selesai, benar)
+        sinyal_kondisi(kondisi)
+    }
+
+    // Tunggu sampai semua goroutine selesai
+    var selesai_hitung = muat_atomik(selesai)
+    selama !selesai_hitung {
+        tunggu_kondisi(kondisi, penghitung.mutex)
+        selesai_hitung = muat_atomik(selesai)
+    }
+
+    var hasil = penghitung.ambil()
+    cetak("Hasil akhir: ", hasil)
+
+    kembali 0
+}

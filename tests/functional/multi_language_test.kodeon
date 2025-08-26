@@ -1,0 +1,65 @@
+// Test file for multi-language features
+
+// Test Python-like list comprehensions
+buat squares = [x * x untuk x di 1..6]
+tampilkan "Squares: {squares}"
+
+// Test range syntax
+buat angka = 1..5
+tampilkan "Range: {angka}"
+
+// Test JavaScript-like object literals
+buat person = {
+    nama: "Alice",
+    umur: 25,
+    aktif: benar
+}
+tampilkan "Person: {person.nama}, {person.umur}, {person.aktif}"
+
+// Test Java-like class with access modifiers
+kelas TestClass publik:
+    pribadi nilai
+
+    fungsi TestClass(nilai_awal):
+        ini.nilai = nilai_awal
+
+    publik fungsi dapatkanNilai():
+        kembalikan ini.nilai
+
+buat obj = TestClass(42)
+tampilkan "Nilai: {obj.dapatkanNilai()}"
+
+// Test for-each loop
+buat daftar = [10, 20, 30, 40, 50]
+untuk setiap item di daftar:
+    tampilkan "Item: {item}"
+
+// Test pattern matching
+fungsi ujiPola(nilai):
+    ketika nilai:
+        100 => "Sempurna"
+        80..100 => "Baik"
+        60..80 => "Cukup"
+        sebaliknya => "Kurang"
+
+tampilkan "Nilai 95: {ujiPola(95)}"
+tampilkan "Nilai 75: {ujiPola(75)}"
+tampilkan "Nilai 55: {ujiPola(55)}"
+
+// Test function with default parameters
+fungsi sapa(nama, salam = "Halo"):
+    kembalikan "{salam}, {nama}!"
+
+tampilkan sapa("Bob")
+tampilkan sapa("Charlie", "Selamat pagi")
+
+// Test function with variable arguments
+fungsi jumlahkan(...angka):
+    buat total = 0
+    untuk setiap n di angka:
+        total += n
+    kembalikan total
+
+tampilkan "Jumlah: {jumlahkan(1, 2, 3, 4, 5)}"
+
+kembalikan 0

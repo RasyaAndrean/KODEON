@@ -1,0 +1,21 @@
+// Hello World in KODEON - Indonesian version
+buat pesan = "Halo, Dunia!"
+tampilkan pesan
+
+// Hello World in KODEON - English version
+create message = "Hello, World!"
+show message
+
+// Function example - Indonesian
+fungsi sapa(nama):
+    kembalikan "Halo, " + nama + "!"
+
+hasil = sapa("KODEON")
+tampilkan hasil
+
+// Function example - English
+function greet(name):
+    return "Hello, " + name + "!"
+
+result = greet("KODEON")
+show result

@@ -1,0 +1,38 @@
+// Math utilities package for KODEON
+
+fungsi tambah(a, b):
+    kembalikan a + b
+
+fungsi kurang(a, b):
+    kembalikan a - b
+
+fungsi kali(a, b):
+    kembalikan a * b
+
+fungsi bagi(a, b):
+    jika b == 0 maka:
+        lempar "Pembagian dengan nol tidak diperbolehkan"
+    kembalikan a / b
+
+fungsi pangkat(basis, eksponen):
+    buat hasil = 1
+    untuk i dari 0 sampai eksponen:
+        hasil = hasil * basis
+    kembalikan hasil
+
+fungsi akar_kuadrat(n):
+    // Metode Newton untuk menghitung akar kuadrat
+    jika n < 0 maka:
+        lempar "Tidak dapat menghitung akar kuadrat dari bilangan negatif"
+
+    jika n == 0 maka:
+        kembalikan 0
+
+    buat x = n
+    buat akar = 0.5 * (x + (n / x))
+
+    selama akar < x maka:
+        x = akar
+        akar = 0.5 * (x + (n / x))
+
+    kembalikan x

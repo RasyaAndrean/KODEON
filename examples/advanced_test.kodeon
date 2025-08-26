@@ -1,0 +1,31 @@
+// Advanced KODEON program for testing LLVM backend with concurrency and null safety
+
+// Function demonstrating channel usage
+fungsi kirim_data(ch, data):
+    kirim(ch, data)
+
+fungsi terima_data(ch):
+    buat data = terima(ch)
+    kembalikan data
+
+// Function demonstrating null safety
+fungsi aman_dari_null(nilai):
+    // Using elvis operator to provide default value
+    buat hasil = nilai ?: "Nilai default"
+    kembalikan hasil
+
+fungsi utama():
+    cetak("Menguji fitur lanjutan KODEON")
+
+    // Test null safety
+    buat nilai_null = null
+    buat hasil_aman = aman_dari_null(nilai_null)
+    cetak("Hasil aman: " + hasil_aman)
+
+    // Test channel operations (Go-style concurrency)
+    buat ch = buat_channel(string)
+    kirim(ch, "Halo dari channel!")
+    buat pesan = terima(ch)
+    cetak("Diterima: " + pesan)
+
+    kembalikan 0

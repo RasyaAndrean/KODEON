@@ -1,0 +1,274 @@
+// Collections standard library for KODEON
+
+kelas Daftar:  // Indonesian List class
+    fungsi inisialisasi():
+        buat ini.item = []
+        buat ini.panjang = 0
+
+    fungsi tambah(item):
+        ini.item[tambah ini.panjang] = item
+        ini.panjang = ini.panjang + 1
+
+    fungsi hapus(indeks):
+        jika indeks < 0 atau indeks >= ini.panjang maka:
+            lempar "Indeks di luar batas"
+        // Geser elemen setelah indeks
+        untuk i dari indeks sampai ini.panjang - 2:
+            ini.item[i] = ini.item[i + 1]
+        ini.panjang = ini.panjang - 1
+
+    fungsi dapatkan(indeks):
+        jika indeks < 0 atau indeks >= ini.panjang maka:
+            lempar "Indeks di luar batas"
+        kembalikan ini.item[indeks]
+
+    fungsi panjang():
+        kembalikan ini.panjang
+
+    fungsi kosong():
+        kembalikan ini.panjang == 0
+
+    fungsi ada(item):
+        untuk i dari 0 sampai ini.panjang - 1:
+            jika ini.item[i] == item maka:
+                kembalikan benar
+        kembalikan salah
+
+    fungsi urut():
+        // Bubble sort implementation
+        untuk i dari 0 sampai ini.panjang - 2:
+            untuk j dari 0 sampai ini.panjang - 2:
+                jika ini.item[j] > ini.item[j + 1] maka:
+                    buat temp = ini.item[j]
+                    ini.item[j] = ini.item[j + 1]
+                    ini.item[j + 1] = temp
+
+class List:  // English List class
+    function initialize():
+        create this.items = []
+        create this.length = 0
+
+    function add(item):
+        this.items[add this.length] = item
+        this.length = this.length + 1
+
+    function remove(index):
+        if index < 0 or index >= this.length then:
+            throw "Index out of bounds"
+        // Shift elements after index
+        for i from index to this.length - 2:
+            this.items[i] = this.items[i + 1]
+        this.length = this.length - 1
+
+    function get(index):
+        if index < 0 or index >= this.length then:
+            throw "Index out of bounds"
+        return this.items[index]
+
+    function length():
+        return this.length
+
+    function empty():
+        return this.length == 0
+
+    function contains(item):
+        for i from 0 to this.length - 1:
+            if this.items[i] == item then:
+                return true
+        return false
+
+    function sort():
+        // Bubble sort implementation
+        for i from 0 to this.length - 2:
+            for j from 0 to this.length - 2:
+                if this.items[j] > this.items[j + 1] then:
+                    create temp = this.items[j]
+                    this.items[j] = this.items[j + 1]
+                    this.items[j + 1] = temp
+
+kelas Peta:  // Indonesian Map class
+    fungsi inisialisasi():
+        buat ini.kunci = []
+        buat ini.nilai = []
+        buat ini.ukuran = 0
+
+    fungsi atur(kunci, nilai):
+        // Cek jika kunci sudah ada
+        untuk i dari 0 sampai ini.ukuran:
+            jika ini.kunci[i] == kunci maka:
+                ini.nilai[i] = nilai
+                kembalikan
+        // Tambah kunci baru
+        ini.kunci[tambah ini.ukuran] = kunci
+        ini.nilai[tambah ini.ukuran] = nilai
+        ini.ukuran = ini.ukuran + 1
+
+    fungsi dapatkan(kunci):
+        untuk i dari 0 sampai ini.ukuran:
+            jika ini.kunci[i] == kunci maka:
+                kembalikan ini.nilai[i]
+        lempar "Kunci tidak ditemukan"
+
+    fungsi hapus(kunci):
+        untuk i dari 0 sampai ini.ukuran:
+            jika ini.kunci[i] == kunci maka:
+                // Geser elemen setelah indeks
+                untuk j dari i sampai ini.ukuran - 2:
+                    ini.kunci[j] = ini.kunci[j + 1]
+                    ini.nilai[j] = ini.nilai[j + 1]
+                ini.ukuran = ini.ukuran - 1
+                kembalikan
+
+    fungsi ukuran():
+        kembalikan ini.ukuran
+
+    fungsi kosong():
+        kembalikan ini.ukuran == 0
+
+    fungsi ada_kunci(kunci):
+        untuk i dari 0 sampai ini.ukuran:
+            jika ini.kunci[i] == kunci maka:
+                kembalikan benar
+        kembalikan salah
+
+class Map:  // English Map class
+    function initialize():
+        create this.keys = []
+        create this.values = []
+        create this.size = 0
+
+    function set(key, value):
+        // Check if key already exists
+        for i from 0 to this.size:
+            if this.keys[i] == key then:
+                this.values[i] = value
+                return
+        // Add new key
+        this.keys[add this.size] = key
+        this.values[add this.size] = value
+        this.size = this.size + 1
+
+    function get(key):
+        for i from 0 to this.size:
+            if this.keys[i] == key then:
+                return this.values[i]
+        throw "Key not found"
+
+    function delete(key):
+        for i from 0 to this.size:
+            if this.keys[i] == key then:
+                // Shift elements after index
+                for j from i to this.size - 2:
+                    this.keys[j] = this.keys[j + 1]
+                    this.values[j] = this.values[j + 1]
+                this.size = this.size - 1
+                return
+
+    function size():
+        return this.size
+
+    function empty():
+        return this.size == 0
+
+    function has_key(key):
+        for i from 0 to this.size:
+            if this.keys[i] == key then:
+                return true
+        return false
+
+kelas Himpunan:  // Indonesian Set class
+    fungsi inisialisasi():
+        buat ini.item = []
+        buat ini.ukuran = 0
+
+    fungsi tambah(item):
+        // Cek jika item sudah ada
+        jika ini.ada(item) maka:
+            kembalikan
+        ini.item[tambah ini.ukuran] = item
+        ini.ukuran = ini.ukuran + 1
+
+    fungsi hapus(item):
+        untuk i dari 0 sampai ini.ukuran:
+            jika ini.item[i] == item maka:
+                // Geser elemen setelah indeks
+                untuk j dari i sampai ini.ukuran - 2:
+                    ini.item[j] = ini.item[j + 1]
+                ini.ukuran = ini.ukuran - 1
+                kembalikan
+
+    fungsi ukuran():
+        kembalikan ini.ukuran
+
+    fungsi kosong():
+        kembalikan ini.ukuran == 0
+
+    fungsi ada(item):
+        untuk i dari 0 sampai ini.ukuran:
+            jika ini.item[i] == item maka:
+                kembalikan benar
+        kembalikan salah
+
+class Set:  // English Set class
+    function initialize():
+        create this.items = []
+        create this.size = 0
+
+    function add(item):
+        // Check if item already exists
+        if this.contains(item) then:
+            return
+        this.items[add this.size] = item
+        this.size = this.size + 1
+
+    function remove(item):
+        for i from 0 to this.size:
+            if this.items[i] == item then:
+                // Shift elements after index
+                for j from i to this.size - 2:
+                    this.items[j] = this.items[j + 1]
+                this.size = this.size - 1
+                return
+
+    function size():
+        return this.size
+
+    function empty():
+        return this.size == 0
+
+    function contains(item):
+        for i from 0 to this.size:
+            if this.items[i] == item then:
+                return true
+        return false
+
+// Factory functions
+fungsi buat_daftar():  // Indonesian
+    buat daftar = baru Daftar()
+    daftar.inisialisasi()
+    kembalikan daftar
+
+function create_list():  // English
+    create list = new List()
+    list.initialize()
+    return list
+
+fungsi buat_peta():  // Indonesian
+    buat peta = baru Peta()
+    peta.inisialisasi()
+    kembalikan peta
+
+function create_map():  // English
+    create map = new Map()
+    map.initialize()
+    return map
+
+fungsi buat_himpunan():  // Indonesian
+    buat himpunan = baru Himpunan()
+    himpunan.inisialisasi()
+    kembalikan himpunan
+
+function create_set():  // English
+    create set = new Set()
+    set.initialize()
+    return set

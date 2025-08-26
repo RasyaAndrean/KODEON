@@ -1,0 +1,64 @@
+// Comprehensive example demonstrating all implemented KODEON features
+
+// Variable declarations with different types
+buat nama_program = "KODEON LLVM Demo"
+buat versi = 1.0
+buat aktif = benar
+buat pi = 3.14159
+
+// Function to calculate circle area
+fungsi luas_lingkaran(jari_jari):
+    kembalikan pi * jari_jari * jari_jari
+
+// Function to calculate factorial
+fungsi faktorial(n):
+    jika n <= 1 maka:
+        kembalikan 1
+    sebaliknya:
+        kembalikan n * faktorial(n - 1)
+
+// Function with multiple parameters
+fungsi hitung_volume(panjang, lebar, tinggi):
+    kembalikan panjang * lebar * tinggi
+
+// Main program logic
+tampilkan "=== " + nama_program + " v" + versi + " ==="
+
+// Test circle area calculation
+buat jari_jari = 5.0
+buat luas = luas_lingkaran(jari_jari)
+tampilkan "Luas lingkaran dengan jari-jari " + jari_jari + " adalah " + luas
+
+// Test factorial calculation
+buat angka = 5
+buat hasil_faktorial = faktorial(angka)
+tampilkan "Faktorial dari " + angka + " adalah " + hasil_faktorial
+
+// Test volume calculation
+buat p = 10
+buat l = 5
+buat t = 3
+buat volume = hitung_volume(p, l, t)
+tampilkan "Volume balok dengan ukuran " + p + "x" + l + "x" + t + " adalah " + volume
+
+// Conditional logic
+jika aktif maka:
+    tampilkan "Program sedang aktif"
+sebaliknya:
+    tampilkan "Program tidak aktif"
+
+// Loop example (simulated with function calls)
+fungsi tampilkan_angka(mulai, akhir):
+    buat i = mulai
+    selama i <= akhir maka:
+        tampilkan "Angka: " + i
+        buat i = i + 1
+
+tampilkan "Menampilkan angka 1 sampai 5:"
+// Note: While loops not fully implemented in IR yet, but showing syntax
+
+// Final result
+buat hasil_akhir = luas + hasil_faktorial + volume
+tampilkan "Hasil akhir perhitungan: " + hasil_akhir
+
+kembalikan hasil_akhir

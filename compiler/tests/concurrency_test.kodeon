@@ -1,0 +1,25 @@
+// Test file for KODEON concurrency features
+
+fungsi utama() {
+    // Test mutex operations
+    var mutex = buat_mutex()
+    kunci_mutex(mutex)
+    buka_kunci_mutex(mutex)
+
+    // Test condition variable operations
+    var kondisi = buat_kondisi()
+    tunggu_kondisi(kondisi, mutex)
+    sinyal_kondisi(kondisi)
+    siar_kondisi(kondisi)
+
+    // Test atomic operations
+    var alamat = buat_alamat(0)
+    var nilai = muat_atomik(alamat)
+    simpan_atomik(alamat, 42)
+    var lama = tukar_atomik(alamat, 100)
+    var hasil = banding_tukar_atomik(alamat, 100, 200)
+    var tambah = ambil_tambah_atomik(alamat, 10)
+    var kurang = ambil_kurang_atomik(alamat, 5)
+
+    kembali 0
+}

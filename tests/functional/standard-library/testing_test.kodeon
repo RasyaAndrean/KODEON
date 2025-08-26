@@ -1,0 +1,84 @@
+// Testing library test in KODEON
+
+impor "testing"
+
+fungsi uji_pengujian_dasar():
+    // Test assertion functions
+    pernyataan_benar(benar, "True should be true")
+    pernyataan_benar(1 + 1 == 2, "1 + 1 should equal 2")
+
+    pernyataan_sama(42, 42, "42 should equal 42")
+    pernyataan_sama("hello", "hello", "Strings should match")
+
+    tampilkan("Basic assertion tests passed")
+
+function test_basic_testing():
+    // Test assertion functions
+    assert_true(true, "True should be true")
+    assert_true(1 + 1 == 2, "1 + 1 should equal 2")
+
+    assert_equal(42, 42, "42 should equal 42")
+    assert_equal("hello", "hello", "Strings should match")
+
+    show("Basic assertion tests passed")
+
+fungsi uji_kelompok():
+    // Test test grouping
+    kelompok_uji("Math Tests",
+        fungsi():
+            pernyataan_sama(2 + 2, 4, "Addition test")
+        akhir,
+        fungsi():
+            pernyataan_benar(5 > 3, "Comparison test")
+        akhir
+    )
+
+    tampilkan("Test grouping completed")
+
+function test_grouping():
+    // Test test grouping
+    test_group("Math Tests",
+        function():
+            assert_equal(2 + 2, 4, "Addition test")
+        end,
+        function():
+            assert_true(5 > 3, "Comparison test")
+        end
+    )
+
+    show("Test grouping completed")
+
+fungsi uji_definisi():
+    // Test test definition
+    uji("Sample Test",
+        fungsi():
+            pernyataan_benar(benar, "Sample assertion")
+        akhir
+    )
+
+    tampilkan("Test definition completed")
+
+function test_definition():
+    // Test test definition
+    test("Sample Test",
+        function():
+            assert_true(true, "Sample assertion")
+        end
+    )
+
+    show("Test definition completed")
+
+fungsi utama():
+    uji_pengujian_dasar()
+    uji_kelompok()
+    uji_definisi()
+    tampilkan("All testing library tests completed!")
+
+function main():
+    test_basic_testing()
+    test_grouping()
+    test_definition()
+    show("All testing library tests completed!")
+
+// Run the tests
+utama()

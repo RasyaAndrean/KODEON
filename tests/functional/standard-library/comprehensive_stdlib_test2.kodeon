@@ -1,0 +1,275 @@
+// Comprehensive standard library test for KODEON
+
+impor "core"
+impor "math"
+impor "collections"
+impor "io"
+impor "system"
+impor "concurrent"
+impor "time"
+impor "json"
+impor "net"
+impor "fs"
+impor "log"
+impor "crypto"
+impor "web"
+
+fungsi uji_modul_waktu() {
+    tampilkan("=== Uji Modul Waktu ===")
+
+    var waktu_sekarang = sekarang()
+    tampilkan("Waktu sekarang: " + string(waktu_sekarang))
+
+    var waktu_format = format_waktu(waktu_sekarang)
+    tampilkan("Waktu diformat: " + waktu_format)
+
+    tampilkan("Uji modul waktu selesai\n")
+}
+
+function test_time_module() {
+    show("=== Time Module Test ===")
+
+    var current_time = now()
+    show("Current time: " + string(current_time))
+
+    var formatted_time = format_time(current_time)
+    show("Formatted time: " + formatted_time)
+
+    show("Time module test completed\n")
+}
+
+fungsi uji_modul_json() {
+    tampilkan("=== Uji Modul JSON ===")
+
+    var objek = {
+        nama: "KODEON",
+        versi: "1.0",
+        aktif: benar
+    }
+
+    var json_str = stringifikasi_json(objek)
+    tampilkan("Objek sebagai JSON: " + json_str)
+
+    var parsed_obj = parse_json(json_str)
+    tampilkan("JSON di-parse kembali: " + string(parsed_obj.nama))
+
+    var valid = validasi_json(json_str)
+    tampilkan("Validasi JSON: " + string(valid))
+
+    tampilkan("Uji modul JSON selesai\n")
+}
+
+function test_json_module() {
+    show("=== JSON Module Test ===")
+
+    var object = {
+        name: "KODEON",
+        version: "1.0",
+        active: true
+    }
+
+    var json_str = stringify_json(object)
+    show("Object as JSON: " + json_str)
+
+    var parsed_obj = parse_json(json_str)
+    show("Parsed JSON back: " + string(parsed_obj.name))
+
+    var valid = validate_json(json_str)
+    show("JSON validation: " + string(valid))
+
+    show("JSON module test completed\n")
+}
+
+fungsi uji_modul_jaringan() {
+    tampilkan("=== Uji Modul Jaringan ===")
+
+    var hasil = http_dapatkan("https://api.github.com")
+    tampilkan("Status HTTP GET: " + string(hasil.status))
+
+    var post_data = {
+        nama: "KODEON",
+        pesan: "Halo Dunia!"
+    }
+
+    var post_result = http_kirim("https://httpbin.org/post", post_data)
+    tampilkan("Status HTTP POST: " + string(post_result.status))
+
+    tampilkan("Uji modul jaringan selesai\n")
+}
+
+function test_network_module() {
+    show("=== Network Module Test ===")
+
+    var result = http_get("https://api.github.com")
+    show("HTTP GET status: " + string(result.status))
+
+    var post_data = {
+        name: "KODEON",
+        message: "Hello World!"
+    }
+
+    var post_result = http_post("https://httpbin.org/post", post_data)
+    show("HTTP POST status: " + string(post_result.status))
+
+    show("Network module test completed\n")
+}
+
+fungsi uji_modul_sistem_berkas() {
+    tampilkan("=== Uji Modul Sistem Berkas ===")
+
+    var ada = ada_file("test.txt")
+    tampilkan("File test.txt ada: " + string(ada))
+
+    var info = fs.info_berkas("test.txt")
+    tampilkan("Ukuran file: " + string(info.ukuran))
+
+    var daftar = fs.daftar_direktori(".")
+    tampilkan("Jumlah item di direktori: " + string(daftar.panjang()))
+
+    tampilkan("Uji modul sistem berkas selesai\n")
+}
+
+function test_filesystem_module() {
+    show("=== File System Module Test ===")
+
+    var exists = file_exists("test.txt")
+    show("File test.txt exists: " + string(exists))
+
+    var info = FileSystem.file_info("test.txt")
+    show("File size: " + string(info.size))
+
+    var list = FileSystem.list_directory(".")
+    show("Number of items in directory: " + string(list.length()))
+
+    show("File system module test completed\n")
+}
+
+fungsi uji_modul_pencatatan() {
+    tampilkan("=== Uji Modul Pencatatan ===")
+
+    catat_debug("Ini adalah pesan debug")
+    catat_info("Ini adalah pesan info")
+    catat_peringatan("Ini adalah pesan peringatan")
+    catat_error("Ini adalah pesan error")
+
+    tampilkan("Uji modul pencatatan selesai\n")
+}
+
+function test_logging_module() {
+    show("=== Logging Module Test ===")
+
+    log_debug("This is a debug message")
+    log_info("This is an info message")
+    log_warning("This is a warning message")
+    log_error("This is an error message")
+
+    show("Logging module test completed\n")
+}
+
+fungsi uji_modul_kriptografi() {
+    tampilkan("=== Uji Modul Kriptografi ===")
+
+    var data = "Halo KODEON!"
+    var hash_md5 = hash_md5(data)
+    var hash_sha1 = hash_sha1(data)
+    var hash_sha256 = hash_sha256(data)
+
+    tampilkan("MD5: " + hash_md5)
+    tampilkan("SHA1: " + hash_sha1)
+    tampilkan("SHA256: " + hash_sha256)
+
+    tampilkan("Uji modul kriptografi selesai\n")
+}
+
+function test_cryptography_module() {
+    show("=== Cryptography Module Test ===")
+
+    var data = "Hello KODEON!"
+    var md5_hash = hash_md5(data)
+    var sha1_hash = hash_sha1(data)
+    var sha256_hash = hash_sha256(data)
+
+    show("MD5: " + md5_hash)
+    show("SHA1: " + sha1_hash)
+    show("SHA256: " + sha256_hash)
+
+    show("Cryptography module test completed\n")
+}
+
+fungsi uji_modul_web() {
+    tampilkan("=== Uji Modul Web ===")
+
+    var server = server_web()
+    tampilkan("Server web dibuat: " + string(server != null))
+
+    var url_params = Web.parse_parameter_url("https://example.com?nama=KODEON&versi=1.0")
+    tampilkan("Parameter URL di-parse: " + string(url_params != null))
+
+    tampilkan("Uji modul web selesai\n")
+}
+
+function test_web_module() {
+    show("=== Web Module Test ===")
+
+    var server = web_server()
+    show("Web server created: " + string(server != null))
+
+    var url_params = Web.parse_parameter_url("https://example.com?name=KODEON&version=1.0")
+    show("URL parameters parsed: " + string(url_params != null))
+
+    show("Web module test completed\n")
+}
+
+fungsi utama() {
+    tampilkan("🚀 Pengujian Komprehensif Pustaka Standar KODEON")
+    tampilkan("=============================================")
+    tampilkan("")
+
+    // Test all implemented modules
+    uji_modul_waktu()
+    uji_modul_json()
+    uji_modul_jaringan()
+    uji_modul_sistem_berkas()
+    uji_modul_pencatatan()
+    uji_modul_kriptografi()
+    uji_modul_web()
+
+    // Also test English versions
+    test_time_module()
+    test_json_module()
+    test_network_module()
+    test_filesystem_module()
+    test_logging_module()
+    test_cryptography_module()
+    test_web_module()
+
+    tampilkan("🎉 Semua pengujian selesai!")
+    kembali 0
+}
+
+function main() {
+    show("🚀 Comprehensive KODEON Standard Library Test")
+    show("============================================")
+    show("")
+
+    // Test all implemented modules
+    test_time_module()
+    test_json_module()
+    test_network_module()
+    test_filesystem_module()
+    test_logging_module()
+    test_cryptography_module()
+    test_web_module()
+
+    // Also test Indonesian versions
+    uji_modul_waktu()
+    uji_modul_json()
+    uji_modul_jaringan()
+    uji_modul_sistem_berkas()
+    uji_modul_pencatatan()
+    uji_modul_kriptografi()
+    uji_modul_web()
+
+    show("🎉 All tests completed!")
+    return 0
+}

@@ -1,0 +1,28 @@
+// Full example demonstrating KODEON features
+
+// Variable declarations
+buat nama = "KODEON"
+buat versi = 1.0
+buat aktif = benar
+
+// Function definition
+fungsi hitung_luas(panjang, lebar):
+    kembalikan panjang * lebar
+
+fungsi sapa_pengguna(nama):
+    kembalikan "Halo, " + nama + "!"
+
+// Main program
+buat panjang = 10
+buat lebar = 5
+buat luas = hitung_luas(panjang, lebar)
+
+tampilkan sapa_pengguna(nama)
+tampilkan "Luas persegi panjang: " + luas
+
+jika aktif maka:
+    tampilkan "Program aktif"
+sebaliknya:
+    tampilkan "Program tidak aktif"
+
+kembalikan luas

@@ -1,0 +1,15 @@
+// Debugging Support Demo
+
+fungsi hitung_faktorial(n) {
+    jika n <= 1 maka:
+        kembalikan 1
+    sebaliknya:
+        kembalikan n * hitung_faktorial(n - 1)
+}
+
+fungsi utama() {
+    buat angka = 5
+    buat hasil = hitung_faktorial(angka)
+    tampilkan("Faktorial dari " + string(angka) + " adalah " + string(hasil))
+    kembalikan 0
+}

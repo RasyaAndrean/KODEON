@@ -1,0 +1,15 @@
+// Function test in KODEON
+
+fungsi tambah(a, b):
+    kembalikan a + b
+
+fungsi kurang(a, b):
+    kembalikan a - b
+
+buat x = 10
+buat y = 5
+
+buat hasil1 = tambah(x, y)
+buat hasil2 = kurang(x, y)
+
+kembalikan hasil1 + hasil2

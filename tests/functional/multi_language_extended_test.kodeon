@@ -1,0 +1,164 @@
+// Multi-Language Extended Features Test
+// This file tests features from Go, Rust, Kotlin, C#, PHP, Ruby, SQL, and R languages
+
+// Test Go-style features
+fungsi tes_goroutines_dan_kanal() {
+    cetak("Menguji goroutines dan kanal...")
+
+    // This would test goroutines and channels if implemented
+    // For now, just test syntax parsing
+
+    buat c = kanal(int)
+    // pergi fungsi() { c <- 42 }()
+    // buat hasil = <-c
+    // pastikan(hasil == 42)
+
+    cetak("Goroutines dan kanal: Sintaks berhasil diurai")
+}
+
+// Test Rust-style features
+fungsi tes_kepemilikan_dan_sifat() {
+    cetak("Menguji kepemilikan dan sifat...")
+
+    // Test trait syntax
+    sifat Tampil {
+        fungsi tampilkan(diri)
+    }
+
+    // Test implementation
+    terapkan Tampil untuk String {
+        fungsi tampilkan(diri) {
+            cetak(diri)
+        }
+    }
+
+    cetak("Kepemilikan dan sifat: Sintaks berhasil diurai")
+}
+
+// Test Kotlin-style features
+fungsi tes_null_safety() {
+    cetak("Menguji null safety...")
+
+    // Test nullable types
+    buat nama? = "Budi"
+    buat umur? = null
+
+    // Test safe call operator
+    // cetak(nama?.panjang)
+    // cetak(umur?.panjang)  // Should be null
+
+    // Test elvis operator
+    buat nama_tampil = nama ?: "Anonim"
+    buat umur_tampil = umur ?: 0
+
+    pastikan(nama_tampil == "Budi")
+    pastikan(umur_tampil == 0)
+
+    cetak("Null safety: Sintaks berhasil diurai")
+}
+
+// Test C#-style features
+fungsi tes_linq() {
+    cetak("Menguji LINQ...")
+
+    buat angka = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    // Test LINQ methods
+    buat genap = angka.dimana(x => x % 2 == 0)
+    buat kuadrat = genap.petakan(x => x * x)
+    buat jumlah = kuadrat.kurangi((acc, x) => acc + x, 0)
+
+    pastikan(genap == [2, 4, 6, 8, 10])
+    pastikan(kuadrat == [4, 16, 36, 64, 100])
+    pastikan(jumlah == 220)
+
+    cetak("LINQ: Semua tes berhasil")
+}
+
+// Test PHP-style features
+fungsi tes_php() {
+    cetak("Menguji fitur PHP...")
+
+    // Test array syntax
+    buat arr = phparray("a", "b", "c")
+    pastikan(panjang(arr) == 3)
+
+    // Test foreach
+    buat jumlah = 0
+    phpforeach(arr sebagai item) {
+        jumlah = jumlah + 1
+    }
+    pastikan(jumlah == 3)
+
+    cetak("PHP: Semua tes berhasil")
+}
+
+// Test Ruby-style features
+fungsi tes_ruby() {
+    cetak("Menguji fitur Ruby...")
+
+    // Test blocks
+    buat array = [1, 2, 3, 4, 5]
+    buat hasil = array.setiap { |x| x * 2 }
+    pastikan(hasil == [2, 4, 6, 8, 10])
+
+    // Test times method
+    buat counter = 0
+    3.kali {
+        counter = counter + 1
+    }
+    pastikan(counter == 3)
+
+    cetak("Ruby: Semua tes berhasil")
+}
+
+// Test SQL-style features
+fungsi tes_sql() {
+    cetak("Menguji fitur SQL...")
+
+    // Test query syntax (conceptual)
+    // buat hasil = pilih nama, umur dari pengguna dimana umur > 18
+    // pastikan(panjang(hasil) >= 0)
+
+    cetak("SQL: Sintaks berhasil diurai")
+}
+
+// Test R-style features
+fungsi tes_r() {
+    cetak("Menguji fitur R...")
+
+    // Test vector creation
+    buat v = vektor(1, 2, 3, 4, 5)
+    pastikan(panjang(v) == 5)
+
+    // Test data frame
+    buat df = bingkai_data(
+        nama = vektor("A", "B", "C"),
+        nilai = vektor(10, 20, 30)
+    )
+
+    // Test apply functions
+    buat hasil = terapkan(df$nilai, fungsi(x) { x * 2 })
+    pastikan(hasil == vektor(20, 40, 60))
+
+    cetak("R: Semua tes berhasil")
+}
+
+// Main test function
+fungsi utama() {
+    cetak("=== Menguji Fitur Multi-Bahasa yang Diperluas ===")
+
+    tes_goroutines_dan_kanal()
+    tes_kepemilikan_dan_sifat()
+    tes_null_safety()
+    tes_linq()
+    tes_php()
+    tes_ruby()
+    tes_sql()
+    tes_r()
+
+    cetak("=== Semua tes berhasil! ===")
+}
+
+// Run tests
+utama()

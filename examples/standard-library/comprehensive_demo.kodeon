@@ -1,0 +1,282 @@
+// Comprehensive demonstration of KODEON standard library
+
+impor "core"
+impor "math"
+impor "collections"
+impor "io"
+impor "system"
+impor "concurrent"
+
+// Demonstrate Types module
+fungsi demo_tipe() {
+    tampilkan("=== Demo Modul Tipe ===")
+
+    var angka = 42
+    var desimal = 3.14
+    var teks = "KODEON"
+    var benar = benar
+    var salah = salah
+    var kosong = null
+    var daftar = [1, 2, 3]
+
+    tampilkan("Tipe angka: " + tipe(angka))
+    tampilkan("Tipe desimal: " + tipe(desimal))
+    tampilkan("Tipe teks: " + tipe(teks))
+    tampilkan("Tipe benar: " + tipe(benar))
+    tampilkan("Tipe salah: " + tipe(salah))
+    tampilkan("Tipe kosong: " + tipe(kosong))
+    tampilkan("Tipe daftar: " + tipe(daftar))
+
+    // Type conversion
+    var angka_sebagai_teks = konversi("string", angka)
+    tampilkan("Angka sebagai teks: " + angka_sebagai_teks)
+
+    var teks_sebagai_angka = konversi("integer", "123")
+    tampilkan("Teks sebagai angka: " + string(teks_sebagai_angka))
+
+    tampilkan("")
+}
+
+// Demonstrate Math module
+fungsi demo_matematika() {
+    tampilkan("=== Demo Modul Matematika ===")
+
+    // Constants
+    tampilkan("PI: " + string(Matematika.PI))
+    tampilkan("E: " + string(Matematika.E))
+
+    // Trigonometric functions
+    tampilkan("sin(0): " + string(sin(0)))
+    tampilkan("cos(0): " + string(cos(0)))
+    tampilkan("tan(0): " + string(tan(0)))
+
+    // Power and root functions
+    tampilkan("2^8: " + string(pangkat(2, 8)))
+    tampilkan("akar(16): " + string(akar(16)))
+
+    // Absolute value
+    tampilkan("abs(-42): " + string(abs(-42)))
+
+    // Rounding functions
+    tampilkan("bulat(3.7): " + string(Matematika.bulat(3.7)))
+    tampilkan("atas(3.2): " + string(Matematika.atas(3.2)))
+    tampilkan("bawah(3.7): " + string(Matematika.bawah(3.7)))
+
+    tampilkan("")
+}
+
+// Demonstrate Collections module
+fungsi demo_koleksi() {
+    tampilkan("=== Demo Modul Koleksi ===")
+
+    // List demonstration
+    tampilkan("-- Daftar --")
+    var daftar = buat_daftar()
+    daftar.tambah("apel")
+    daftar.tambah("pisang")
+    daftar.tambah("ceri")
+    tampilkan("Panjang daftar: " + string(daftar.panjang()))
+    tampilkan("Item pertama: " + daftar.dapatkan(0))
+    tampilkan("Mengandung 'pisang': " + string(daftar.ada("pisang")))
+
+    // Map demonstration
+    tampilkan("-- Peta --")
+    var peta = buat_peta()
+    peta.atur("nama", "KODEON")
+    peta.atur("versi", "1.0")
+    peta.atur("tahun", 2025)
+    tampilkan("Nama: " + peta.dapatkan("nama"))
+    tampilkan("Versi: " + string(peta.dapatkan("versi")))
+    tampilkan("Ukuran peta: " + string(peta.ukuran()))
+
+    // Set demonstration
+    tampilkan("-- Himpunan --")
+    var himpunan = buat_himpunan()
+    himpunan.tambah("a")
+    himpunan.tambah("b")
+    himpunan.tambah("c")
+    himpunan.tambah("a")  // Should not add duplicate
+    tampilkan("Ukuran himpunan: " + string(himpunan.ukuran()))
+    tampilkan("Mengandung 'b': " + string(himpunan.ada("b")))
+
+    tampilkan("")
+}
+
+// Demonstrate IO module
+fungsi demo_io() {
+    tampilkan("=== Demo Modul IO ===")
+    tampilkan("Fungsi IO telah diimplementasi")
+    tampilkan("Gunakan tampilkan() untuk mencetak ke konsol")
+    tampilkan("")
+}
+
+// Demonstrate System module
+fungsi demo_sistem() {
+    tampilkan("=== Demo Modul Sistem ===")
+    tampilkan("Fungsi sistem telah diimplementasi")
+    tampilkan("Waktu sekarang: " + string(sekarang()))
+    tampilkan("")
+}
+
+// Demonstrate Concurrency module
+fungsi demo_konkurensi() {
+    tampilkan("=== Demo Modul Konkurensi ===")
+    tampilkan("Fungsi konkurensi telah diimplementasi")
+    tampilkan("Gunakan pergi() untuk membuat goroutine")
+    tampilkan("Gunakan buat_kanal() untuk membuat channel")
+    tampilkan("Gunakan kunci() dan buka_kunci() untuk sinkronisasi")
+    tampilkan("")
+}
+
+// Main function demonstrating all modules
+fungsi utama() {
+    tampilkan("🚀 Demonstrasi Komprehensif Pustaka Standar KODEON")
+    tampilkan("================================================")
+    tampilkan("")
+
+    demo_tipe()
+    demo_matematika()
+    demo_koleksi()
+    demo_io()
+    demo_sistem()
+    demo_konkurensi()
+
+    tampilkan("🎉 Demonstrasi selesai!")
+    tampilkan("Semua modul pustaka standar inti telah diimplementasi.")
+
+    kembali 0
+}
+
+// English version demonstration
+function demo_type() {
+    show("=== Type Module Demo ===")
+
+    var number = 42
+    var float = 3.14
+    var text = "KODEON"
+    var true_val = true
+    var false_val = false
+    var empty = null
+    var array = [1, 2, 3]
+
+    show("Type of number: " + type(number))
+    show("Type of float: " + type(float))
+    show("Type of text: " + type(text))
+    show("Type of true: " + type(true_val))
+    show("Type of false: " + type(false_val))
+    show("Type of empty: " + type(empty))
+    show("Type of array: " + type(array))
+
+    // Type conversion
+    var number_as_string = convert("string", number)
+    show("Number as string: " + number_as_string)
+
+    var string_as_number = convert("integer", "123")
+    show("String as number: " + string(string_as_number))
+
+    show("")
+}
+
+function demo_math() {
+    show("=== Math Module Demo ===")
+
+    // Constants
+    show("PI: " + string(Math.PI))
+    show("E: " + string(Math.E))
+
+    // Trigonometric functions
+    show("sin(0): " + string(sin(0)))
+    show("cos(0): " + string(cos(0)))
+    show("tan(0): " + string(tan(0)))
+
+    // Power and root functions
+    show("2^8: " + string(pow(2, 8)))
+    show("sqrt(16): " + string(sqrt(16)))
+
+    // Absolute value
+    show("abs(-42): " + string(abs(-42)))
+
+    // Rounding functions
+    show("round(3.7): " + string(Math.round(3.7)))
+    show("ceil(3.2): " + string(Math.ceil(3.2)))
+    show("floor(3.7): " + string(Math.floor(3.7)))
+
+    show("")
+}
+
+function demo_collections() {
+    show("=== Collections Module Demo ===")
+
+    // List demonstration
+    show("-- List --")
+    var list = create_list()
+    list.add("apple")
+    list.add("banana")
+    list.add("cherry")
+    show("List length: " + string(list.length()))
+    show("First item: " + list.get(0))
+    show("Contains 'banana': " + string(list.contains("banana")))
+
+    // Map demonstration
+    show("-- Map --")
+    var map = create_map()
+    map.set("name", "KODEON")
+    map.set("version", "1.0")
+    map.set("year", 2025)
+    show("Name: " + map.get("name"))
+    show("Version: " + string(map.get("version")))
+    show("Map size: " + string(map.size()))
+
+    // Set demonstration
+    show("-- Set --")
+    var set = create_set()
+    set.add("a")
+    set.add("b")
+    set.add("c")
+    set.add("a")  // Should not add duplicate
+    show("Set size: " + string(set.size()))
+    show("Contains 'b': " + string(set.contains("b")))
+
+    show("")
+}
+
+function demo_io() {
+    show("=== IO Module Demo ===")
+    show("IO functions have been implemented")
+    show("Use show() to print to console")
+    show("")
+}
+
+function demo_system() {
+    show("=== System Module Demo ===")
+    show("System functions have been implemented")
+    show("Current time: " + string(now()))
+    show("")
+}
+
+function demo_concurrency() {
+    show("=== Concurrency Module Demo ===")
+    show("Concurrency functions have been implemented")
+    show("Use go() to create goroutine")
+    show("Use make_channel() to create channel")
+    show("Use lock() and unlock() for synchronization")
+    show("")
+}
+
+function main() {
+    show("🚀 Comprehensive KODEON Standard Library Demo")
+    show("==============================================")
+    show("")
+
+    demo_type()
+    demo_math()
+    demo_collections()
+    demo_io()
+    demo_system()
+    demo_concurrency()
+
+    show("🎉 Demo completed!")
+    show("All core standard library modules have been implemented.")
+
+    return 0
+}

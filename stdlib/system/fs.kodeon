@@ -1,0 +1,132 @@
+// File System standard library for KODEON
+
+kelas SistemBerkas:  // Indonesian
+    // Read file content
+    fungsi baca_berkas(nama_file):
+        // Implementation would read file content
+        kembalikan ""  // Placeholder
+
+    // Write content to file
+    fungsi tulis_berkas(nama_file, konten):
+        // Implementation would write content to file
+        kembalikan null  // Placeholder
+
+    // Append content to file
+    fungsi tambah_berkas(nama_file, konten):
+        // Implementation would append content to file
+        kembalikan null  // Placeholder
+
+    // Check if file exists
+    fungsi ada_berkas(nama_file):
+        // Implementation would check if file exists
+        kembalikan salah  // Placeholder
+
+    // Delete file
+    fungsi hapus_berkas(nama_file):
+        // Implementation would delete file
+        kembalikan null  // Placeholder
+
+    // Create directory
+    fungsi buat_direktori(nama_dir):
+        // Implementation would create directory
+        kembalikan null  // Placeholder
+
+    // List directory contents
+    fungsi daftar_direktori(nama_dir):
+        // Implementation would list directory contents
+        kembalikan []  // Placeholder
+
+    // Get file information
+    fungsi info_berkas(nama_file):
+        // Implementation would get file information
+        kembalikan {
+            ukuran: 0,
+            dimodifikasi: 0,
+            dibuat: 0,
+            adalah_direktori: salah
+        }  // Placeholder
+
+    // Copy file
+    fungsi salin_berkas(sumber, tujuan):
+        // Implementation would copy file
+        kembalikan null  // Placeholder
+
+    // Move/rename file
+    fungsi pindah_berkas(sumber, tujuan):
+        // Implementation would move/rename file
+        kembalikan null  // Placeholder
+
+class FileSystem:  // English
+    // Read file content
+    function read_file(filename):
+        // Implementation would read file content
+        return ""  // Placeholder
+
+    // Write content to file
+    function write_file(filename, content):
+        // Implementation would write content to file
+        return null  // Placeholder
+
+    // Append content to file
+    function append_file(filename, content):
+        // Implementation would append content to file
+        return null  // Placeholder
+
+    // Check if file exists
+    function file_exists(filename):
+        // Implementation would check if file exists
+        return false  // Placeholder
+
+    // Delete file
+    function delete_file(filename):
+        // Implementation would delete file
+        return null  // Placeholder
+
+    // Create directory
+    function create_directory(dirname):
+        // Implementation would create directory
+        return null  // Placeholder
+
+    // List directory contents
+    function list_directory(dirname):
+        // Implementation would list directory contents
+        return []  // Placeholder
+
+    // Get file information
+    function file_info(filename):
+        // Implementation would get file information
+        return {
+            size: 0,
+            modified: 0,
+            created: 0,
+            is_directory: false
+        }  // Placeholder
+
+    // Copy file
+    function copy_file(source, destination):
+        // Implementation would copy file
+        return null  // Placeholder
+
+    // Move/rename file
+    function move_file(source, destination):
+        // Implementation would move/rename file
+        return null  // Placeholder
+
+// Factory functions for easier access
+fungsi baca_file(nama_file):
+    kembalikan SistemBerkas.baca_berkas(nama_file)
+
+fungsi tulis_file(nama_file, konten):
+    kembalikan SistemBerkas.tulis_berkas(nama_file, konten)
+
+fungsi ada_file(nama_file):
+    kembalikan SistemBerkas.ada_berkas(nama_file)
+
+function read_file(filename):
+    return FileSystem.read_file(filename)
+
+function write_file(filename, content):
+    return FileSystem.write_file(filename, content)
+
+function file_exists(filename):
+    return FileSystem.file_exists(filename)

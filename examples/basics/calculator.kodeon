@@ -1,0 +1,65 @@
+// Calculator example in KODEON - Indonesian version
+kelas Kalkulator:
+    fungsi tambah(a, b):
+        kembalikan a + b
+
+    fungsi kurang(a, b):
+        kembalikan a - b
+
+    fungsi kali(a, b):
+        kembalikan a * b
+
+    fungsi bagi(a, b):
+        jika b == 0 maka:
+            tampilkan "Error: Pembagian dengan nol"
+            kembalikan null
+        sebaliknya:
+            kembalikan a / b
+
+// Penggunaan kalkulator
+calc = Kalkulator()
+hasil1 = calc.tambah(10, 5)
+tampilkan "10 + 5 = " + hasil1
+
+hasil2 = calc.kali(7, 3)
+tampilkan "7 * 3 = " + hasil2
+
+// Contoh perulangan
+buat angka = 1
+ulangi:
+    tampilkan "Angka: " + angka
+    angka = angka + 1
+selama angka <= 5
+
+// English version
+class Calculator:
+    function add(a, b):
+        return a + b
+
+    function subtract(a, b):
+        return a - b
+
+    function multiply(a, b):
+        return a * b
+
+    function divide(a, b):
+        if b == 0 then:
+            show "Error: Division by zero"
+            return null
+        otherwise:
+            return a / b
+
+// Using the calculator
+calc_eng = Calculator()
+result1 = calc_eng.add(10, 5)
+show "10 + 5 = " + result1
+
+result2 = calc_eng.multiply(7, 3)
+show "7 * 3 = " + result2
+
+// Loop example
+create number = 1
+repeat:
+    show "Number: " + number
+    number = number + 1
+while number <= 5

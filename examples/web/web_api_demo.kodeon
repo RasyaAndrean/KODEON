@@ -1,0 +1,299 @@
+// Web API demonstration using KODEON standard library
+
+impor "web"
+impor "json"
+impor "time"
+impor "log"
+impor "crypto"
+
+// Simple in-memory database
+var pengguna_db = []
+
+// Logger setup
+fungsi setup_logger() {
+    Pencatatan.atur_tingkat("info")
+    catat_info("Logger diatur")
+}
+
+// User model
+kelas Pengguna {
+    var id: int
+    var nama: string
+    var email: string
+    var dibuat_pada: int
+
+    fungsi baru(nama, email) {
+        ini.id = panjang_array(pengguna_db) + 1
+        ini.nama = nama
+        ini.email = email
+        ini.dibuat_pada = sekarang()
+    }
+
+    fungsi ke_json() {
+        kembalikan {
+            id: ini.id,
+            nama: ini.nama,
+            email: ini.email,
+            dibuat_pada: ini.dibuat_pada
+        }
+    }
+}
+
+// API handlers
+fungsi dapatkan_semua_pengguna(req, res) {
+    catat_info("GET /api/pengguna dipanggil")
+    res.setHeader("Content-Type", "application/json")
+    res.send(stringifikasi_json(pengguna_db))
+}
+
+fungsi buat_pengguna(req, res) {
+    catat_info("POST /api/pengguna dipanggil")
+
+    var data = parse_json(req.body)
+    var pengguna = Pengguna.baru(data.nama, data.email)
+    pengguna_db.tambah(pengguna.ke_json())
+
+    res.setHeader("Content-Type", "application/json")
+    res.status(201).send(stringifikasi_json({
+        sukses: benar,
+        data: pengguna.ke_json()
+    }))
+}
+
+fungsi dapatkan_pengguna(req, res) {
+    catat_info("GET /api/pengguna/:id dipanggil")
+
+    var id = integer(req.params.id)
+    var pengguna = null
+
+    untuk i dalam 0..panjang_array(pengguna_db) {
+        jika pengguna_db[i].id == id {
+            pengguna = pengguna_db[i]
+            pecah
+        }
+    }
+
+    jika pengguna == null {
+        res.status(404).send(stringifikasi_json({
+            sukses: salah,
+            pesan: "Pengguna tidak ditemukan"
+        }))
+    } sebaliknya {
+        res.setHeader("Content-Type", "application/json")
+        res.send(stringifikasi_json(pengguna))
+    }
+}
+
+// Authentication middleware
+fungsi middleware_autentikasi(req, res, selanjutnya) {
+    var token = req.headers["Authorization"]
+
+    jika token == null atau !token.dimulai_dengan("Bearer ") {
+        res.status(401).send(stringifikasi_json({
+            sukses: salah,
+            pesan: "Token tidak ditemukan"
+        }))
+        kembali
+    }
+
+    var token_nilai = token.substring(7)
+    var hash = hash_sha256(token_nilai)
+
+    // In a real application, you would validate the token against a database
+    jika hash != "valid_token_hash" {
+        res.status(401).send(stringifikasi_json({
+            sukses: salah,
+            pesan: "Token tidak valid"
+        }))
+        kembali
+    }
+
+    selanjutnya()
+}
+
+// Error handling middleware
+fungsi middleware_error(req, res, error) {
+    catat_error("Error terjadi: " + error.pesan)
+    res.status(500).send(stringifikasi_json({
+        sukses: salah,
+        pesan: "Terjadi kesalahan server"
+    }))
+}
+
+// Main function
+fungsi utama() {
+    setup_logger()
+
+    // Create sample data
+    var pengguna1 = Pengguna.baru("Andi", "andi@email.com")
+    var pengguna2 = Pengguna.baru("Budi", "budi@email.com")
+    pengguna_db.tambah(pengguna1.ke_json())
+    pengguna_db.tambah(pengguna2.ke_json())
+
+    // Create web server
+    var server = server_web()
+
+    // Add middleware
+    server.gunakan(middleware_autentikasi)
+    server.error(middleware_error)
+
+    // Define routes
+    server.dapatkan("/api/pengguna", dapatkan_semua_pengguna)
+    server.kirim("/api/pengguna", buat_pengguna)
+    server.dapatkan("/api/pengguna/:id", dapatkan_pengguna)
+
+    // Start server
+    var port = 3000
+    server.dengarkan(port, fungsi() {
+        catat_info("Server berjalan di port " + string(port))
+        tampilkan("🚀 Server API berjalan di http://localhost:" + string(port))
+    })
+
+    kembali 0
+}
+
+// English version
+class User {
+    var id: int
+    var name: string
+    var email: string
+    var created_at: int
+
+    function new(name, email) {
+        this.id = array_length(user_db) + 1
+        this.name = name
+        this.email = email
+        this.created_at = now()
+    }
+
+    function to_json() {
+        return {
+            id: this.id,
+            name: this.name,
+            email: this.email,
+            created_at: this.created_at
+        }
+    }
+}
+
+// Global database
+var user_db = []
+
+// Logger setup
+function setup_logger() {
+    Logging.set_level("info")
+    log_info("Logger configured")
+}
+
+// API handlers
+function get_all_users(req, res) {
+    log_info("GET /api/users called")
+    res.setHeader("Content-Type", "application/json")
+    res.send(stringify_json(user_db))
+}
+
+function create_user(req, res) {
+    log_info("POST /api/users called")
+
+    var data = parse_json(req.body)
+    var user = User.new(data.name, data.email)
+    user_db.add(user.to_json())
+
+    res.setHeader("Content-Type", "application/json")
+    res.status(201).send(stringify_json({
+        success: true,
+        data: user.to_json()
+    }))
+}
+
+function get_user(req, res) {
+    log_info("GET /api/users/:id called")
+
+    var id = integer(req.params.id)
+    var user = null
+
+    for i in 0..array_length(user_db) {
+        if user_db[i].id == id {
+            user = user_db[i]
+            break
+        }
+    }
+
+    if user == null {
+        res.status(404).send(stringify_json({
+            success: false,
+            message: "User not found"
+        }))
+    } else {
+        res.setHeader("Content-Type", "application/json")
+        res.send(stringify_json(user))
+    }
+}
+
+// Authentication middleware
+function auth_middleware(req, res, next) {
+    var token = req.headers["Authorization"]
+
+    if token == null or !token.starts_with("Bearer ") {
+        res.status(401).send(stringify_json({
+            success: false,
+            message: "Token not found"
+        }))
+        return
+    }
+
+    var token_value = token.substring(7)
+    var hash = hash_sha256(token_value)
+
+    // In a real application, you would validate the token against a database
+    if hash != "valid_token_hash" {
+        res.status(401).send(stringify_json({
+            success: false,
+            message: "Invalid token"
+        }))
+        return
+    }
+
+    next()
+}
+
+// Error handling middleware
+function error_middleware(req, res, error) {
+    log_error("Error occurred: " + error.message)
+    res.status(500).send(stringify_json({
+        success: false,
+        message: "Internal server error"
+    }))
+}
+
+// Main function
+function main() {
+    setup_logger()
+
+    // Create sample data
+    var user1 = User.new("John", "john@email.com")
+    var user2 = User.new("Jane", "jane@email.com")
+    user_db.add(user1.to_json())
+    user_db.add(user2.to_json())
+
+    // Create web server
+    var server = web_server()
+
+    // Add middleware
+    server.use(auth_middleware)
+    server.error(error_middleware)
+
+    // Define routes
+    server.get("/api/users", get_all_users)
+    server.post("/api/users", create_user)
+    server.get("/api/users/:id", get_user)
+
+    // Start server
+    var port = 3000
+    server.listen(port, function() {
+        log_info("Server running on port " + string(port))
+        show("🚀 API Server running at http://localhost:" + string(port))
+    })
+
+    return 0
+}
