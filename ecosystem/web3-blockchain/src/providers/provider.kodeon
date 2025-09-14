@@ -1,0 +1,55 @@
+// KODEON Web3/Blockchain - Provider Base Class
+// Base class for all blockchain providers
+
+kelas Penyedia:
+    fungsi inisialisasi(url):
+        ini.url = url
+        ini.terhubung = salah
+
+    // Connect to blockchain network
+    fungsi hubungkan():
+        // This will be implemented by subclasses
+        ini.terhubung = benar
+        tampilkan("Terhubung ke penyedia: " + ini.url)
+
+    // Disconnect from blockchain network
+    fungsi putuskan():
+        ini.terhubung = salah
+        tampilkan("Terputus dari penyedia: " + ini.url)
+
+    // Get accounts
+    fungsi dapatkan_akun():
+        // This will be implemented by subclasses
+        kembalikan []
+
+    // Get balance
+    fungsi dapatkan_saldo(alamat):
+        // This will be implemented by subclasses
+        kembalikan 0
+
+    // Send transaction
+    fungsi kirim_transaksi(transaksi):
+        // This will be implemented by subclasses
+        kembalikan "0x" + utilitas.id_acak()
+
+    // Call contract
+    fungsi panggil_kontrak(alamat, data):
+        // This will be implemented by subclasses
+        kembalikan "0x0"
+
+    // Get block
+    fungsi dapatkan_blok(nomor_blok):
+        // This will be implemented by subclasses
+        kembalikan tidak_ada
+
+    // Get transaction receipt
+    fungsi dapatkan_tanda_terima_transaksi(hash):
+        // This will be implemented by subclasses
+        kembalikan tidak_ada
+
+    // Estimate gas
+    fungsi perkirakan_gas(transaksi):
+        // This will be implemented by subclasses
+        kembalikan 21000
+
+ekspor Penyedia

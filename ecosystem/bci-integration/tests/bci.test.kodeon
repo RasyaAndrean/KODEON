@@ -1,0 +1,167 @@
+// KODEON BCI Integration - Unit Tests
+// Tests for BCI framework components
+
+// Import required modules
+impor BCI
+impor { IntiBCI } dari '../src/core/bci-core.kodeon'
+impor { SinyalEEG, Stimulus, Respons } dari '../src/components/eeg-signal.kodeon'
+impor { PemrosesSinyal, Klasifikasi, Kalibrasi } dari '../src/utils/signal-processor.kodeon'
+
+// Test BCI Main Class
+fungsi uji_bci_kelas_utama() {
+    tampilkan("Menguji BCI kelas utama...")
+
+    // Test initialization
+    buat bci = BCI("motorik")
+    pastikan(bci.tipe == "motorik", "BCI seharusnya diinisialisasi dengan tipe 'motorik'")
+
+    // Test connection (simulated)
+    buat hasil_hubung = bci.hubungkan("Device_Test")
+    pastikan(hasil_hubung, "Seharusnya dapat terhubung ke perangkat")
+
+    // Test component addition
+    buat pemroses = bci.tambah_pemroses_sinyal("filter_rendah")
+    pastikan(bci.utilitas.panjang == 1, "Seharusnya menambahkan pemroses ke utilitas")
+
+    buat klasifikasi = bci.tambah_klasifikasi("lda")
+    pastikan(bci.utilitas.panjang == 2, "Seharusnya menambahkan klasifikasi ke utilitas")
+
+    tampilkan("Uji BCI kelas utama berhasil!")
+}
+
+// Test IntiBCI Class
+fungsi uji_intibci_kelas() {
+    tampilkan("Menguji IntiBCI kelas...")
+
+    buat bci = IntiBCI()
+    pastikan(bukan bci.terhubung, "BCI seharusnya belum terhubung awalnya")
+
+    // Test connection
+    bci.hubungkan("Device_Test")
+    pastikan(bci.terhubung, "BCI seharusnya terhubung setelah hubungkan() dipanggil")
+
+    // Test disconnection
+    bci.putuskan_koneksi()
+    pastikan(bukan bci.terhubung, "BCI seharusnya tidak terhubung setelah putuskan_koneksi() dipanggil")
+
+    tampilkan("Uji IntiBCI kelas berhasil!")
+}
+
+// Test BCI Components
+fungsi uji_komponen_bci() {
+    tampilkan("Menguji komponen BCI...")
+
+    // Test SinyalEEG
+    buat sinyal = SinyalEEG(16, 256)
+    pastikan(sinyal.kanal == 16, "Sinyal seharusnya memiliki 16 kanal")
+    pastikan(sinyal.frekuensi_sampling == 256, "Sinyal seharusnya memiliki frekuensi sampling 256 Hz")
+
+    // Test Stimulus
+    buat stimulus = Stimulus("visual")
+    pastikan(stimulus.tipe == "visual", "Stimulus seharusnya bertipe 'visual'")
+
+    // Test Respons
+    buat respons = Respons("gerak_kiri", { arah: "kiri" }, 0.9)
+    pastikan(respons.tipe == "gerak_kiri", "Respons seharusnya bertipe 'gerak_kiri'")
+    pastikan(respons.kepercayaan == 0.9, "Respons seharusnya memiliki kepercayaan 0.9")
+
+    tampilkan("Uji komponen BCI berhasil!")
+}
+
+// Test Utility Modules
+fungsi uji_modul_utilitas() {
+    tampilkan("Menguji modul utilitas...")
+
+    // Test PemrosesSinyal
+    buat pemroses = PemrosesSinyal("filter_rendah")
+    pastikan(pemroses.tipe == "filter_rendah", "Pemroses seharusnya bertipe 'filter_rendah'")
+
+    // Test Klasifikasi
+    buat klasifikasi = Klasifikasi("lda")
+    pastikan(klasifikasi.tipe == "lda", "Klasifikasi seharusnya bertipe 'lda'")
+    pastikan(bukan klasifikasi.dilatih, "Klasifikasi seharusnya belum dilatih awalnya")
+
+    // Test Kalibrasi
+    buat kalibrasi = Kalibrasi()
+    pastikan(bukan kalibrasi.dikalibrasi, "Kalibrasi seharusnya belum dilakukan awalnya")
+
+    tampilkan("Uji modul utilitas berhasil!")
+}
+
+// Test Signal Processing
+fungsi uji_pemrosesan_sinyal() {
+    tampilkan("Menguji pemrosesan sinyal...")
+
+    // Create sample signal
+    buat sinyal = SinyalEEG(4, 128)
+
+    // Test signal information
+    buat info = sinyal.dapatkan_info()
+    pastikan(info.kanal == 4, "Info seharusnya menunjukkan 4 kanal")
+    pastikan(info.frekuensi_sampling == 128, "Info seharusnya menunjukkan frekuensi sampling 128 Hz")
+
+    // Test normalization
+    buat sinyal_dinormalisasi = sinyal.normalisasi()
+    pastikan(sinyal_dinormalisasi instanceof SinyalEEG, "Hasil normalisasi seharusnya merupakan instance SinyalEEG")
+
+    // Test filtering
+    buat sinyal_difilter = sinyal.saring(30)
+    pastikan(sinyal_difilter instanceof SinyalEEG, "Hasil filtering seharusnya merupakan instance SinyalEEG")
+
+    tampilkan("Uji pemrosesan sinyal berhasil!")
+}
+
+// Test Response Handling
+fungsi uji_penanganan_respons() {
+    tampilkan("Menguji penanganan respons...")
+
+    // Create sample responses
+    buat respons1 = Respons("gerak_kiri", { arah: "kiri" }, 0.9)
+    buat respons2 = Respons("gerak_kanan", { arah: "kanan" }, 0.8)
+
+    // Test response validity
+    pastikan(respons1.apakah_valid(), "Respons1 seharusnya valid (kepercayaan > 0.5)")
+    pastikan(respons2.apakah_valid(), "Respons2 seharusnya valid (kepercayaan > 0.5)")
+
+    // Test action mapping
+    buat aksi1 = respons1.petakan_ke_aksi()
+    buat aksi2 = respons2.petakan_ke_aksi()
+    pastikan(aksi1 == "gerak_ke_kiri", "Aksi1 seharusnya 'gerak_ke_kiri'")
+    pastikan(aksi2 == "gerak_ke_kanan", "Aksi2 seharusnya 'gerak_ke_kanan'")
+
+    // Test similarity calculation
+    buat kesamaan = respons1.hitung_kesamaan(respons2)
+    pastikan(kesamaan >= 0 dan kesamaan <= 1, "Kesamaan seharusnya antara 0 dan 1")
+
+    tampilkan("Uji penanganan respons berhasil!")
+}
+
+// Helper function for assertions
+fungsi pastikan(kondisi, pesan) {
+    jika bukan kondisi {
+        tampilkan("UJI GAGAL: " + pesan)
+        lempar "Uji gagal: " + pesan
+    }
+}
+
+// Run all tests
+fungsi jalankan_semua_uji() {
+    tampilkan("=== Menjalankan Semua Uji BCI ===\n")
+
+    coba {
+        uji_bci_kelas_utama()
+        uji_intibci_kelas()
+        uji_komponen_bci()
+        uji_modul_utilitas()
+        uji_pemrosesan_sinyal()
+        uji_penanganan_respons()
+
+        tampilkan("\n=== Semua Uji Berhasil! ===")
+    } tangkap(error) {
+        tampilkan("\n=== Uji Gagal ===")
+        tampilkan("Kesalahan: " + error)
+    }
+}
+
+// Execute tests
+jalankan_semua_uji()

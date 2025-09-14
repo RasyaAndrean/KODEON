@@ -1,0 +1,175 @@
+// KODEON Microservices Integration - Service Component
+// Service representation and management for Microservices
+
+kelas Layanan {
+    fungsi inisialisasi(nama, versi, endpoint) {
+        ini.nama = nama
+        ini.versi = versi || "1.0.0"
+        ini.endpoint = endpoint || "/api/" + nama
+        ini.status = "tidak_aktif" // "tidak_aktif", "aktif", "deployed", "undeployed"
+        ini.konfigurasi = {}
+        ini.dependensi = []
+        ini.metrik = {
+            permintaan: 0,
+            kesalahan: 0,
+            latensi_rata_rata: 0
+        }
+        ini.kesehatan = "tidak_diketahui" // "sehat", "tidak_sehat", "tidak_diketahui"
+    }
+
+    // Activate service
+    fungsi aktifkan() {
+        ini.status = "aktif"
+        tampilkan("Layanan diaktifkan: " + ini.nama + " v" + ini.versi)
+    }
+
+    // Deactivate service
+    fungsi nonaktifkan() {
+        ini.status = "tidak_aktif"
+        tampilkan("Layanan dinonaktifkan: " + ini.nama + " v" + ini.versi)
+    }
+
+    // Set configuration
+    fungsi atur_konfigurasi(konfigurasi) {
+        ini.konfigurasi = { ...ini.konfigurasi, ...konfigurasi }
+        tampilkan("Konfigurasi layanan diperbarui: " + ini.nama)
+    }
+
+    // Add dependency
+    fungsi tambah_dependensi(layanan) {
+        ini.dependensi.tambah(layanan)
+        tampilkan("Dependensi ditambahkan ke layanan " + ini.nama + ": " + layanan.nama)
+    }
+
+    // Remove dependency
+    fungsi hapus_dependensi(layanan) {
+        buat indeks = ini.dependensi.cari_indeks(layanan)
+        jika indeks != -1 {
+            ini.dependensi.hapus_pada(indeks)
+            tampilkan("Dependensi dihapus dari layanan " + ini.nama + ": " + layanan.nama)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Handle request
+    fungsi tangani_permintaan(permintaan) {
+        // Increment request counter
+        ini.metrik.permintaan = ini.metrik.permintaan + 1
+
+        // Simulate request processing
+        buat waktu_mulai = sekarang()
+
+        // In a real implementation, this would process the actual request
+        buat respons = ini.proses_permintaan(permintaan)
+
+        // Calculate latency
+        buat waktu_selesai = sekarang()
+        buat latensi = waktu_selesai - waktu_mulai
+
+        // Update average latency
+        ini.metrik.latensi_rata_rata = ((ini.metrik.latensi_rata_rata * (ini.metrik.permintaan - 1)) + latensi) / ini.metrik.permintaan
+
+        // Check for errors
+        jika respons.status >= 400 {
+            ini.metrik.kesalahan = ini.metrik.kesalahan + 1
+        }
+
+        kembalikan respons
+    }
+
+    // Process request (to be implemented by specific services)
+    fungsi proses_permintaan(permintaan) {
+        // This should be overridden by specific service implementations
+        kembalikan {
+            status: 200,
+            data: {
+                pesan: "Permintaan diproses oleh layanan " + ini.nama,
+                timestamp: sekarang()
+            }
+        }
+    }
+
+    // Check service health
+    fungsi periksa_kesehatan() {
+        // In a real implementation, this would perform health checks
+        // For now, we'll simulate health status
+
+        // If error rate is high, service is unhealthy
+        jika ini.metrik.permintaan > 0 dan (ini.metrik.kesalahan / ini.metrik.permintaan) > 0.1 {
+            ini.kesehatan = "tidak_sehat"
+        } lain jika ini.status == "aktif" atau ini.status == "deployed" {
+            ini.kesehatan = "sehat"
+        } lain {
+            ini.kesehatan = "tidak_sehat"
+        }
+
+        kembalikan ini.kesehatan
+    }
+
+    // Scale service
+    fungsi skalakan(jumlah_instance) {
+        // In a real implementation, this would scale the service
+        tampilkan("Layanan " + ini.nama + " diskalakan ke " + jumlah_instance + " instance")
+        kembalikan benar
+    }
+
+    // Update service
+    fungsi perbarui(versi_baru, konfigurasi_baru) {
+        // In a real implementation, this would update the service
+        ini.versi = versi_baru || ini.versi
+        jika konfigurasi_baru bukan_tidak_ada {
+            ini.atur_konfigurasi(konfigurasi_baru)
+        }
+        tampilkan("Layanan " + ini.nama + " diperbarui ke versi " + ini.versi)
+        kembalikan benar
+    }
+
+    // Get service metrics
+    fungsi dapatkan_metrik() {
+        kembalikan {
+            ...ini.metrik,
+            kesehatan: ini.periksa_kesehatan(),
+            status: ini.status,
+            versi: ini.versi
+        }
+    }
+
+    // Get service information
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            versi: ini.versi,
+            endpoint: ini.endpoint,
+            status: ini.status,
+            konfigurasi: ini.konfigurasi,
+            jumlah_dependensi: ini.dependensi.panjang,
+            metrik: ini.dapatkan_metrik()
+        }
+    }
+
+    // Simulate service failure
+    fungsi simulasi_kegagalan() {
+        ini.status = "tidak_sehat"
+        tampilkan("Layanan " + ini.nama + " gagal")
+    }
+
+    // Recover service
+    fungsi pulihkan() {
+        ini.status = "aktif"
+        tampilkan("Layanan " + ini.nama + " dipulihkan")
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Periodic health check
+        ini.periksa_kesehatan()
+
+        // Log metrics periodically
+        jika ini.metrik.permintaan % 100 == 0 {
+            tampilkan("Metrik layanan " + ini.nama + ": " + JSON.stringify(ini.dapatkan_metrik()))
+        }
+    }
+}
+
+ekspor Layanan

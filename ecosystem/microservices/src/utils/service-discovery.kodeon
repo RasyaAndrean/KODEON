@@ -1,0 +1,194 @@
+// KODEON Microservices Integration - Service Discovery Utility
+// Service discovery for Microservices
+
+kelas PenemuanLayanan {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe || "registry" // "registry", "dns", "etcd", "consul"
+        ini.parameter = parameter || {}
+        ini.cache = {}
+        ini.cacheTimeout = 30000 // 30 seconds
+        ini.registry = tidak_ada
+    }
+
+    // Set service registry
+    fungsi atur_registry(registry) {
+        ini.registry = registry
+        tampilkan("Registry diatur untuk penemuan layanan")
+    }
+
+    // Discover service
+    fungsi temukan(nama, versi) {
+        // Check cache first
+        buat cacheKey = nama + (versi ? ":" + versi : "")
+        jika ini.cache[cacheKey] bukan_tidak_ada {
+            buat cacheEntry = ini.cache[cacheKey]
+            jika Date.now() - cacheEntry.timestamp < ini.cacheTimeout {
+                kembalikan cacheEntry.data
+            } lain {
+                // Cache expired, remove it
+                hapus ini.cache[cacheKey]
+            }
+        }
+
+        // Perform discovery based on type
+        buat hasil = []
+
+        pilih ini.tipe:
+            kasus "registry":
+                hasil = ini.temukan_dari_registry(nama, versi)
+            kasus "dns":
+                hasil = ini.temukan_dari_dns(nama, versi)
+            kasus "etcd":
+                hasil = ini.temukan_dari_etcd(nama, versi)
+            kasus "consul":
+                hasil = ini.temukan_dari_consul(nama, versi)
+            bawaan:
+                hasil = ini.temukan_dari_registry(nama, versi)
+
+        // Cache result
+        ini.cache[cacheKey] = {
+            data: hasil,
+            timestamp: Date.now()
+        }
+
+        kembalikan hasil
+    }
+
+    // Discover from registry
+    fungsi temukan_dari_registry(nama, versi) {
+        jika ini.registry bukan_tidak_ada {
+            kembalikan ini.registry.temukan_layanan(nama, versi)
+        }
+        kembalikan []
+    }
+
+    // Discover from DNS (simulated)
+    fungsi temukan_dari_dns(nama, versi) {
+        // In a real implementation, this would query DNS SRV records
+        tampilkan("Mencari layanan " + nama + " dari DNS")
+
+        // Simulate DNS discovery
+        kembalikan [
+            {
+                nama: nama,
+                alamat: "service1.example.com",
+                port: 8080,
+                versi: versi || "1.0.0"
+            }
+        ]
+    }
+
+    // Discover from etcd (simulated)
+    fungsi temukan_dari_etcd(nama, versi) {
+        // In a real implementation, this would query etcd
+        tampilkan("Mencari layanan " + nama + " dari etcd")
+
+        // Simulate etcd discovery
+        kembalikan [
+            {
+                nama: nama,
+                alamat: "192.168.1.10",
+                port: 3000,
+                versi: versi || "1.0.0"
+            }
+        ]
+    }
+
+    // Discover from Consul (simulated)
+    fungsi temukan_dari_consul(nama, versi) {
+        // In a real implementation, this would query Consul
+        tampilkan("Mencari layanan " + nama + " dari Consul")
+
+        // Simulate Consul discovery
+        kembalikan [
+            {
+                nama: nama,
+                alamat: "10.0.0.5",
+                port: 5000,
+                versi: versi || "1.0.0"
+            }
+        ]
+    }
+
+    // Get all services
+    fungsi dapatkan_semua_layanan() {
+        jika ini.registry bukan_tidak_ada {
+            kembalikan ini.registry.dapatkan_semua_layanan()
+        }
+        kembalikan []
+    }
+
+    // Set cache timeout
+    fungsi atur_cache_timeout(timeout) {
+        ini.cacheTimeout = timeout
+        tampilkan("Cache timeout penemuan layanan diatur ke: " + timeout + " ms")
+    }
+
+    // Clear cache
+    fungsi bersihkan_cache() {
+        ini.cache = {}
+        tampilkan("Cache penemuan layanan dibersihkan")
+    }
+
+    // Get service information
+    fungsi dapatkan_info_layanan(nama, versi) {
+        buat services = ini.temukan(nama, versi)
+        jika services.panjang > 0 {
+            kembalikan services[0]
+        }
+        kembalikan tidak_ada
+    }
+
+    // Watch for service changes (simulated)
+    fungsi awasi_perubahan(nama, callback) {
+        // In a real implementation, this would set up watches
+        tampilkan("Mengawasi perubahan layanan: " + nama)
+
+        // Simulate watching by periodically calling callback
+        setInterval(fungsi() {
+            buat services = ini.temukan(nama)
+            callback(services)
+        }, 5000) // Check every 5 seconds
+    }
+
+    // Get discovery metrics
+    fungsi dapatkan_metrik() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            jumlah_cache_entries: Object.keys(ini.cache).panjang,
+            cacheTimeout: ini.cacheTimeout
+        }
+    }
+
+    // Get discovery information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            cache: Object.keys(ini.cache),
+            registry: ini.registry bukan_tidak_ada
+        }
+    }
+
+    // Update parameters
+    fungsi atur_parameter(parameter_baru) {
+        untuk setiap kunci dalam parameter_baru {
+            ini.parameter[kunci] = parameter_baru[kunci]
+        }
+        tampilkan("Parameter penemuan layanan diperbarui")
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Clean up expired cache entries
+        buat sekarang = Date.now()
+        untuk setiap cacheKey dalam ini.cache {
+            jika sekarang - ini.cache[cacheKey].timestamp > ini.cacheTimeout * 2 {
+                hapus ini.cache[cacheKey]
+            }
+        }
+    }
+}
+
+ekspor PenemuanLayanan

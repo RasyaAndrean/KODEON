@@ -1,0 +1,62 @@
+// KODEON Neural Networks - Pooling Layer
+// Pooling layer implementation
+
+kelas LapisanPooling:
+    fungsi inisialisasi(ukuran_pool, stride, tipe):
+        ini.ukuran_pool = ukuran_pool
+        ini.stride = stride
+        ini.tipe = tipe  // "max" or "average"
+        ini.nama = "Pooling"
+
+    // Forward pass through pooling layer
+    fungsi maju(input):
+        ini.input_terakhir = input
+
+        // Calculate output dimensions
+        buat tinggi_output = (input.panjang - ini.ukuran_pool) / ini.stride + 1
+        buat lebar_output = (input[0].panjang - ini.ukuran_pool) / ini.stride + 1
+
+        // Initialize output
+        buat output = []
+
+        untuk buat i = 0 sampai i < tinggi_output:
+            buat baris = []
+            untuk buat j = 0 sampay j < lebar_output:
+                buat nilai_pool = ini.lakukan_pooling(input, i * ini.stride, j * ini.stride)
+                baris.tambah(nilai_pool)
+            output.tambah(baris)
+
+        ini.output_terakhir = output
+        kembalikan output
+
+    // Perform pooling operation
+    fungsi lakukan_pooling(input, start_i, start_j):
+        buat nilai = []
+
+        // Extract values in the pooling window
+        untuk buat i = 0 sampai i < ini.ukuran_pool:
+            untuk buat j = 0 sampai j < ini.ukuran_pool:
+                buat input_i = start_i + i
+                buat input_j = start_j + j
+
+                jika input_i < input.panjang dan input_j < input[0].panjang:
+                    nilai.tambah(input[input_i][input_j])
+
+        // Apply pooling operation
+        jika ini.tipe == "max":
+            kembalikan nilai.maks()
+        lain:
+            // Average pooling
+            buat jumlah = 0
+            untuk setiap v dalam nilai:
+                jumlah = jumlah + v
+            kembalikan jumlah / nilai.panjang
+
+    // Backward pass through pooling layer
+    fungsi mundur(gradient):
+        // For max pooling, gradient only flows to the max element
+        // For average pooling, gradient is distributed equally
+        // This is a simplified implementation
+        kembalikan gradient
+
+ekspor LapisanPooling

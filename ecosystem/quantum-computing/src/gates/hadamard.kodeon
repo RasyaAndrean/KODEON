@@ -1,0 +1,53 @@
+// KODEON Quantum Computing - Hadamard Gate
+// Implementation of the Hadamard gate
+
+// Hadamard Gate
+kelas GerbangH:
+    fungsi inisialisasi():
+        // H = (1/√2) * [[1, 1], [1, -1]]
+        buat skala = 1 / akar_kuadrat(2)
+        induk.inisialisasi("H", [[skala, skala], [skala, -skala]], 1)
+
+    // Apply the Hadamard gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // H|0⟩ = (|0⟩ + |1⟩)/√2
+        // H|1⟩ = (|0⟩ - |1⟩)/√2
+        buat skala = 1 / akar_kuadrat(2)
+        buat alpha_baru = (keadaan[0] + keadaan[1]) * skala
+        buat beta_baru = (keadaan[0] - keadaan[1]) * skala
+        kembalikan [alpha_baru, beta_baru]
+
+ekspor GerbangH
+
+// Phase Gate (S Gate)
+kelas GerbangS:
+    fungsi inisialisasi():
+        // S = [[1, 0], [0, i]]
+        induk.inisialisasi("S", [[1, 0], [0, i]], 1)
+
+    // Apply the S gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // S|0⟩ = |0⟩
+        // S|1⟩ = i|1⟩
+        kembalikan [keadaan[0], keadaan[1] * i]
+
+ekspor GerbangS
+
+// T Gate
+kelas GerbangT:
+    fungsi inisialisasi():
+        // T = [[1, 0], [0, e^(iπ/4)]]
+        buat fase = e^(i * pi / 4)
+        induk.inisialisasi("T", [[1, 0], [0, fase]], 1)
+
+    // Apply the T gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // T|0⟩ = |0⟩
+        // T|1⟩ = e^(iπ/4)|1⟩
+        buat fase = e^(i * pi / 4)
+        kembalikan [keadaan[0], keadaan[1] * fase]
+
+ekspor GerbangT

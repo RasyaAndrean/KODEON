@@ -1,0 +1,55 @@
+// KODEON Implementation Details - Basic Example
+// Basic example of using the implementation details framework
+
+kelas ContohDasar {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.nama = ini.opsi.nama || "Contoh Dasar"
+        ini.deskripsi = "Contoh dasar penggunaan framework implementation details"
+    }
+
+    // Run basic example
+    fungsi jalankan() {
+        tampilkan("=== Contoh Dasar Implementation Details ===")
+        tampilkan("Nama: " + ini.nama)
+        tampilkan("Deskripsi: " + ini.deskripsi)
+        tampilkan("")
+
+        // Simulate basic component registration
+        tampilkan("1. Mendaftarkan komponen untuk pelacakan:")
+        tampilkan("   - 'voice-gesture' -> Framework interaksi suara dan gestur")
+        tampilkan("   - 'university' -> Platform pembelajaran")
+        tampilkan("   - 'security' -> Framework keamanan")
+        tampilkan("")
+
+        // Simulate documentation generation
+        tampilkan("2. Menghasilkan dokumentasi implementasi:")
+        tampilkan("   - Ringkasan implementasi untuk setiap komponen")
+        tampilkan("   - Detail teknis arsitektur")
+        tampilkan("   - Laporan kemajuan pengembangan")
+        tampilkan("")
+
+        // Simulate verification
+        tampilkan("3. Memverifikasi kualitas implementasi:")
+        tampilkan("   - Kelengkapan dokumentasi")
+        tampilkan("   - Kualitas kode sumber")
+        tampilkan("   - Pengujian unit")
+        tampilkan("   - Integrasi API")
+        tampilkan("")
+
+        tampilkan("Contoh dasar selesai dijalankan.")
+        kembalikan benar
+    }
+
+    // Get example info
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            deskripsi: ini.deskripsi,
+            tingkat_kesulitan: "dasar",
+            waktu_estimasi: "5 menit"
+        }
+    }
+}
+
+ekspor ContohDasar

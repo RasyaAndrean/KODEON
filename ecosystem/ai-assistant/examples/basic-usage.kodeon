@@ -1,0 +1,73 @@
+// KODEON AI Assistant - Basic Usage Example
+
+// Import the AI assistant
+impor "ai" sebagai ai
+
+// Create an AI assistant instance
+buat asisten = ai.buat_asisten()
+
+// Example 1: Natural language to code conversion
+tampilkan("=== Contoh 1: Konversi Bahasa Alami ke Kode ===")
+buat permintaan1 = "Buat fungsi yang mencetak 'Halo Dunia'"
+buat hasil1 = asisten.bantu(permintaan1)
+tampilkan("Permintaan: " + permintaan1)
+tampilkan("Hasil:")
+tampilkan(hasil1)
+tampilkan("")
+
+// Example 2: Code completion
+tampilkan("=== Contoh 2: Pelengkapan Kode ===")
+buat permintaan2 = "Lengkapi kode untuk loop dari 1 sampai 10"
+buat hasil2 = asisten.bantu(permintaan2)
+tampilkan("Permintaan: " + permintaan2)
+tampilkan("Hasil:")
+tampilkan(hasil2)
+tampilkan("")
+
+// Example 3: Error explanation
+tampilkan("=== Contoh 3: Penjelasan Kesalahan ===")
+buat permintaan3 = "Jelaskan kesalahan variabel tidak terdefinisi"
+buat hasil3 = asisten.bantu(permintaan3)
+tampilkan("Permintaan: " + permintaan3)
+tampilkan("Hasil:")
+tampilkan(hasil3)
+tampilkan("")
+
+// Example 4: Code analysis
+tampilkan("=== Contoh 4: Analisis Kode ===")
+buat kode_contoh = "fungsi contoh():\n    // TODO: Implement this function\n    eval(input())"
+buat hasil4 = asisten.analisis_kode(kode_contoh)
+tampilkan("Kode yang dianalisis:")
+tampilkan(kode_contoh)
+tampilkan("Hasil analisis:")
+tampilkan("Kualitas: " + hasil4.kualitas)
+tampilkan("Keamanan: " + hasil4.keamanan)
+tampilkan("Masalah ditemukan: " + hasil4.masalah.panjang)
+untuk setiap masalah dalam hasil4.masalah:
+    tampilkan("- " + masalah.pesan)
+tampilkan("")
+
+// Example 5: NLP processing
+tampilkan("=== Contoh 5: Pemrosesan Bahasa Alami ===")
+impor "ai/nlp/processor" sebagai pemroses_nlp
+buat nlp = pemroses_nlp.PemrosesNLP()
+
+buat teks_inggris = "Create a function that prints hello world"
+buat terjemahan = nlp.terjemah(teks_inggris, "indonesia")
+tampilkan("Teks asli (Inggris): " + teks_inggris)
+tampilkan("Terjemahan (Indonesia): " + terjemahan)
+
+buat konsep = nlp.ekstrak_konsep(teks_inggris)
+tampilkan("Konsep yang diekstrak: " + konsep.gabung(", "))
+tampilkan("")
+
+// Example 6: Code generation
+tampilkan("=== Contoh 6: Pembuatan Kode ===")
+impor "ai/code/analyzer" sebagai analisis_kode
+buat analyzer = analisis_kode.AnalisisKode()
+
+buat deskripsi = "Buat fungsi faktorial menggunakan rekursi"
+buat kode_hasil = analyzer.hasilkan(deskripsi)
+tampilkan("Deskripsi: " + deskripsi)
+tampilkan("Kode yang dihasilkan:")
+tampilkan(kode_hasil)

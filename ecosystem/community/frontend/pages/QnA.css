@@ -1,0 +1,284 @@
+.qna-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.qna-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.qna-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.ask-question-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.ask-question-btn:hover {
+  background: #5a6fd8;
+}
+
+.ask-question-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.tags-input {
+  margin-top: 10px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+.input-group button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-group button:hover {
+  background: #5a6fd8;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background: #e9ecef;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.remove-tag {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.submit-btn,
+.cancel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.submit-btn:hover {
+  background: #45a049;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #d32f2f;
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.question-card {
+  display: flex;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.question-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  min-width: 100px;
+}
+
+.stat {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.stat:last-child {
+  margin-bottom: 0;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.stat.answered .stat-number {
+  color: #4caf50;
+}
+
+.question-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.question-title {
+  margin: 0 0 10px 0;
+  color: #333;
+  cursor: pointer;
+}
+
+.question-title:hover {
+  color: #667eea;
+}
+
+.question-excerpt {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.question-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tags {
+  display: flex;
+  gap: 5px;
+}
+
+.author-info {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.reputation {
+  color: #667eea;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .question-card {
+    flex-direction: column;
+  }
+
+  .question-stats {
+    flex-direction: row;
+    justify-content: space-around;
+    min-width: auto;
+    padding: 10px;
+  }
+
+  .stat {
+    margin-bottom: 0;
+  }
+
+  .question-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,29 @@
+// Bell State Example
+// This example demonstrates creating a Bell state (entangled qubits)
+
+// Import quantum modules
+impor "quantum/gates" sebagai gerbang
+impor "quantum/circuits" sebagai sirkuit
+
+// Create a quantum circuit with 2 qubits
+buat qc = sirkuit.buat_sirkuit(2)
+
+// Apply Hadamard gate to first qubit
+qc = sirkuit.tambah_gerbang(qc, "hadamard", [0])
+
+// Apply CNOT gate to entangle qubits
+qc = sirkuit.tambah_gerbang(qc, "cnot", [0, 1])
+
+// Measure the qubits
+buat hasil = sirkuit.ukur(qc, [0, 1])
+
+// Simulate the circuit
+buat simulasi_hasil = sirkuit.simulasi(qc, 1000)
+
+// Display results
+tampilkan("Bell State Circuit Results:")
+tampilkan(hasil)
+tampilkan("Simulation Results:")
+tampilkan(simulasi_hasil)
+
+kembalikan 0

@@ -1,0 +1,221 @@
+// KODEON Package Manager Integration - Command Line Interface
+// Command-line interface for package management
+
+kelas CommandLine {
+    fungsi inisialisasi() {
+        ini.perintah = {}
+        ini.riwayat = []
+        ini.mode_interaktif = salah
+    }
+
+    // Register command
+    fungsi daftarkan_perintah(nama, fungsi, deskripsi, alias) {
+        ini.perintah[nama] = {
+            fungsi: fungsi,
+            deskripsi: deskripsi,
+            alias: alias || []
+        }
+
+        // Register aliases
+        jika alias bukan_tidak_ada {
+            untuk setiap a dalam alias {
+                ini.perintah[a] = ini.perintah[nama]
+            }
+        }
+
+        tampilkan("Perintah didaftarkan: " + nama)
+    }
+
+    // Execute command
+    fungsi eksekusi(perintah, argumen) {
+        // Add to history
+        ini.riwayat.tambah({
+            perintah: perintah,
+            argumen: argumen,
+            timestamp: sekarang()
+        })
+
+        // Find command
+        jika ini.perintah[perintah] bukan_tidak_ada {
+            coba {
+                kembalikan ini.perintah[perintah].fungsi(argumen)
+            } tangkap(error) {
+                tampilkan("Kesalahan saat mengeksekusi perintah: " + error)
+                kembalikan tidak_ada
+            }
+        } lain {
+            tampilkan("Perintah tidak dikenali: " + perintah)
+            kembalikan tidak_ada
+        }
+    }
+
+    // List available commands
+    fungsi daftar_perintah() {
+        buat daftar = []
+        untuk setiap kunci dalam ini.perintah {
+            daftar.tambah({
+                nama: kunci,
+                deskripsi: ini.perintah[kunci].deskripsi
+            })
+        }
+        kembalikan daftar
+    }
+
+    // Get command help
+    fungsi dapatkan_bantuan(perintah) {
+        jika perintah bukan_tidak_ada dan ini.perintah[perintah] bukan_tidak_ada {
+            kembalikan ini.perintah[perintah].deskripsi
+        }
+        kembalikan "Bantuan tidak tersedia untuk perintah: " + perintah
+    }
+
+    // Show help
+    fungsi tampilkan_bantuan() {
+        tampilkan("KODEON Package Manager (kpm) - Perintah yang tersedia:")
+        tampilkan("")
+
+        untuk setiap kunci dalam ini.perintah {
+            // Only show main commands, not aliases
+            jika ini.perintah[kunci].alias.bukan_tidak_ada dan
+               ini.perintah[kunci].alias.includes(kunci) == salah {
+                tampilkan("  " + kunci + " - " + ini.perintah[kunci].deskripsi)
+            }
+        }
+    }
+
+    // Get command history
+    fungsi dapatkan_riwayat() {
+        kembalikan ini.riwayat
+    }
+
+    // Clear command history
+    fungsi bersihkan_riwayat() {
+        ini.riwayat = []
+        tampilkan("Riwayat perintah dibersihkan")
+    }
+
+    // Enable interactive mode
+    fungsi aktifkan_mode_interaktif() {
+        ini.mode_interaktif = benar
+        tampilkan("Mode interaktif diaktifkan")
+    }
+
+    // Disable interactive mode
+    fungsi nonaktifkan_mode_interaktif() {
+        ini.mode_interaktif = salah
+        tampilkan("Mode interaktif dinonaktifkan")
+    }
+
+    // Parse command line arguments
+    fungsi parse_argumen(args) {
+        buat perintah = args[0]
+        buat argumen = args.slice(1)
+        kembalikan { perintah: perintah, argumen: argumen }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would handle interactive mode
+        // For now, we'll just log that the update loop ran
+        // jika ini.mode_interaktif {
+        //     tampilkan("CLI dalam mode interaktif")
+        // }
+    }
+}
+
+// Register default commands
+fungsi inisialisasi_perintah_cli(cli) {
+    // Install command
+    cli.daftarkan_perintah("install", fungsi(args) {
+        jika args.panjang == 0 {
+            tampilkan("Gunakan: install <nama-paket> [versi]")
+            kembalikan salah
+        }
+
+        buat nama = args[0]
+        buat versi = args[1] || "latest"
+        tampilkan("Memasang paket: " + nama + " versi " + versi)
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Install a package", ["i"])
+
+    // Remove command
+    cli.daftarkan_perintah("remove", fungsi(args) {
+        jika args.panjang == 0 {
+            tampilkan("Gunakan: remove <nama-paket>")
+            kembalikan salah
+        }
+
+        buat nama = args[0]
+        tampilkan("Menghapus paket: " + nama)
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Remove a package", ["rm"])
+
+    // List command
+    cli.daftarkan_perintah("list", fungsi(args) {
+        tampilkan("Mendaftar paket yang terpasang...")
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "List installed packages", ["ls"])
+
+    // Search command
+    cli.daftarkan_perintah("search", fungsi(args) {
+        jika args.panjang == 0 {
+            tampilkan("Gunakan: search <kueri>")
+            kembalikan salah
+        }
+
+        buat kueri = args.join(" ")
+        tampilkan("Mencari paket: " + kueri)
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Search for packages")
+
+    // Info command
+    cli.daftarkan_perintah("info", fungsi(args) {
+        jika args.panjang == 0 {
+            tampilkan("Gunakan: info <nama-paket>")
+            kembalikan salah
+        }
+
+        buat nama = args[0]
+        tampilkan("Mendapatkan informasi paket: " + nama)
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Get package information")
+
+    // Outdated command
+    cli.daftarkan_perintah("outdated", fungsi(args) {
+        tampilkan("Memeriksa pembaruan paket...")
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Check for package updates")
+
+    // Update command
+    cli.daftarkan_perintah("update", fungsi(args) {
+        tampilkan("Memperbarui semua paket...")
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Update all packages")
+
+    // Publish command
+    cli.daftarkan_perintah("publish", fungsi(args) {
+        tampilkan("Mempublikasikan paket...")
+        // In a real implementation, this would call the package manager
+        kembalikan benar
+    }, "Publish a package")
+
+    // Help command
+    cli.daftarkan_perintah("help", fungsi(args) {
+        cli.tampilkan_bantuan()
+        kembalikan benar
+    }, "Show help", ["h"])
+}
+
+// Initialize CLI
+buat cli = CommandLine()
+inisialisasi_perintah_cli(cli)
+
+ekspor CommandLine
+ekspor cli

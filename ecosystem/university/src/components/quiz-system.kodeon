@@ -1,0 +1,368 @@
+// KODEON University - Quiz System
+// Quiz management functionality
+
+kelas SistemKuis {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.kuis = []
+        ini.pertanyaan = []
+        ini.submisi = []
+    }
+
+    // Initialize quiz system
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Sistem kuis diinisialisasi")
+    }
+
+    // Shutdown quiz system
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.kuis = []
+        ini.pertanyaan = []
+        ini.submisi = []
+        tampilkan("Sistem kuis dihentikan")
+    }
+
+    // Create quiz
+    fungsi buat_kuis(judul, deskripsi, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat kuis = {
+            id: ini.kuis.panjang + 1,
+            judul: judul,
+            deskripsi: deskripsi,
+            metadata: metadata || {},
+            status: "draft",
+            dibuat: sekarang(),
+            diperbarui: sekarang(),
+            pertanyaan: [],
+            durasi: 30, // in minutes
+            passing_score: 70, // percentage
+            maksimal_percobaan: 3,
+            acak_pertanyaan: benar,
+            umpan_balik: tidak_ada
+        }
+
+        ini.kuis.tambah(kuis)
+        tampilkan("Kuis dibuat: " + judul)
+        kembalikan kuis
+    }
+
+    // Add question to quiz
+    fungsi tambah_pertanyaan(kuis_id, pertanyaan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kuis = ini.kuis.cari(fungsi(k) { kembalikan k.id == kuis_id })
+
+        jika bukan kuis {
+            tampilkan("Kuis tidak ditemukan: " + kuis_id)
+            kembalikan salah
+        }
+
+        pertanyaan.id = ini.pertanyaan.panjang + 1
+        pertanyaan.dibuat = sekarang()
+        pertanyaan.poin = pertanyaan.poin || 1
+
+        ini.pertanyaan.tambah(pertanyaan)
+        kuis.pertanyaan.tambah(pertanyaan.id)
+
+        tampilkan("Pertanyaan ditambahkan ke kuis: " + kuis.judul)
+        kembalikan benar
+    }
+
+    // Create multiple choice question
+    fungsi buat_pertanyaan_pilihan_ganda(pertanyaan, pilihan, jawaban_benar, penjelasan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat pertanyaan_obj = {
+            id: ini.pertanyaan.panjang + 1,
+            tipe: "pilihan_ganda",
+            pertanyaan: pertanyaan,
+            pilihan: pilihan, // array of strings
+            jawaban_benar: jawaban_benar, // index or array of indices
+            penjelasan: penjelasan,
+            dibuat: sekarang(),
+            poin: 1
+        }
+
+        ini.pertanyaan.tambah(pertanyaan_obj)
+        tampilkan("Pertanyaan pilihan ganda dibuat")
+        kembalikan pertanyaan_obj
+    }
+
+    // Create coding question
+    fungsi buat_pertanyaan_kode(pertanyaan, template, test_cases, penjelasan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat pertanyaan_obj = {
+            id: ini.pertanyaan.panjang + 1,
+            tipe: "kode",
+            pertanyaan: pertanyaan,
+            template: template, // code template
+            test_cases: test_cases, // array of test cases
+            penjelasan: penjelasan,
+            dibuat: sekarang(),
+            poin: 5
+        }
+
+        ini.pertanyaan.tambah(pertanyaan_obj)
+        tampilkan("Pertanyaan kode dibuat")
+        kembalikan pertanyaan_obj
+    }
+
+    // Take quiz
+    fungsi kerjakan_kuis(kuis_id, pengguna, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat kuis = ini.kuis.cari(fungsi(k) { kembalikan k.id == kuis_id })
+
+        jika bukan kuis {
+            tampilkan("Kuis tidak ditemukan: " + kuis_id)
+            kembalikan tidak_ada
+        }
+
+        // Check if user has attempts left
+        buat percobaan_pengguna = ini.submisi.saring(fungsi(s) {
+            kembalikan s.kuis_id == kuis_id dan s.pengguna == pengguna
+        })
+
+        jika percobaan_pengguna.panjang >= kuis.maksimal_percobaan {
+            tampilkan("Pengguna telah mencapai batas maksimal percobaan: " + pengguna)
+            kembalikan tidak_ada
+        }
+
+        // Get questions (randomize if needed)
+        buat pertanyaan_ids = [...kuis.pertanyaan]
+        jika kuis.acak_pertanyaan {
+            // Simple shuffle algorithm
+            untuk buat i = pertanyaan_ids.panjang - 1; i > 0; i-- {
+                buat j = Math.lantai(Math.acak() * (i + 1))
+                buat temp = pertanyaan_ids[i]
+                pertanyaan_ids[i] = pertanyaan_ids[j]
+                pertanyaan_ids[j] = temp
+            }
+        }
+
+        buat submisi = {
+            id: ini.submisi.panjang + 1,
+            kuis_id: kuis_id,
+            pengguna: pengguna,
+            metadata: metadata || {},
+            dimulai: sekarang(),
+            selesai: tidak_ada,
+            pertanyaan: pertanyaan_ids,
+            jawaban: {}, // question_id -> answer
+            nilai: tidak_ada,
+            status: "sedang_dikerjakan"
+        }
+
+        ini.submisi.tambah(submisi)
+        tampilkan("Kuis dimulai oleh pengguna: " + pengguna)
+        kembalikan submisi
+    }
+
+    // Submit answer to quiz question
+    fungsi kirim_jawaban(submisi_id, pertanyaan_id, jawaban) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat submisi = ini.submisi.cari(fungsi(s) { kembalikan s.id == submisi_id })
+
+        jika bukan submisi {
+            tampilkan("Submisi tidak ditemukan: " + submisi_id)
+            kembalikan salah
+        }
+
+        // Store answer
+        submisi.jawaban[pertanyaan_id] = jawaban
+        tampilkan("Jawaban dikirim untuk pertanyaan: " + pertanyaan_id)
+        kembalikan benar
+    }
+
+    // Complete quiz
+    fungsi selesaikan_kuis(submisi_id) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kuis belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat submisi = ini.submisi.cari(fungsi(s) { kembalikan s.id == submisi_id })
+
+        jika bukan submisi {
+            tampilkan("Submisi tidak ditemukan: " + submisi_id)
+            kembalikan salah
+        }
+
+        buat kuis = ini.kuis.cari(fungsi(k) { kembalikan k.id == submisi.kuis_id })
+
+        jika bukan kuis {
+            tampilkan("Kuis tidak ditemukan: " + submisi.kuis_id)
+            kembalikan salah
+        }
+
+        // Grade the quiz
+        buat total_poin = 0
+        buat poin_diperoleh = 0
+
+        untuk setiap pertanyaan_id dalam submisi.pertanyaan {
+            buat pertanyaan = ini.pertanyaan.cari(fungsi(p) { kembalikan p.id == pertanyaan_id })
+            jika bukan pertanyaan {
+                lanjut
+            }
+
+            total_poin += pertanyaan.poin
+
+            // Check answer
+            buat jawaban_pengguna = submisi.jawaban[pertanyaan_id]
+            jika jawaban_pengguna bukan_tidak_ada {
+                jika ini.periksa_jawaban(pertanyaan, jawaban_pengguna) {
+                    poin_diperoleh += pertanyaan.poin
+                }
+            }
+        }
+
+        buat nilai = total_poin > 0 ? (poin_diperoleh / total_poin) * 100 : 0
+        buat lulus = nilai >= kuis.passing_score
+
+        submisi.selesai = sekarang()
+        submisi.nilai = nilai
+        submisi.status = "selesai"
+
+        tampilkan("Kuis selesai. Nilai: " + nilai.toFixed(2) + "% (" + (lulus ? "LULUS" : "GAGAL") + ")")
+        kembalikan {
+            submisi: submisi,
+            nilai: nilai,
+            lulus: lulus,
+            poin_diperoleh: poin_diperoleh,
+            total_poin: total_poin
+        }
+    }
+
+    // Check answer
+    fungsi periksa_jawaban(pertanyaan, jawaban) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika pertanyaan.tipe == "pilihan_ganda" {
+            kembalikan jawaban == pertanyaan.jawaban_benar
+        } lain jika pertanyaan.tipe == "kode" {
+            // In a real implementation, this would run the code against test cases
+            // For now, we'll simulate with a random check
+            kembalikan Math.acak() > 0.3 // 70% success rate
+        } lain {
+            // For other question types, simple string comparison
+            kembalikan jawaban == pertanyaan.jawaban_benar
+        }
+    }
+
+    // Get quiz
+    fungsi dapatkan_kuis(kuis_id) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.kuis.cari(fungsi(k) { kembalikan k.id == kuis_id })
+    }
+
+    // List quizzes
+    fungsi daftar_kuis(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.kuis
+        }
+
+        kembalikan ini.kuis.saring(fungsi(k) {
+            untuk setiap kunci dalam filter {
+                jika k[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Get user quiz results
+    fungsi dapatkan_hasil_kuis_pengguna(pengguna, kuis_id) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.submisi.saring(fungsi(s) {
+            buat cocok_pengguna = s.pengguna == pengguna
+            buat cocok_kuis = bukan kuis_id atau s.kuis_id == kuis_id
+            kembalikan cocok_pengguna dan cocok_kuis dan s.status == "selesai"
+        })
+    }
+
+    // Get quiz statistics
+    fungsi dapatkan_statistik() {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        buat total_submisi = ini.submisi.saring(fungsi(s) {
+            kembalikan s.status == "selesai"
+        }).panjang
+        buat submisi_lulus = ini.submisi.saring(fungsi(s) {
+            kembalikan s.status == "selesai" dan s.nilai >= 70
+        }).panjang
+        buat rata_rata_nilai = total_submisi > 0 ?
+            ini.submisi.saring(fungsi(s) { return s.status == "selesai" })
+                .reduce(fungsi(sum, s) { kembalikan sum + s.nilai }, 0) / total_submisi : 0
+
+        kembalikan {
+            total_kuis: ini.kuis.panjang,
+            total_pertanyaan: ini.pertanyaan.panjang,
+            total_submisi: total_submisi,
+            submisi_lulus: submisi_lulus,
+            tingkat_kelulusan: total_submisi > 0 ?
+                ((submisi_lulus / total_submisi) * 100).toFixed(2) + "%" : "0%",
+            rata_rata_nilai: rata_rata_nilai.toFixed(2)
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Auto-complete timed out quizzes periodically
+        untuk setiap submisi dalam ini.submisi {
+            jika submisi.status == "sedang_dikerjakan" {
+                buat kuis = ini.kuis.cari(fungsi(k) { kembalikan k.id == submisi.kuis_id })
+                jika kuis {
+                    buat waktu_berlalu = sekarang() - submisi.dimulai
+                    buat waktu_maksimal = kuis.durasi * 60 * 1000 // convert to milliseconds
+                    jika waktu_berlalu > waktu_maksimal {
+                        ini.selesaikan_kuis(submisi.id)
+                    }
+                }
+            }
+        }
+    }
+}
+
+ekspor SistemKuis

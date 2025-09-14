@@ -1,0 +1,14 @@
+// KODEON Voice/Gesture - Component Exports
+// Centralized export file for all voice/gesture components
+
+// Core components
+ekspor { default sebagai PengenalanSuara } dari './pengenalan-suara.kodeon'
+ekspor { default sebagai PengenalanGerakan } dari './pengenalan-gerakan.kodeon'
+ekspor { default sebagai PengendaliPerangkat } dari './pengendali-perangkat.kodeon'
+ekspor { default sebagai SistemPerintah } dari './sistem-perintah.kodeon'
+
+// Export all components
+ekspor * dari './pengenalan-suara.kodeon'
+ekspor * dari './pengenalan-gerakan.kodeon'
+ekspor * dari './pengendali-perangkat.kodeon'
+ekspor * dari './sistem-perintah.kodeon'

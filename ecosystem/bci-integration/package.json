@@ -1,0 +1,43 @@
+{
+  "name": "@kodeon/bci-integration",
+  "version": "1.0.0",
+  "description": "Natural language programming framework for Brain-Computer Interface (BCI) applications in KODEON",
+  "main": "src/bci.kodeon",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "kodeon-test tests/",
+    "example": "kodeon-run examples/basic-usage.kodeon",
+    "docs": "kodeon-docs docs/"
+  },
+  "keywords": [
+    "kodeon",
+    "bci",
+    "brain-computer-interface",
+    "eeg",
+    "neurotechnology",
+    "natural-language",
+    "indonesian-programming"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "@kodeon/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@kodeon/testing": "^1.0.0",
+    "@kodeon/docs": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon-lang/kodeon.git",
+    "directory": "ecosystem/bci-integration"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon-lang/kodeon/issues"
+  },
+  "homepage": "https://github.com/kodeon-lang/kodeon/tree/main/ecosystem/bci-integration#readme"
+}

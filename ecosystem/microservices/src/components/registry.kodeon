@@ -1,0 +1,220 @@
+// KODEON Microservices Integration - Registry Component
+// Service Registry for Microservices
+
+kelas Registry {
+    fungsi inisialisasi(nama) {
+        ini.nama = nama || "Service Registry"
+        ini.services = {}
+        ini.instances = {}
+        ini.healthChecks = {}
+        ini.ttl = 30000 // 30 seconds
+    }
+
+    // Register service
+    fungsi daftarkan_layanan(service, alamat, port) {
+        buat serviceId = service.nama + ":" + service.versi
+        buat instanceId = serviceId + ":" + Date.now()
+
+        jika ini.services[serviceId] == tidak_ada {
+            ini.services[serviceId] = {
+                service: service,
+                instances: []
+            }
+        }
+
+        buat instance = {
+            id: instanceId,
+            alamat: alamat || "localhost",
+            port: port || 3000,
+            status: "aktif",
+            lastHeartbeat: Date.now(),
+            metadata: service.dapatkan_info()
+        }
+
+        ini.services[serviceId].instances.tambah(instance)
+        ini.instances[instanceId] = instance
+
+        tampilkan("Layanan didaftarkan: " + serviceId + " pada " + alamat + ":" + port)
+        kembalikan instanceId
+    }
+
+    // Unregister service
+    fungsi hapus_layanan(service) {
+        buat serviceId = service.nama + ":" + service.versi
+
+        jika ini.services[serviceId] bukan_tidak_ada {
+            // Remove all instances
+            untuk setiap instance dalam ini.services[serviceId].instances {
+                hapus ini.instances[instance.id]
+            }
+
+            hapus ini.services[serviceId]
+            tampilkan("Layanan dihapus: " + serviceId)
+            kembalikan benar
+        }
+
+        kembalikan salah
+    }
+
+    // Send heartbeat
+    fungsi kirim_heartbeat(instanceId) {
+        jika ini.instances[instanceId] bukan_tidak_ada {
+            ini.instances[instanceId].lastHeartbeat = Date.now()
+            ini.instances[instanceId].status = "aktif"
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Discover service
+    fungsi temukan_layanan(nama, versi) {
+        buat serviceId = nama + (versi ? ":" + versi : "")
+
+        jika versi bukan_tidak_ada {
+            // Find specific version
+            jika ini.services[serviceId] bukan_tidak_ada {
+                kembalikan ini.filter_healthy_instances(ini.services[serviceId].instances)
+            }
+        } lain {
+            // Find all versions of service
+            buat hasil = []
+            untuk setiap id dalam ini.services {
+                jika id.dimulai_dengan(nama + ":") {
+                    hasil = hasil.concat(this.filter_healthy_instances(this.services[id].instances))
+                }
+            }
+            kembalikan hasil
+        }
+
+        kembalikan []
+    }
+
+    // Filter healthy instances
+    fungsi filter_healthy_instances(instances) {
+        buat sekarang = Date.now()
+        kembalikan instances.filter(fungsi(instance) {
+            kembalikan instance.status == "aktif" dan
+                   (sekarang - instance.lastHeartbeat) < ini.ttl
+        })
+    }
+
+    // Get all services
+    fungsi dapatkan_semua_layanan() {
+        buat hasil = []
+        untuk setiap serviceId dalam ini.services {
+            hasil.tambah({
+                id: serviceId,
+                service: ini.services[serviceId].service,
+                jumlah_instances: ini.services[serviceId].instances.panjang
+            })
+        }
+        kembalikan hasil
+    }
+
+    // Get service instances
+    fungsi dapatkan_instansi_layanan(nama, versi) {
+        buat serviceId = nama + (versi ? ":" + versi : "")
+
+        jika ini.services[serviceId] bukan_tidak_ada {
+            kembalikan ini.services[serviceId].instances
+        }
+
+        kembalikan []
+    }
+
+    // Set TTL
+    fungsi atur_ttl(ttl) {
+        ini.ttl = ttl
+        tampilkan("TTL diatur ke: " + ttl + " ms")
+    }
+
+    // Add health check
+    fungsi tambah_cek_kesehatan(serviceName, cek) {
+        ini.healthChecks[serviceName] = cek
+        tampilkan("Cek kesehatan ditambahkan untuk: " + serviceName)
+    }
+
+    // Perform health check
+    fungsi lakukan_cek_kesehatan(serviceName) {
+        jika ini.healthChecks[serviceName] bukan_tidak_ada {
+            kembalikan ini.healthChecks[serviceName]()
+        }
+        kembalikan { sehat: benar }
+    }
+
+    // Update service status
+    fungsi perbarui_status_instansi(instanceId, status) {
+        jika ini.instances[instanceId] bukan_tidak_ada {
+            ini.instances[instanceId].status = status
+            tampilkan("Status instansi diperbarui: " + instanceId + " -> " + status)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Clean up stale instances
+    fungsi bersihkan_instansi_kadaluarsa() {
+        buat sekarang = Date.now()
+        buat dihapus = 0
+
+        untuk setiap instanceId dalam ini.instances {
+            jika (sekarang - ini.instances[instanceId].lastHeartbeat) > ini.ttl {
+                // Mark as inactive
+                ini.instances[instanceId].status = "tidak_aktif"
+                dihapus = dihapus + 1
+            }
+        }
+
+        jika dihapus > 0 {
+            tampilkan("Dihapus " + dihapus + " instansi kadaluarsa")
+        }
+    }
+
+    // Get registry metrics
+    fungsi dapatkan_metrik() {
+        buat jumlah_services = Object.keys(ini.services).panjang
+        buat jumlah_instances = Object.keys(ini.instances).panjang
+        buat instances_aktif = 0
+
+        untuk setiap instanceId dalam ini.instances {
+            jika ini.instances[instanceId].status == "aktif" {
+                instances_aktif = instances_aktif + 1
+            }
+        }
+
+        kembalikan {
+            nama: ini.nama,
+            jumlah_services: jumlah_services,
+            jumlah_instances: jumlah_instances,
+            instances_aktif: instances_aktif,
+            ttl: ini.ttl
+        }
+    }
+
+    // Get registry information
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            services: Object.keys(ini.services),
+            jumlah_instances: Object.keys(ini.instances).panjang,
+            ttl: ini.ttl,
+            healthChecks: Object.keys(ini.healthChecks).panjang
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Clean up stale instances
+        ini.bersihkan_instansi_kadaluarsa()
+
+        // Perform health checks
+        untuk setiap serviceName dalam ini.healthChecks {
+            buat hasil = ini.lakukan_cek_kesehatan(serviceName)
+            jika bukan hasil.sehat {
+                tampilkan("Peringatan: Layanan " + serviceName + " tidak sehat")
+            }
+        }
+    }
+}
+
+ekspor Registry

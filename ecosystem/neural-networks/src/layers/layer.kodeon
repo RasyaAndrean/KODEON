@@ -1,0 +1,63 @@
+// KODEON Neural Networks - Layer Base Class
+// Base class for all neural network layers
+
+kelas Lapisan:
+    fungsi inisialisasi(nama, jumlah_input, jumlah_output):
+        ini.nama = nama
+        ini.jumlah_input = jumlah_input
+        ini.jumlah_output = jumlah_output
+        ini.bobot = tidak_ada
+        ini.bias = tidak_ada
+        ini.input_terakhir = tidak_ada
+        ini.output_terakhir = tidak_ada
+
+    // Initialize weights and biases
+    fungsi inisialisasi_bobot():
+        // Xavier initialization
+        buat skala = akar_kuadrat(6.0 / (ini.jumlah_input + ini.jumlah_output))
+
+        // Initialize weights with random values
+        ini.bobot = []
+        untuk buat i = 0 sampai i < ini.jumlah_input:
+            buat baris = []
+            untuk buat j = 0 sampai j < ini.jumlah_output:
+                buat nilai = (acak(0, 1000) / 1000.0) * 2 * skala - skala
+                baris.tambah(nilai)
+            ini.bobot.tambah(baris)
+
+        // Initialize biases to zero
+        ini.bias = []
+        untuk buat i = 0 sampai i < ini.jumlah_output:
+            ini.bias.tambah(0.0)
+
+    // Forward pass
+    fungsi maju(input):
+        ini.input_terakhir = input
+        // This will be implemented by subclasses
+        kembalikan input
+
+    // Backward pass
+    fungsi mundur(gradient):
+        // This will be implemented by subclasses
+        kembalikan gradient
+
+    // Update weights and biases
+    fungsi perbarui_bobot(learning_rate, gradient_bobot, gradient_bias):
+        jika ini.bobot bukan_tidak_ada:
+            untuk buat i = 0 sampai i < ini.bobot.panjang:
+                untuk buat j = 0 sampai j < ini.bobot[i].panjang:
+                    ini.bobot[i][j] = ini.bobot[i][j] - learning_rate * gradient_bobot[i][j]
+
+        jika ini.bias bukan_tidak_ada:
+            untuk buat i = 0 sampai i < ini.bias.panjang:
+                ini.bias[i] = ini.bias[i] - learning_rate * gradient_bias[i]
+
+    // Get layer information
+    fungsi dapatkan_info():
+        kembalikan {
+            nama: ini.nama,
+            jumlah_input: ini.jumlah_input,
+            jumlah_output: ini.jumlah_output
+        }
+
+ekspor Lapisan

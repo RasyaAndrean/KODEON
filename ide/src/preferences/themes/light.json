@@ -1,0 +1,26 @@
+{
+  "name": "Light",
+  "type": "light",
+  "colors": {
+    "editor.background": "#ffffff",
+    "editor.foreground": "#000000",
+    "editor.lineHighlightBackground": "#f0f0f0",
+    "editor.selectionBackground": "#add6ff",
+    "panel.background": "#f3f3f3",
+    "panel.border": "#cccccc",
+    "button.background": "#007acc",
+    "button.foreground": "#ffffff",
+    "toolbar.background": "#eaeaea",
+    "toolbar.border": "#cccccc",
+    "statusBar.background": "#007acc",
+    "statusBar.foreground": "#ffffff"
+  },
+  "tokenColors": {
+    "keyword": "#0000ff",
+    "comment": "#008000",
+    "string": "#a31515",
+    "number": "#098658",
+    "operator": "#000000",
+    "identifier": "#000000"
+  }
+}

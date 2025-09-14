@@ -1,0 +1,205 @@
+// KODEON AR/VR Integration - Basic Usage Example
+// Demonstrates how to use the AR/VR framework
+
+// Import the AR/VR framework
+impor ARVR
+
+// Example 1: Basic AR Setup
+fungsi contoh_ar_dasar() {
+    tampilkan("=== Contoh Penggunaan AR Dasar ===")
+
+    // Create AR instance
+    buat ar = ARVR("ar")
+
+    // Initialize AR with configuration
+    buat konfigurasi = {
+        resolusi: { lebar: 1920, tinggi: 1080 },
+        pencahayaan: { tipe: "lingkungan", intensitas: 0.8 }
+    }
+
+    ar.inisialisasi_lingkungan(konfigurasi)
+
+    // Add a 3D scene
+    buat pemandangan = Pemandangan3D("Pemandangan AR Saya")
+    ar.tambah_pemandangan(pemandangan)
+
+    // Add a 3D object
+    buat kubus = Objek3D("Kubus", geometri_kubus(), material_dasar())
+    kubus.atur_posisi(0, 0, -5)
+    ar.tambah_objek(kubus)
+
+    // Set camera
+    buat kamera = Kamera()
+    ar.atur_kamera(kamera)
+
+    // Enable motion detection
+    buat deteksi_gerak = ar.aktifkan_deteksi_gerak()
+    deteksi_gerak.atur_callback(fungsi(gerakan, intensitas) {
+        tampilkan("Gerakan terdeteksi dengan intensitas: " + intensitas)
+        // Move object based on motion
+        kubus.atur_posisi(kubus.posisi.x + gerakan.x * 0.1, kubus.posisi.y + gerakan.y * 0.1, kubus.posisi.z)
+    })
+
+    // Enable hand tracking
+    buat pelacakan_tangan = ar.aktifkan_pelacakan_tangan()
+    pelacakan_tangan.atur_callback(fungsi(tangan) {
+        tampilkan("Tangan terdeteksi: " + tangan.panjang + " tangan")
+        jika tangan.panjang > 0 {
+            // Get gesture and react
+            buat gestur = pelacakan_tangan.dapatkan_gestur(tangan[0])
+            tampilkan("Gestur terdeteksi: " + gestur)
+        }
+    })
+
+    // Render the scene
+    ar.render()
+
+    tampilkan("AR setup selesai\n")
+}
+
+// Example 2: Basic VR Setup
+fungsi contoh_vr_dasar() {
+    tampilkan("=== Contoh Penggunaan VR Dasar ===")
+
+    // Create VR instance
+    buat vr = ARVR("vr")
+
+    // Initialize VR with configuration
+    buat konfigurasi = {
+        resolusi: { lebar: 2160, tinggi: 2160 }, // Per eye for HMD
+        pencahayaan: { tipe: "arah", arah: { x: 0, y: -1, z: -1 }, intensitas: 1.0 }
+    }
+
+    vr.inisialisasi_lingkungan(konfigurasi)
+
+    // Add a 3D scene
+    buat pemandangan = Pemandangan3D("Pemandangan VR Saya")
+    pemandangan.atur_latar_belakang("#333366")
+    vr.tambah_pemandangan(pemandangan)
+
+    // Add multiple 3D objects
+    buat bola = Objek3D("Bola", geometri_bola(), material_berkilau())
+    bola.atur_posisi(-2, 0, -5)
+    vr.tambah_objek(bola)
+
+    buat kerucut = Objek3D("Kerucut", geometri_kerucut(), material_berwarna("#ff5500"))
+    kerucut.atur_posisi(2, 0, -5)
+    vr.tambah_objek(kerucut)
+
+    // Set lighting
+    buat pencahayaan = Pencahayaan("arah")
+    pencahayaan.atur_arah(0, -1, -1)
+    vr.atur_pencahayaan(pencahayaan)
+
+    // Enable voice recognition
+    buat pengenalan_suara = vr.aktifkan_pengenalan_suara()
+    pengenalan_suara.atur_bahasa("id-ID")
+    pengenalan_suara.daftarkan_perintah("pindah ke kanan", fungsi() {
+        bola.atur_posisi(bola.posisi.x + 1, bola.posisi.y, bola.posisi.z)
+        kembalikan "Bola dipindahkan ke kanan"
+    })
+
+    pengenalan_suara.daftarkan_perintah("pindah ke kiri", fungsi() {
+        bola.atur_posisi(bola.posisi.x - 1, bola.posisi.y, bola.posisi.z)
+        kembalikan "Bola dipindahkan ke kiri"
+    })
+
+    pengenalan_suara.daftarkan_perintah("tingkatkan ukuran", fungsi() {
+        bola.atur_skala(bola.skala.x * 1.2, bola.skala.y * 1.2, bola.skala.z * 1.2)
+        kembalikan "Ukuran bola ditingkatkan"
+    })
+
+    pengenalan_suara.daftarkan_perintah("kurangi ukuran", fungsi() {
+        bola.atur_skala(bola.skala.x * 0.8, bola.skala.y * 0.8, bola.skala.z * 0.8)
+        kembalikan "Ukuran bola dikurangi"
+    })
+
+    pengenalan_suara.atur_callback(fungsi(perintah, hasil) {
+        tampilkan("Perintah suara dieksekusi: " + perintah + " -> " + hasil)
+    })
+
+    // Render the scene
+    vr.render()
+
+    tampilkan("VR setup selesai\n")
+}
+
+// Example 3: Animation Loop
+fungsi contoh_animasi() {
+    tampilkan("=== Contoh Animasi ===")
+
+    // Create AR instance
+    buat ar = ARVR("ar")
+    ar.inisialisasi_lingkungan({})
+
+    // Add a scene with rotating object
+    buat pemandangan = Pemandangan3D("Pemandangan Animasi")
+    ar.tambah_pemandangan(pemandangan)
+
+    buat objek = Objek3D("Objek Berputar", geometri_torus(), material_berwarna("#00ffaa"))
+    objek.atur_posisi(0, 0, -5)
+    ar.tambah_objek(objek)
+
+    // Animation loop
+    buat sudut = 0
+    buat animasi = fungsi() {
+        // Rotate object
+        objek.atur_rotasi(sudut, sudut * 0.5, sudut * 0.2)
+        sudut = sudut + 0.05
+
+        // Update AR system
+        ar.perbarui()
+
+        // Render frame
+        ar.render()
+
+        // Continue animation (in real implementation, this would be requestAnimationFrame)
+        jika sudut < Math.PI * 4 { // Animate for 2 full rotations
+            // In real implementation: requestAnimationFrame(animasi)
+            // For this example, we'll just call it directly a few times
+            tampilkan("Frame animasi: " + Math.floor(sudut * 10))
+        }
+    }
+
+    // Start animation
+    untuk buat i = 0 sampai i < 10:
+        animasi()
+
+    tampilkan("Animasi selesai\n")
+}
+
+// Helper functions for geometry and materials (simplified)
+fungsi geometri_kubus() {
+    kembalikan { tipe: "kubus", ukuran: 1 }
+}
+
+fungsi geometri_bola() {
+    kembalikan { tipe: "bola", radius: 1 }
+}
+
+fungsi geometri_kerucut() {
+    kembalikan { tipe: "kerucut", tinggi: 2, radius: 1 }
+}
+
+fungsi geometri_torus() {
+    kembalikan { tipe: "torus", radius: 1, ketebalan: 0.3 }
+}
+
+fungsi material_dasar() {
+    kembalikan { tipe: "dasar", warna: "#ffffff" }
+}
+
+fungsi material_berkilau() {
+    kembalikan { tipe: "berkilau", warna: "#ffff00", kilau: 0.8 }
+}
+
+fungsi material_berwarna(warna) {
+    kembalikan { tipe: "dasar", warna: warna }
+}
+
+// Run examples
+contoh_ar_dasar()
+contoh_vr_dasar()
+contoh_animasi()
+
+tampilkan("Semua contoh telah dijalankan!")

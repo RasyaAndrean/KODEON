@@ -1,0 +1,128 @@
+// KODEON Runtime - Basic Usage Example
+// Demonstrates how to use the KODEON Runtime component
+
+// Import the runtime component
+impor "runtime" sebagai runtime
+
+// Import specific modules
+impor runtime.IntiRuntime
+impor runtime.komponen.{ManajerProses, MonitorSistem, PengelolaSumberDaya}
+impor runtime.utilitas.{Logger, Profiler, Konfigurasi}
+impor runtime.proses.{Executor, Supervisor}
+impor runtime.sistem.{IntegrasiOS, LayananSistem}
+
+// Initialize the runtime
+fungsi utama() {
+    tampilkan("=== Contoh Penggunaan KODEON Runtime ===")
+
+    // Create runtime instance
+    buat rt = runtime.Runtime()
+
+    // Initialize runtime environment
+    buat berhasil = rt.inisialisasi_runtime({
+        lingkungan: "pengembangan",
+        mode: "debug",
+        log_level: "debug"
+    })
+
+    jika bukan berhasil {
+        tampilkan("Gagal menginisialisasi runtime")
+        kembalikan 1
+    }
+
+    tampilkan("Runtime berhasil diinisialisasi")
+
+    // Add components
+    buat manajer_proses = rt.tambah_manajer_proses(ManajerProses())
+    buat monitor_sistem = rt.tambah_monitor_sistem(MonitorSistem())
+    buat pengelola_sumber_daya = rt.tambah_pengelola_sumber_daya(PengelolaSumberDaya())
+
+    // Add utilities
+    buat logger = rt.tambah_logger(Logger({ level: "debug" }))
+    buat profiler = rt.tambah_profiler(Profiler())
+    buat konfigurasi = rt.tambah_konfigurasi(Konfigurasi({
+        timeout: 45000,
+        max_memori: 2048
+    }))
+
+    // Add process components
+    buat executor = rt.tambah_executor(Executor())
+    buat supervisor = rt.tambah_supervisor(Supervisor())
+
+    // Add system components
+    buat integrasi_os = rt.tambah_integrasi_os(IntegrasiOS())
+    buat layanan_sistem = rt.tambah_layanan_sistem(LayananSistem())
+
+    // Initialize components
+    manajer_proses.inisialisasi()
+    monitor_sistem.inisialisasi()
+    pengelola_sumber_daya.inisialisasi()
+
+    // Run a sample application
+    buat proses = rt.jalankan_aplikasi("contoh_aplikasi.kodeon", {
+        argumen: ["--mode", "test"],
+        lingkungan: { DEBUG: "1" }
+    })
+
+    jika bukan proses {
+        tampilkan("Gagal menjalankan aplikasi")
+        rt.hentikan()
+        kembalikan 1
+    }
+
+    tampilkan("Aplikasi dijalankan dengan ID proses: " + proses.id)
+
+    // Monitor performance
+    buat kinerja = rt.pantau_kinerja(proses)
+    tampilkan("Kinerja aplikasi: CPU " + kinerja.cpu.toFixed(2) + "%, Memori " + kinerja.memori.toFixed(2) + "MB")
+
+    // Get system information
+    buat info_sistem = rt.dapatkan_info_sistem()
+    tampilkan("Informasi sistem: " + info_sistem.lingkungan + " mode " + info_sistem.mode)
+
+    // Log some messages
+    logger.info("Aplikasi dimulai", { proses_id: proses.id })
+    logger.debug("Memantau kinerja", { cpu: kinerja.cpu, memori: kinerja.memori })
+
+    // Profile execution
+    profiler.mulai_sesi("eksekusi_aplikasi")
+    profiler.catat_fungsi("inisialisasi", 150)
+    profiler.catat_fungsi("eksekusi_utama", 2500)
+    profiler.catat_fungsi("pembersihan", 50)
+    buat sesi = profiler.hentikan_sesi()
+
+    jika sesi {
+        buat laporan = profiler.buat_laporan(sesi)
+        tampilkan("Laporan profiling: Durasi " + laporan.ringkasan.durasi_ms + "ms")
+    }
+
+    // Check system resources
+    buat status_sumber_daya = pengelola_sumber_daya.dapatkan_status_sumber_daya()
+    tampilkan("Status CPU: " + status_sumber_daya.cpu.persentase.toFixed(2) + "% digunakan")
+
+    // Execute a command
+    buat hasil = executor.eksekusi_sinkron("echo Hello KODEON Runtime")
+    tampilkan("Hasil eksekusi: " + hasil.stdout)
+
+    // Schedule a task
+    buat waktu_mendatang = sekarang() + 5000 // 5 seconds from now
+    layanan_sistem.jadwalkan_tugas(waktu_mendatang, fungsi() {
+        tampilkan("Tugas terjadwal dijalankan!")
+        logger.info("Tugas terjadwal selesai")
+    }, "tugas_contoh")
+
+    // Simulate some work
+    untuk buat i = 0; i < 10; i++ {
+        rt.perbarui()
+        tunggu(100) // Wait 100ms
+    }
+
+    // Clean up
+    rt.hentikan()
+    tampilkan("Runtime dihentikan")
+
+    kembalikan 0
+}
+
+// Run the example
+utama()

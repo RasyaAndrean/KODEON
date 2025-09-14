@@ -1,0 +1,8 @@
+// KODEON Implementation Details - Core Exports
+// Centralized export file for all implementation details core modules
+
+// Core engine
+ekspor { default sebagai IntiImplementationDetails } dari './inti-implementation-details.kodeon'
+
+// Export all core modules
+ekspor * dari './inti-implementation-details.kodeon'

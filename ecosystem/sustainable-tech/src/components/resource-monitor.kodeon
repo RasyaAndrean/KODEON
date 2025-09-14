@@ -1,0 +1,281 @@
+// KODEON Sustainable Technology - Resource Monitor
+// Resource usage monitoring functionality
+
+kelas MonitorSumberDaya {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.riwayat = []
+        ini.alerts = []
+        ini.metrik = {
+            cpu: { penggunaan: 0, frekuensi: 0, suhu: 0 },
+            memori: { penggunaan: 0, tersedia: 0, virtual: 0 },
+            disk: { penggunaan: 0, baca: 0, tulis: 0 },
+            jaringan: { masuk: 0, keluar: 0, latensi: 0 }
+        }
+    }
+
+    // Initialize resource monitor
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Monitor sumber daya diinisialisasi")
+    }
+
+    // Shutdown resource monitor
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.riwayat = []
+        ini.alerts = []
+        tampilkan("Monitor sumber daya dihentikan")
+    }
+
+    // Collect resource metrics
+    fungsi kumpulkan_metrik() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would collect actual system metrics
+        ini.metrik.cpu.penggunaan = Math.max(0, Math.min(100, ini.metrik.cpu.penggunaan + (Math.acak() * 10 - 5)))
+        ini.metrik.cpu.frekuensi = 2.5 + (Math.acak() * 1 - 0.5) // GHz
+        ini.metrik.cpu.suhu = 45 + (Math.acak() * 20 - 10) // Celsius
+
+        ini.metrik.memori.penggunaan = Math.max(0, Math.min(100, ini.metrik.memori.penggunaan + (Math.acak() * 10 - 5)))
+        ini.metrik.memori.tersedia = 8192 - (ini.metrik.memori.penggunaan * 81.92) // MB
+        ini.metrik.memori.virtual = Math.max(0, ini.metrik.memori.virtual + (Math.acak() * 100 - 50))
+
+        ini.metrik.disk.penggunaan = Math.max(0, Math.min(100, ini.metrik.disk.penggunaan + (Math.acak() * 5 - 2.5)))
+        ini.metrik.disk.baca = Math.max(0, ini.metrik.disk.baca + (Math.acak() * 1000))
+        ini.metrik.disk.tulis = Math.max(0, ini.metrik.disk.tulis + (Math.acak() * 1000))
+
+        ini.metrik.jaringan.masuk = Math.max(0, ini.metrik.jaringan.masuk + (Math.acak() * 10000))
+        ini.metrik.jaringan.keluar = Math.max(0, ini.metrik.jaringan.keluar + (Math.acak() * 5000))
+        ini.metrik.jaringan.latensi = 20 + (Math.acak() * 30) // ms
+
+        buat snapshot = {
+            waktu: sekarang(),
+            metrik: JSON.menyalin(ini.metrik)
+        }
+
+        ini.riwayat.tambah(snapshot)
+
+        // Keep only last 100 snapshots
+        jika ini.riwayat.panjang > 100 {
+            ini.riwayat = ini.riwayat.slice(-100)
+        }
+
+        kembalikan snapshot
+    }
+
+    // Get current metrics
+    fungsi dapatkan_metrik() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.metrik
+    }
+
+    // Get metrics history
+    fungsi dapatkan_riwayat() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan []
+        }
+
+        kembalikan ini.riwayat
+    }
+
+    // Check for alerts
+    fungsi periksa_alerts() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan []
+        }
+
+        buat alerts_baru = []
+
+        // Check CPU usage
+        jika ini.metrik.cpu.penggunaan > 90 {
+            alerts_baru.tambah({
+                jenis: "cpu_tinggi",
+                nilai: ini.metrik.cpu.penggunaan,
+                ambang_batas: 90,
+                waktu: sekarang(),
+                pesan: "Penggunaan CPU sangat tinggi: " + ini.metrik.cpu.penggunaan.toFixed(2) + "%"
+            })
+        }
+
+        // Check CPU temperature
+        jika ini.metrik.cpu.suhu > 80 {
+            alerts_baru.tambah({
+                jenis: "suhu_cpu_tinggi",
+                nilai: ini.metrik.cpu.suhu,
+                ambang_batas: 80,
+                waktu: sekarang(),
+                pesan: "Suhu CPU tinggi: " + ini.metrik.cpu.suhu.toFixed(2) + "°C"
+            })
+        }
+
+        // Check memory usage
+        jika ini.metrik.memori.penggunaan > 85 {
+            alerts_baru.tambah({
+                jenis: "memori_tinggi",
+                nilai: ini.metrik.memori.penggunaan,
+                ambang_batas: 85,
+                waktu: sekarang(),
+                pesan: "Penggunaan memori tinggi: " + ini.metrik.memori.penggunaan.toFixed(2) + "%"
+            })
+        }
+
+        // Check disk usage
+        jika ini.metrik.disk.penggunaan > 95 {
+            alerts_baru.tambah({
+                jenis: "disk_penuh",
+                nilai: ini.metrik.disk.penggunaan,
+                ambang_batas: 95,
+                waktu: sekarang(),
+                pesan: "Disk hampir penuh: " + ini.metrik.disk.penggunaan.toFixed(2) + "%"
+            })
+        }
+
+        // Add new alerts to the alerts list
+        untuk setiap alert dalam alerts_baru {
+            ini.alerts.tambah(alert)
+        }
+
+        // Keep only last 50 alerts
+        jika ini.alerts.panjang > 50 {
+            ini.alerts = ini.alerts.slice(-50)
+        }
+
+        jika alerts_baru.panjang > 0 {
+            tampilkan("Alerts sumber daya ditemukan: " + alerts_baru.panjang)
+        }
+
+        kembalikan alerts_baru
+    }
+
+    // Get alerts
+    fungsi dapatkan_alerts() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan []
+        }
+
+        kembalikan ini.alerts
+    }
+
+    // Clear alerts
+    fungsi hapus_alerts() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan salah
+        }
+
+        ini.alerts = []
+        tampilkan("Alerts dihapus")
+        kembalikan benar
+    }
+
+    // Generate resource report
+    fungsi buat_laporan() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat rata_rata = {
+            cpu: { penggunaan: 0, frekuensi: 0, suhu: 0 },
+            memori: { penggunaan: 0, tersedia: 0, virtual: 0 },
+            disk: { penggunaan: 0, baca: 0, tulis: 0 },
+            jaringan: { masuk: 0, keluar: 0, latensi: 0 }
+        }
+
+        jika ini.riwayat.panjang > 0 {
+            untuk setiap snapshot dalam ini.riwayat {
+                rata_rata.cpu.penggunaan += snapshot.metrik.cpu.penggunaan
+                rata_rata.cpu.frekuensi += snapshot.metrik.cpu.frekuensi
+                rata_rata.cpu.suhu += snapshot.metrik.cpu.suhu
+
+                rata_rata.memori.penggunaan += snapshot.metrik.memori.penggunaan
+                rata_rata.memori.tersedia += snapshot.metrik.memori.tersedia
+                rata_rata.memori.virtual += snapshot.metrik.memori.virtual
+
+                rata_rata.disk.penggunaan += snapshot.metrik.disk.penggunaan
+                rata_rata.disk.baca += snapshot.metrik.disk.baca
+                rata_rata.disk.tulis += snapshot.metrik.disk.tulis
+
+                rata_rata.jaringan.masuk += snapshot.metrik.jaringan.masuk
+                rata_rata.jaringan.keluar += snapshot.metrik.jaringan.keluar
+                rata_rata.jaringan.latensi += snapshot.metrik.jaringan.latensi
+            }
+
+            rata_rata.cpu.penggunaan /= ini.riwayat.panjang
+            rata_rata.cpu.frekuensi /= ini.riwayat.panjang
+            rata_rata.cpu.suhu /= ini.riwayat.panjang
+
+            rata_rata.memori.penggunaan /= ini.riwayat.panjang
+            rata_rata.memori.tersedia /= ini.riwayat.panjang
+            rata_rata.memori.virtual /= ini.riwayat.panjang
+
+            rata_rata.disk.penggunaan /= ini.riwayat.panjang
+            rata_rata.disk.baca /= ini.riwayat.panjang
+            rata_rata.disk.tulis /= ini.riwayat.panjang
+
+            rata_rata.jaringan.masuk /= ini.riwayat.panjang
+            rata_rata.jaringan.keluar /= ini.riwayat.panjang
+            rata_rata.jaringan.latensi /= ini.riwayat.panjang
+        }
+
+        kembalikan {
+            metrik_terkini: ini.metrik,
+            rata_rata: rata_rata,
+            jumlah_snapshot: ini.riwayat.panjang,
+            alerts_aktif: ini.alerts.panjang,
+            waktu_laporan: sekarang()
+        }
+    }
+
+    // Set monitoring thresholds
+    fungsi atur_ambang_batas(thresholds) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sumber daya belum diinisialisasi")
+            kembalikan salah
+        }
+
+        ini.ambang_batas = thresholds
+        tampilkan("Ambang batas diperbarui")
+        kembalikan benar
+    }
+
+    // Get monitoring thresholds
+    fungsi dapatkan_ambang_batas() {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.ambang_batas || {
+            cpu_penggunaan: 90,
+            cpu_suhu: 80,
+            memori_penggunaan: 85,
+            disk_penggunaan: 95
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Collect metrics periodically
+        jika Math.acak() > 0.7 {
+            ini.kumpulkan_metrik()
+            ini.periksa_alerts()
+        }
+    }
+}
+
+ekspor MonitorSumberDaya

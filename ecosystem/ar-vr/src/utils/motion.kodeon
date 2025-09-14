@@ -1,0 +1,95 @@
+// KODEON AR/VR Integration - Motion Detection Utility
+// Motion detection for AR/VR interactions
+
+kelas DeteksiGerak {
+    fungsi inisialisasi() {
+        ini.sensor_aktif = salah
+        ini.sensitivitas = 0.5
+        ini.gerakan_terakhir = tidak_ada
+        ini.callback_gerakan = tidak_ada
+    }
+
+    // Enable motion sensor
+    fungsi aktifkan() {
+        // In a real implementation, this would initialize device motion sensors
+        ini.sensor_aktif = benar
+        tampilkan("Sensor gerak diaktifkan")
+    }
+
+    // Disable motion sensor
+    fungsi nonaktifkan() {
+        ini.sensor_aktif = salah
+        tampilkan("Sensor gerak dinonaktifkan")
+    }
+
+    // Set sensitivity
+    fungsi atur_sensitivitas(sensitivitas) {
+        ini.sensitivitas = sensitivitas
+    }
+
+    // Set motion callback
+    fungsi atur_callback(callback) {
+        ini.callback_gerakan = callback
+    }
+
+    // Detect motion
+    fungsi deteksi_gerak(gerakan_saat_ini) {
+        jika bukan ini.sensor_aktif {
+            kembalikan salah
+        }
+
+        buat terdeteksi = salah
+
+        jika ini.gerakan_terakhir bukan_tidak_ada {
+            // Calculate difference between current and last motion
+            buat perbedaan = ini.hitung_perbedaan(gerakan_saat_ini, ini.gerakan_terakhir)
+
+            jika perbedaan > ini.sensitivitas {
+                terdeteksi = benar
+
+                // Trigger callback if set
+                jika ini.callback_gerakan bukan_tidak_ada {
+                    ini.callback_gerakan(gerakan_saat_ini, perbedaan)
+                }
+            }
+        }
+
+        ini.gerakan_terakhir = gerakan_saat_ini
+        kembalikan terdeteksi
+    }
+
+    // Calculate difference between motion states
+    fungsi hitung_perbedaan(gerakan1, gerakan2) {
+        buat dx = gerakan1.x - gerakan2.x
+        buat dy = gerakan1.y - gerakan2.y
+        buat dz = gerakan1.z - gerakan2.z
+        kembalikan Math.sqrt(dx * dx + dy * dy + dz * dz)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.sensor_aktif {
+            kembalikan
+        }
+
+        // In a real implementation, this would read from motion sensors
+        buat gerakan_saat_ini = ini.baca_sensor()
+
+        jika gerakan_saat_ini bukan_tidak_ada {
+            ini.deteksi_gerak(gerakan_saat_ini)
+        }
+    }
+
+    // Read from sensor (placeholder)
+    fungsi baca_sensor() {
+        // In a real implementation, this would read actual sensor data
+        // For now, we'll return a mock motion state
+        kembalikan {
+            x: Math.random() * 2 - 1,
+            y: Math.random() * 2 - 1,
+            z: Math.random() * 2 - 1
+        }
+    }
+}
+
+ekspor DeteksiGerak

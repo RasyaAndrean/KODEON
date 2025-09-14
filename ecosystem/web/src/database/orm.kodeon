@@ -1,0 +1,71 @@
+// KODEON Web Framework - Database ORM
+// Simple ORM for database operations
+
+kelas Model:
+    fungsi inisialisasi(nama_tabel):
+        ini.tabel = nama_tabel
+        ini.koneksi = tidak_ada
+    
+    // Set database connection
+    fungsi koneksi(koneksi_db):
+        ini.koneksi = koneksi_db
+    
+    // Find all records
+    fungsi semua():
+        // In a real implementation, this would query the database
+        buat query = "SELECT * FROM " + ini.tabel
+        kembalikan ini.jalankan_query(query)
+    
+    // Find record by ID
+    fungsi cari(id):
+        buat query = "SELECT * FROM " + ini.tabel + " WHERE id = " + id
+        kembalikan ini.jalankan_query(query)
+    
+    // Create new record
+    fungsi buat(data):
+        buat kolom = data.kunci().gabung(", ")
+        buat nilai = data.nilai().peta(fungsi(v): kembalikan "'" + v + "'").gabung(", ")
+        buat query = "INSERT INTO " + ini.tabel + " (" + kolom + ") VALUES (" + nilai + ")"
+        kembalikan ini.jalankan_query(query)
+    
+    // Update record
+    fungsi perbarui(id, data):
+        buat set_clause = data.kunci().peta(fungsi(k): kembalikan k + " = '" + data[k] + "'").gabung(", ")
+        buat query = "UPDATE " + ini.tabel + " SET " + set_clause + " WHERE id = " + id
+        kembalikan ini.jalankan_query(query)
+    
+    // Delete record
+    fungsi hapus(id):
+        buat query = "DELETE FROM " + ini.tabel + " WHERE id = " + id
+        kembalikan ini.jalankan_query(query)
+    
+    // Execute query (simulated)
+    fungsi jalankan_query(query):
+        // In a real implementation, this would execute against a database
+        tampilkan("Menjalankan query: " + query)
+        kembalikan {
+            hasil: [],
+            jumlah_baris: 0
+        }
+
+// Database connection class
+kelas KoneksiDatabase:
+    fungsi inisialisasi(tipe, konfigurasi):
+        ini.tipe = tipe
+        ini.konfigurasi = konfigurasi
+        ini.terhubung = salah
+    
+    // Connect to database
+    fungsi hubungkan():
+        // In a real implementation, this would establish a database connection
+        ini.terhubung = benar
+        tampilkan("Terhubung ke database " + ini.tipe)
+    
+    // Disconnect from database
+    fungsi putuskan():
+        ini.terhubung = salah
+        tampilkan("Terputus dari database")
+
+// Export classes
+ekspor Model
+ekspor KoneksiDatabase

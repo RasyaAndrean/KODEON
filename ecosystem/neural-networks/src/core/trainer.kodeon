@@ -1,0 +1,166 @@
+// KODEON Neural Networks - Trainer
+// Handles the training process of neural networks
+
+kelas Pelatih:
+    fungsi inisialisasi():
+        ini.jaringan = tidak_ada
+        ini.optimizer = tidak_ada
+        ini.fungsi_loss = tidak_ada
+        ini.riwayat = {
+            loss: [],
+            akurasi: [],
+            val_loss: [],
+            val_akurasi: []
+        }
+
+    // Set up the trainer with a network
+    fungsi atur_jaringan(jaringan):
+        ini.jaringan = jaringan
+        tampilkan("Pelatih diatur untuk jaringan")
+
+    // Train the network
+    fungsi latih(data_latih, label_latih, data_validasi, label_validasi, epochs, batch_size):
+        jika ini.jaringan == tidak_ada:
+            tampilkan("Kesalahan: Jaringan belum diatur")
+            kembalikan tidak_ada
+
+        tampilkan("Memulai pelatihan dengan " + epochs + " epochs")
+
+        untuk buat epoch = 1 sampai epoch <= epochs:
+            // Train on batches
+            buat metrik_latih = ini.latih_epoch(data_latih, label_latih, batch_size)
+
+            // Validate
+            buat metrik_validasi = tidak_ada
+            jika data_validasi bukan_tidak_ada dan label_validasi bukan_tidak_ada:
+                metrik_validasi = ini.validasi(data_validasi, label_validasi)
+
+            // Store metrics
+            ini.riwayat.loss.tambah(metrik_latih.loss)
+            ini.riwayat.akurasi.tambah(metrik_latih.akurasi)
+
+            jika metrik_validasi bukan_tidak_ada:
+                ini.riwayat.val_loss.tambah(metrik_validasi.loss)
+                ini.riwayat.val_akurasi.tambah(metrik_validasi.akurasi)
+
+            // Display progress
+            jika epoch % 10 == 0:
+                buat pesan = "Epoch " + epoch + " - Loss: " + metrik_latih.loss.bulat(4) + " - Akurasi: " + (metrik_latih.akurasi * 100).bulat(2) + "%"
+                jika metrik_validasi bukan_tidak_ada:
+                    pesan = pesan + " - Val Loss: " + metrik_validasi.loss.bulat(4) + " - Val Akurasi: " + (metrik_validasi.akurasi * 100).bulat(2) + "%"
+                tampilkan(pesan)
+
+        kembalikan ini.riwayat
+
+    // Train for one epoch
+    fungsi latih_epoch(data, label, batch_size):
+        buat total_loss = 0
+        buat total_akurasi = 0
+        buat jumlah_batch = 0
+
+        // Shuffle data
+        buat data_acak = ini.acak_data(data, label)
+        buat data_diacak = data_acak.data
+        buat label_diacak = data_acak.label
+
+        // Process in batches
+        untuk buat i = 0 sampai i < data_diacak.panjang:
+            jika i % batch_size == 0:
+                // Get batch
+                buat akhir_batch = minimum(i + batch_size, data_diacak.panjang)
+                buat batch_data = data_diacak.potong(i, akhir_batch)
+                buat batch_label = label_diacak.potong(i, akhir_batch)
+
+                // Train on batch
+                buat hasil_batch = ini.latih_batch(batch_data, batch_label)
+                total_loss = total_loss + hasil_batch.loss
+                total_akurasi = total_akurasi + hasil_batch.akurasi
+                jumlah_batch = jumlah_batch + 1
+
+        kembalikan {
+            loss: total_loss / jumlah_batch,
+            akurasi: total_akurasi / jumlah_batch
+        }
+
+    // Train on a single batch
+    fungsi latih_batch(batch_data, batch_label):
+        buat total_loss = 0
+        buat total_akurasi = 0
+
+        untuk buat i = 0 sampai i < batch_data.panjang:
+            // Forward pass
+            buat prediksi = ini.jaringan.maju(batch_data[i])
+
+            // Calculate loss
+            buat loss = ini.jaringan.fungsi_loss.hitung(prediksi, batch_label[i])
+            total_loss = total_loss + loss
+
+            // Calculate accuracy
+            buat akurasi = ini.jaringan.hitung_akurasi(prediksi, batch_label[i])
+            total_akurasi = total_akurasi + akurasi
+
+            // Backward pass
+            buat gradient = ini.jaringan.fungsi_loss.gradient(prediksi, batch_label[i])
+            ini.jaringan.mundur(gradient)
+
+        // Update weights
+        ini.jaringan.optimizer.perbarui_bobot(ini.jaringan)
+
+        kembalikan {
+            loss: total_loss / batch_data.panjang,
+            akurasi: total_akurasi / batch_data.panjang
+        }
+
+    // Validate the network
+    fungsi validasi(data_validasi, label_validasi):
+        buat total_loss = 0
+        buat total_akurasi = 0
+
+        untuk buat i = 0 sampai i < data_validasi.panjang:
+            // Forward pass
+            buat prediksi = ini.jaringan.maju(data_validasi[i])
+
+            // Calculate loss
+            buat loss = ini.jaringan.fungsi_loss.hitung(prediksi, label_validasi[i])
+            total_loss = total_loss + loss
+
+            // Calculate accuracy
+            buat akurasi = ini.jaringan.hitung_akurasi(prediksi, label_validasi[i])
+            total_akurasi = total_akurasi + akurasi
+
+        kembalikan {
+            loss: total_loss / data_validasi.panjang,
+            akurasi: total_akurasi / data_validasi.panjang
+        }
+
+    // Shuffle data
+    fungsi acak_data(data, label):
+        // Simple shuffling implementation
+        buat indeks = []
+        untuk buat i = 0 sampai i < data.panjang:
+            indeks.tambah(i)
+
+        // Shuffle indices
+        untuk buat i = indeks.panjang - 1 sampai i > 0:
+            buat j = acak(0, i)
+            buat temp = indeks[i]
+            indeks[i] = indeks[j]
+            indeks[j] = temp
+
+        // Create shuffled data
+        buat data_diacak = []
+        buat label_diacak = []
+        untuk setiap idx dalam indeks:
+            data_diacak.tambah(data[idx])
+            label_diacak.tambah(label[idx])
+
+        kembalikan {
+            data: data_diacak,
+            label: label_diacak
+        }
+
+    // Get training history
+    fungsi dapatkan_riwayat():
+        kembalikan ini.riwayat
+
+ekspor Pelatih

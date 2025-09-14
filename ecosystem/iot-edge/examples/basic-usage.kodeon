@@ -1,0 +1,296 @@
+// KODEON IoT/Edge Integration - Basic Usage Example
+// Demonstrates how to use the IoT/Edge framework
+
+// Import the IoT framework
+impor IoT
+
+// Example 1: Basic IoT Setup
+fungsi contoh_iot_dasar() {
+    tampilkan("=== Contoh Penggunaan IoT Dasar ===")
+
+    // Create IoT instance
+    buat iot = IoT("iot")
+
+    // Connect to IoT network
+    iot.hubungkan("jaringan_wifi_utama")
+
+    // Create a device
+    buat perangkat = Perangkat("DEV_001", "sensor_node")
+    perangkat.aktifkan()
+    iot.tambah_perangkat(perangkat)
+
+    // Add sensors to device
+    buat sensor_suhu = Sensor("SENS_001", "suhu", "°C")
+    buat sensor_kelembaban = Sensor("SENS_002", "kelembaban", "%")
+    perangkat.tambah_sensor(sensor_suhu)
+    perangkat.tambah_sensor(sensor_kelembaban)
+
+    // Add actuators to device
+    buat aktuator_relay = Aktuator("ACT_001", "relay")
+    perangkat.tambah_aktuator(aktuator_relay)
+
+    // Read sensor data
+    buat data_sensor = perangkat.baca_sensor()
+    tampilkan("Data sensor: " + JSON.stringify(data_sensor))
+
+    // Process data
+    buat pemroses = iot.tambah_pemroses_data("filter")
+    pemroses.atur_parameter({ tipe_filter: "rata_rata", ukuran_jendela: 5 })
+    buat data_diproses = iot.proses_data(data_sensor.map(item => item.nilai))
+    tampilkan("Data diproses: " + JSON.stringify(data_diproses))
+
+    // Send data to network
+    iot.kirim_data(data_sensor, "server_cloud")
+
+    // Control actuator
+    perangkat.kendalikan_aktuator("ACT_001", { tindakan: "hidupkan", nilai: 75 })
+
+    // Disconnect
+    iot.putuskan_koneksi()
+
+    tampilkan("IoT setup selesai\n")
+}
+
+// Example 2: Edge Computing Node
+fungsi contoh_edge_node() {
+    tampilkan("=== Contoh Edge Computing Node ===")
+
+    // Create IoT instance for edge computing
+    buat edge = IoT("edge")
+
+    // Connect to network
+    edge.hubungkan("jaringan_ethernet_lokal")
+
+    // Create edge node device
+    buat edge_node = Perangkat("EDGE_001", "edge_node")
+    edge_node.aktifkan()
+    edge.tambah_perangkat(edge_node)
+
+    // Add multiple sensors
+    buat sensor_array = []
+    untuk buat i = 1 sampai i <= 5:
+        buat sensor = Sensor("SENS_" + ("00" + i).slice(-3), "suhu", "°C")
+        sensor_array.tambah(sensor)
+        edge_node.tambah_sensor(sensor)
+
+    // Add communication module
+    buat komunikasi = edge.tambah_komunikasi("mqtt")
+    komunikasi.hubungkan("mqtt.broker.local", { username: "edge_user", password: "edge_pass" })
+
+    // Subscribe to sensor data topic
+    komunikasi.berlangganan("sensor/data", fungsi(pesan, topik) {
+        tampilkan("Data diterima dari topik " + topik + ": " + JSON.stringify(pesan))
+
+        // Process received data
+        buat data_diproses = edge.proses_data([pesan.nilai])
+        tampilkan("Data diproses di edge: " + JSON.stringify(data_diproses))
+
+        // Publish processed data
+        komunikasi.terbitkan("edge/processed", {
+            sumber: pesan.id_perangkat,
+            data_asli: pesan.nilai,
+            data_diproses: data_diproses[0],
+            timestamp: sekarang()
+        })
+    })
+
+    // Simulate receiving data
+    komunikasi.simulasi_pesan_diterima("sensor/data", {
+        id_perangkat: "SENS_001",
+        jenis_data: "suhu",
+        nilai: 25.5,
+        unit: "°C"
+    })
+
+    // Add security module
+    buat keamanan = edge.tambah_keamanan("tls")
+    keamanan.konfigurasi({ level: "tinggi" })
+    keamanan.hasilkan_sertifikat()
+    keamanan.hasilkan_kunci()
+
+    // Secure and validate data
+    buat data_rahasia = { id: "SECRET_001", nilai: 42 }
+    buat data_diamankan = keamanan.amankan(data_rahasia)
+    tampilkan("Data diamankan: " + JSON.stringify(data_diamankan))
+
+    buat validasi = keamanan.validasi(data_diamankan)
+    tampilkan("Data divalidasi: " + JSON.stringify(validasi))
+
+    // Disconnect
+    edge.putuskan_koneksi()
+
+    tampilkan("Edge node setup selesai\n")
+}
+
+// Example 3: Network Management
+fungsi contoh_manajemen_jaringan() {
+    tampilkan("=== Contoh Manajemen Jaringan ===")
+
+    // Create WiFi network
+    buat wifi = Jaringan("wifi", "192.168.1.1")
+    wifi.atur_parameter({
+        data_rate: 54000000, // 54 Mbps
+        latensi: 5, // 5 ms
+        keamanan: "wpa2",
+        ssid: "IoT_Network"
+    })
+
+    // Connect to network
+    wifi.hubungkan({ password: "iot_password_123" })
+
+    // Create devices
+    buat perangkat1 = Perangkat("DEVICE_001", "sensor")
+    buat perangkat2 = Perangkat("DEVICE_002", "aktuator")
+
+    // Connect devices to network
+    wifi.hubungkan_perangkat(perangkat1)
+    wifi.hubungkan_perangkat(perangkat2)
+
+    // Send data between devices
+    wifi.kirim_data({ pesan: "Halo dari perangkat 1" }, "DEVICE_002")
+
+    // Get network information
+    buat info_jaringan = wifi.dapatkan_info()
+    tampilkan("Info jaringan: " + JSON.stringify(info_jaringan))
+
+    // Check network quality
+    buat kualitas = wifi.periksa_kualitas()
+    tampilkan("Kualitas jaringan: " + JSON.stringify(kualitas))
+
+    // Scan for available networks
+    buat jaringan_tersedia = wifi.pindai_jaringan()
+    tampilkan("Jaringan tersedia: " + JSON.stringify(jaringan_tersedia))
+
+    // Disconnect devices
+    wifi.putuskan_perangkat(perangkat1)
+    wifi.putuskan_perangkat(perangkat2)
+
+    // Disconnect from network
+    wifi.putuskan_koneksi()
+
+    tampilkan("Manajemen jaringan selesai\n")
+}
+
+// Example 4: Device Management
+fungsi contoh_manajemen_perangkat() {
+    tampilkan("=== Contoh Manajemen Perangkat ===")
+
+    // Create device
+    buat perangkat = Perangkat("SMART_DEVICE_001", "smart_sensor")
+    perangkat.aktifkan()
+
+    // Add various sensors
+    buat sensor_suhu = Sensor("TEMP_001", "suhu", "°C")
+    buat sensor_cahaya = Sensor("LIGHT_001", "cahaya", "lux")
+    buat sensor_gerak = Sensor("MOTION_001", "gerak", "boolean")
+
+    perangkat.tambah_sensor(sensor_suhu)
+    perangkat.tambah_sensor(sensor_cahaya)
+    perangkat.tambah_sensor(sensor_gerak)
+
+    // Add actuators
+    buat aktuator_led = Aktuator("LED_001", "led")
+    buat aktuator_relay = Aktuator("RELAY_001", "relay")
+
+    perangkat.tambah_aktuator(aktuator_led)
+    perangkat.tambah_aktuator(aktuator_relay)
+
+    // Read all sensor data
+    buat semua_data = perangkat.baca_sensor()
+    tampilkan("Semua data sensor: " + JSON.stringify(semua_data))
+
+    // Control actuators
+    perangkat.kendalikan_aktuator("LED_001", { tindakan: "hidupkan", nilai: 50 })
+    perangkat.kendalikan_aktuator("RELAY_001", { tindakan: "berkedip", durasi: 1000, interval: 500 })
+
+    // Check device health
+    buat kesehatan = perangkat.periksa_kesehatan()
+    tampilkan("Kesehatan perangkat: " + JSON.stringify(kesehatan))
+
+    // Get device information
+    buat info = perangkat.dapatkan_info()
+    tampilkan("Info perangkat: " + JSON.stringify(info))
+
+    // Simulate sensor failure and recovery
+    sensor_suhu.simulasi_kegagalan()
+    buat kesehatan_setelah_gagal = perangkat.periksa_kesehatan()
+    tampilkan("Kesehatan setelah kegagalan: " + JSON.stringify(kesehatan_setelah_gagal))
+
+    sensor_suhu.pulihkan()
+    buat kesehatan_setelah_pulih = perangkat.periksa_kesehatan()
+    tampilkan("Kesehatan setelah pulih: " + JSON.stringify(kesehatan_setelah_pulih))
+
+    // Deactivate device
+    perangkat.nonaktifkan()
+
+    tampilkan("Manajemen perangkat selesai\n")
+}
+
+// Example 5: Data Processing and Communication
+fungsi contoh_pemrosesan_komunikasi() {
+    tampilkan("=== Contoh Pemrosesan dan Komunikasi Data ===")
+
+    // Create data processor
+    buat pemroses = PemrosesData("agregasi")
+    pemroses.atur_parameter({ tipe_agregat: "rata_rata", interval: 60 })
+
+    // Simulate sensor data
+    buat data_sensor = []
+    untuk buat i = 0 sampai i < 20:
+        data_sensor.tambah(20 + Math.random() * 10) // Temperature between 20-30°C
+
+    tampilkan("Data sensor mentah: " + data_sensor.slice(0, 5).join(", ") + "...")
+
+    // Process data
+    buat data_diproses = pemroses.proses(data_sensor)
+    tampilkan("Data diproses: " + JSON.stringify(data_diproses.slice(0, 3)))
+
+    // Create communication module
+    buat komunikasi = Komunikasi("mqtt")
+    komunikasi.hubungkan("mqtt.example.com", { username: "user", password: "pass" })
+
+    // Publish processed data
+    komunikasi.terbitkan("iot/sensor/temperature", {
+        perangkat_id: "TEMP_SENSOR_001",
+        data: data_diproses,
+        unit: "°C",
+        timestamp: sekarang()
+    })
+
+    // Subscribe to command topic
+    komunikasi.berlangganan("iot/commands", fungsi(pesan, topik) {
+        tampilkan("Perintah diterima: " + JSON.stringify(pesan))
+
+        // Process command
+        jika pesan.tindakan == "kalibrasi" {
+            tampilkan("Melakukan kalibrasi perangkat...")
+        } lain jika pesan.tindakan == "restart" {
+            tampilkan("Merestart perangkat...")
+        }
+    })
+
+    // Simulate receiving command
+    komunikasi.simulasi_pesan_diterima("iot/commands", {
+        perangkat_id: "TEMP_SENSOR_001",
+        tindakan: "kalibrasi",
+        parameter: { referensi: 25.0 }
+    })
+
+    // Get communication statistics
+    buat statistik = komunikasi.dapatkan_statistik()
+    tampilkan("Statistik komunikasi: " + JSON.stringify(statistik))
+
+    // Disconnect
+    komunikasi.putuskan_koneksi()
+
+    tampilkan("Pemrosesan dan komunikasi data selesai\n")
+}
+
+// Run examples
+contoh_iot_dasar()
+contoh_edge_node()
+contoh_manajemen_jaringan()
+contoh_manajemen_perangkat()
+contoh_pemrosesan_komunikasi()
+
+tampilkan("Semua contoh telah dijalankan!")

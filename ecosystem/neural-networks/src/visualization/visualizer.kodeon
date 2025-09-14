@@ -1,0 +1,69 @@
+// KODEON Neural Networks - Visualization
+// Tools for visualizing neural networks and training progress
+
+kelas VisualisasiNeural:
+    fungsi inisialisasi():
+        ini.warna = {
+            "loss": "#FF6B6B",
+            "akurasi": "#4ECDC4",
+            "val_loss": "#45B7D1",
+            "val_akurasi": "#96CEB4"
+        }
+
+    // Visualize training history
+    fungsi visualisasi_riwayat(riwayat):
+        tampilkan("Visualisasi Riwayat Pelatihan:")
+        tampilkan("============================")
+
+        // Display loss
+        jika riwayat.loss bukan_tidak_ada:
+            tampilkan("Loss:")
+            untuk buat i = 0 sampai i < riwayat.loss.panjang:
+                buat epoch = i + 1
+                buat loss_val = riwayat.loss[i]
+                buat bar = "█".ulang(loss_val * 20)  // Scale for visualization
+                tampilkan("Epoch " + epoch + ": " + bar + " (" + loss_val.bulat(4) + ")")
+
+        tampilkan("")
+
+        // Display accuracy
+        jika riwayat.akurasi bukan_tidak_ada:
+            tampilkan("Akurasi:")
+            untuk buat i = 0 sampai i < riwayat.akurasi.panjang:
+                buat epoch = i + 1
+                buat acc_val = riwayat.akurasi[i]
+                buat bar = "█".ulang(acc_val * 20)  // Scale for visualization
+                tampilkan("Epoch " + epoch + ": " + bar + " (" + (acc_val * 100).bulat(2) + "%)")
+
+    // Visualize model architecture
+    fungsi visualisasi_arsitektur(model):
+        tampilkan("Visualisasi Arsitektur Model:")
+        tampilkan("============================")
+
+        jika model.lapisan bukan_tidak_ada:
+            untuk buat i = 0 sampai i < model.lapisan.panjang:
+                buat lapisan = model.lapisan[i]
+                buat info = lapisan.dapatkan_info()
+                tampilkan((i+1) + ". " + info.nama + " (" + info.jumlah_input + " → " + info.jumlah_output + ")")
+
+    // Visualize weights
+    fungsi visualisasi_bobot(lapisan):
+        tampilkan("Visualisasi Bobot Lapisan:")
+        tampilkan("=========================")
+
+        jika lapisan.bobot bukan_tidak_ada:
+            untuk buat i = 0 sampai i < minimum(5, lapisan.bobot.panjang):  // Show first 5 rows
+                buat baris = ""
+                untuk buat j = 0 sampai j < minimum(5, lapisan.bobot[i].panjang):  // Show first 5 columns
+                    baris = baris + lapisan.bobot[i][j].bulat(3) + " "
+                tampilkan(baris)
+
+            jika lapisan.bobot.panjang > 5:
+                tampilkan("... (" + (lapisan.bobot.panjang - 5) + " baris lainnya)")
+
+// Export visualization functions
+fungsi buat_visualisasi():
+    kembalikan VisualisasiNeural()
+
+ekspor buat_visualisasi
+ekspor VisualisasiNeural

@@ -1,0 +1,36 @@
+{
+  "name": "@kodeon/implementation-details",
+  "version": "1.0.0",
+  "description": "Framework for documenting and managing implementation details of KODEON ecosystem components",
+  "main": "src/implementation-details.kodeon",
+  "directories": {
+    "src": "src",
+    "examples": "src/examples",
+    "docs": "src/docs",
+    "tests": "src/tests"
+  },
+  "scripts": {
+    "start": "kodeon run src/implementation-details.kodeon",
+    "example:basic": "kodeon run src/examples/contoh-dasar.kodeon",
+    "example:advanced": "kodeon run src/examples/contoh-lanjutan.kodeon",
+    "test": "kodeon test src/tests/*.test.kodeon"
+  },
+  "keywords": [
+    "kodeon",
+    "implementation",
+    "documentation",
+    "tracking",
+    "verification"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "@kodeon/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@kodeon/testing": "^1.0.0"
+  },
+  "engines": {
+    "kodeon": ">=1.0.0"
+  }
+}

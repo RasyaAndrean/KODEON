@@ -1,0 +1,52 @@
+// KODEON Web3/Blockchain - Transaction
+// Represents a blockchain transaction
+
+kelas Transaksi:
+    fungsi inisialisasi(dari_alamat, ke_alamat, jumlah, data):
+        ini.dari_alamat = dari_alamat
+        ini.ke_alamat = ke_alamat
+        ini.jumlah = jumlah
+        ini.data = data jika data bukan_tidak_ada lain ""
+        ini.timestamp = sekarang()
+        ini.hash = tidak_ada
+        ini.signature = tidak_ada
+
+    // Calculate transaction hash
+    fungsi hitung_hash():
+        buat konten = ini.dari_alamat + ini.ke_alamat + ini.jumlah + ini.data + ini.timestamp
+        kembalikan hash.sha256(konten)
+
+    // Sign transaction
+    fungsi tandatangani(kunci_pribadi):
+        // Calculate hash
+        ini.hash = ini.hitung_hash()
+
+        // Sign hash
+        ini.signature = tanda_tangan.tandatangani(ini.hash, kunci_pribadi)
+
+        kembalikan ini.signature
+
+    // Verify transaction signature
+    fungsi apakah_valid():
+        jika ini.dari_alamat == tidak_ada:
+            kembalikan benar  // Mining reward transaction
+
+        jika ini.signature == tidak_ada:
+            tampilkan("Kesalahan: Tidak ada tanda tangan pada transaksi")
+            kembalikan salah
+
+        kembalikan tanda_tangan.verifikasi(ini.hash, ini.signature, ini.dari_alamat)
+
+    // Get transaction information
+    fungsi dapatkan_info():
+        kembalikan {
+            dari_alamat: ini.dari_alamat,
+            ke_alamat: ini.ke_alamat,
+            jumlah: ini.jumlah,
+            data: ini.data,
+            timestamp: ini.timestamp,
+            hash: ini.hash,
+            signature: ini.signature
+        }
+
+ekspor Transaksi

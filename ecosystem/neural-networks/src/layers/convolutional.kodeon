@@ -1,0 +1,94 @@
+// KODEON Neural Networks - Convolutional Layer
+// Convolutional layer implementation
+
+kelas LapisanKonvolusi meluas Lapisan:
+    fungsi inisialisasi(tinggi_input, lebar_input, channels_input, ukuran_filter, jumlah_filter, stride, padding):
+        ini.tinggi_input = tinggi_input
+        ini.lebar_input = lebar_input
+        ini.channels_input = channels_input
+        ini.ukuran_filter = ukuran_filter
+        ini.jumlah_filter = jumlah_filter
+        ini.stride = stride
+        ini.padding = padding
+
+        // Calculate output dimensions
+        ini.tinggi_output = (tinggi_input + 2 * padding - ukuran_filter) / stride + 1
+        ini.lebar_output = (lebar_input + 2 * padding - ukuran_filter) / stride + 1
+
+        // Initialize filters
+        ini.filter = []
+        ini.bias = []
+
+        untuk buat f = 0 sampai f < jumlah_filter:
+            // Initialize filter weights
+            buat filter_baru = []
+            untuk buat c = 0 sampai c < channels_input:
+                buat channel = []
+                untuk buat i = 0 sampai i < ukuran_filter:
+                    buat baris = []
+                    untuk buat j = 0 sampai j < ukuran_filter:
+                        // Random initialization
+                        buat nilai = (acak(0, 1000) / 1000.0) * 2 - 1
+                        baris.tambah(nilai)
+                    channel.tambah(baris)
+                filter_baru.tambah(channel)
+            ini.filter.tambah(filter_baru)
+
+            // Initialize bias
+            ini.bias.tambah(0.0)
+
+        ini.nama = "Conv2D"
+
+    // Forward pass through convolutional layer
+    fungsi maju(input):
+        induk.maju(input)
+
+        // Add padding if needed
+        buat input_padded = ini.tambah_padding(input)
+
+        // Initialize output
+        buat output = []
+        untuk buat f = 0 sampai f < ini.jumlah_filter:
+            buat feature_map = []
+            untuk buat i = 0 sampai i < ini.tinggi_output:
+                buat baris = []
+                untuk buat j = 0 sampai j < ini.lebar_output:
+                    // Apply convolution
+                    buat nilai = ini.bias[f] + ini.konvolusi(input_padded, ini.filter[f], i * ini.stride, j * ini.stride)
+                    baris.tambah(nilai)
+                feature_map.tambah(baris)
+            output.tambah(feature_map)
+
+        ini.output_terakhir = output
+        kembalikan output
+
+    // Add padding to input
+    fungsi tambah_padding(input):
+        jika ini.padding == 0:
+            kembalikan input
+
+        // Implementation would pad the input
+        kembalikan input
+
+    // Perform convolution operation
+    fungsi konvolusi(input, filter, start_i, start_j):
+        buat hasil = 0.0
+
+        untuk buat c = 0 sampai c < ini.channels_input:
+            untuk buat i = 0 sampai i < ini.ukuran_filter:
+                untuk buat j = 0 sampai j < ini.ukuran_filter:
+                    buat input_i = start_i + i
+                    buat input_j = start_j + j
+
+                    jika input_i >= 0 dan input_i < ini.tinggi_input dan input_j >= 0 dan input_j < ini.lebar_input:
+                        hasil = hasil + input[c][input_i][input_j] * filter[c][i][j]
+
+        kembalikan hasil
+
+    // Backward pass through convolutional layer
+    fungsi mundur(gradient):
+        // Implementation would calculate gradients
+        // This is a simplified version
+        kembalikan gradient
+
+ekspor LapisanKonvolusi

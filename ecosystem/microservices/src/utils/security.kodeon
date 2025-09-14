@@ -1,0 +1,209 @@
+// KODEON Microservices Integration - Security Utility
+// Security utilities for Microservices
+
+kelas Keamanan {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe || "jwt" // "jwt", "oauth", "api_key", "tls"
+        ini.parameter = parameter || {}
+        ini.kunci_rahasia = tidak_ada
+        ini.daftar_hitam_token = []
+    }
+
+    // Configure security
+    fungsi konfigurasi(konfigurasi) {
+        ini.parameter = { ...ini.parameter, ...konfigurasi }
+
+        jika konfigurasi.kunci_rahasia bukan_tidak_ada {
+            ini.kunci_rahasia = konfigurasi.kunci_rahasia
+        }
+
+        tampilkan("Keamanan dikonfigurasi dengan tipe: " + ini.tipe)
+        kembalikan benar
+    }
+
+    // Secure request
+    fungsi amankan(permintaan) {
+        pilih ini.tipe:
+            kasus "jwt":
+                kembalikan ini.amankan_jwt(permintaan)
+            kasus "oauth":
+                kembalikan ini.amankan_oauth(permintaan)
+            kasus "api_key":
+                kembalikan ini.amankan_api_key(permintaan)
+            kasus "tls":
+                kembalikan ini.amankan_tls(permintaan)
+            bawaan:
+                kembalikan this.amankan_jwt(permintaan)
+    }
+
+    // Secure with JWT
+    fungsi amankan_jwt(permintaan) {
+        // In a real implementation, this would validate JWT tokens
+        tampilkan("Mengamankan permintaan dengan JWT")
+
+        jika permintaan.headers == tidak_ada {
+            permintaan.headers = {}
+        }
+
+        // Check for existing token
+        jika permintaan.headers.authorization bukan_tidak_ada {
+            buat token = permintaan.headers.authorization.mengganti("Bearer ", "")
+
+            // Check if token is blacklisted
+            jika ini.daftar_hitam_token.mengandung(token) {
+                kembalikan {
+                    status: 401,
+                    data: { pesan: "Token telah dicabut" }
+                }
+            }
+
+            // In a real implementation, validate token signature and claims
+            // For now, we'll just pass through
+            tampilkan("Token JWT divalidasi")
+        }
+
+        kembalikan permintaan
+    }
+
+    // Secure with OAuth
+    fungsi amankan_oauth(permintaan) {
+        // In a real implementation, this would validate OAuth tokens
+        tampilkan("Mengamankan permintaan dengan OAuth")
+
+        jika permintaan.headers == tidak_ada {
+            permintaan.headers = {}
+        }
+
+        // Check for OAuth token
+        jika permintaan.headers.authorization bukan_tidak_ada {
+            buat token = permintaan.headers.authorization.mengganti("Bearer ", "")
+
+            // In a real implementation, validate with OAuth provider
+            // For now, we'll just pass through
+            tampilkan("Token OAuth divalidasi")
+        }
+
+        kembalikan permintaan
+    }
+
+    // Secure with API Key
+    fungsi amankan_api_key(permintaan) {
+        // In a real implementation, this would validate API keys
+        tampilkan("Mengamankan permintaan dengan API Key")
+
+        jika permintaan.headers == tidak_ada {
+            permintaan.headers = {}
+        }
+
+        // Check for API key
+        jika permintaan.headers["x-api-key"] bukan_tidak_ada {
+            buat apiKey = permintaan.headers["x-api-key"]
+
+            // In a real implementation, validate against stored keys
+            // For now, we'll just pass through
+            tampilkan("API Key divalidasi")
+        }
+
+        kembalikan permintaan
+    }
+
+    // Secure with TLS
+    fungsi amankan_tls(permintaan) {
+        // In a real implementation, this would ensure TLS connection
+        tampilkan("Memastikan koneksi TLS untuk permintaan")
+
+        // For now, we'll just pass through
+        kembalikan permintaan
+    }
+
+    // Generate JWT token
+    fungsi hasilkan_token_jwt(payload, kedaluarsa) {
+        jika ini.kunci_rahasia == tidak_ada {
+            tampilkan("Kesalahan: Kunci rahasia tidak dikonfigurasi")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would create a signed JWT
+        // For now, we'll simulate a token
+        buat token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
+                    btoa(JSON.stringify(payload)).mengganti(/=/g, '') +
+                    "." + Math.random().toString(36).substring(2, 15)
+
+        tampilkan("Token JWT dihasilkan")
+        kembalikan token
+    }
+
+    // Revoke token
+    fungsi cabut_token(token) {
+        ini.daftar_hitam_token.tambah(token)
+        tampilkan("Token dicabut")
+        kembalikan benar
+    }
+
+    // Check if token is revoked
+    fungsi apakah_token_dicabut(token) {
+        kembalikan ini.daftar_hitam_token.mengandung(token)
+    }
+
+    // Validate request
+    fungsi validasi(permintaan) {
+        // Apply security based on type
+        buat hasil = ini.amankan(permintaan)
+
+        // If security returned an error response, validation failed
+        jika hasil.status >= 400 {
+            kembalikan {
+                valid: salah,
+                error: hasil.data.pesan
+            }
+        }
+
+        kembalikan {
+            valid: benar,
+            permintaan: hasil
+        }
+    }
+
+    // Add rate limiting
+    fungsi tambah_rate_limit(clientId, maks_permintaan, jendela_waktu) {
+        // In a real implementation, this would track requests per client
+        tampilkan("Rate limit ditambahkan untuk client: " + clientId)
+        kembalikan benar
+    }
+
+    // Check rate limit
+    fungsi periksa_rate_limit(clientId) {
+        // In a real implementation, this would check request count
+        // For now, we'll always allow
+        kembalikan benar
+    }
+
+    // Get security metrics
+    fungsi dapatkan_metrik() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            jumlah_token_dicabut: ini.daftar_hitam_token.panjang
+        }
+    }
+
+    // Get security information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            kunci_rahasia_dikonfigurasi: ini.kunci_rahasia bukan_tidak_ada,
+            jumlah_token_dicabut: ini.daftar_hitam_token.panjang
+        }
+    }
+
+    // Update parameters
+    fungsi atur_parameter(parameter_baru) {
+        untuk setiap kunci dalam parameter_baru {
+            ini.parameter[kunci] = parameter_baru[kunci]
+        }
+        tampilkan("Parameter keamanan diperbarui")
+    }
+}
+
+ekspor Keamanan

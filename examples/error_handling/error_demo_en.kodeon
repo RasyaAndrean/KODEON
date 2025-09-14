@@ -1,0 +1,43 @@
+// Demo program to showcase enhanced error handling in KODEON (English version)
+
+// Example 1: Undeclared variable error
+function example1() {
+    result = sum + 5  // Error: 'sum' is not declared
+}
+
+// Example 2: Type mismatch error
+function example2() {
+    var x = 5
+    var y = "hello"
+    var z = x + y  // Error: Cannot add integer and string
+}
+
+// Example 3: Missing semicolon
+function example3() {
+    var a = 10
+    var b = 20  // Missing semicolon
+    var c = a + b
+}
+
+// Example 4: Unclosed brace
+function example4() {
+    var x = 5
+    // Missing closing brace
+
+// Example 5: Duplicate declaration
+function example5() {
+    var x = 5
+    var x = 10  // Error: Duplicate declaration
+}
+
+// Main function
+function main() {
+    // This will demonstrate various error types
+    example1()
+    example2()
+    example3()
+    example4()
+    example5()
+
+    return 0
+}

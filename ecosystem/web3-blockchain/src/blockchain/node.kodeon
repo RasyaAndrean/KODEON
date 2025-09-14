@@ -1,0 +1,68 @@
+// KODEON Web3/Blockchain - Node
+// Represents a node in the blockchain network
+
+kelas Node:
+    fungsi inisialisasi(alamat):
+        ini.alamat = alamat
+        ini.rantai_blok = rantai_blok.RantaiBlok()
+        ini.peers = []
+        ini.pending_transaksi = []
+
+    // Connect to peer
+    fungsi hubungkan_ke_peer(alamat_peer):
+        ini.peers.tambah(alamat_peer)
+        tampilkan("Terhubung ke peer: " + alamat_peer)
+
+    // Disconnect from peer
+    fungsi putuskan_dari_peer(alamat_peer):
+        buat indeks = ini.peers.cari(alamat_peer)
+        jika indeks != -1:
+            ini.peers.hapus_pada(indeks)
+            tampilkan("Terputus dari peer: " + alamat_peer)
+
+    // Sync blockchain with peers
+    fungsi sinkronisasi_rantai():
+        tampilkan("Menyinkronkan rantai blok dengan peers...")
+        // In a real implementation, this would sync with other nodes
+        untuk setiap peer dalam ini.peers:
+            tampilkan("Menyinkronkan dengan peer: " + peer)
+
+    // Broadcast transaction
+    fungsi siarkan_transaksi(transaksi):
+        tampilkan("Menyiarkan transaksi ke peers...")
+        // In a real implementation, this would broadcast to other nodes
+        untuk setiap peer dalam ini.peers:
+            tampilkan("Menyiarkan ke peer: " + peer)
+
+    // Broadcast block
+    fungsi siarkan_blok(blok):
+        tampilkan("Menyiarkan blok ke peers...")
+        // In a real implementation, this would broadcast to other nodes
+        untuk setiap peer dalam ini.peers:
+            tampilkan("Menyiarkan ke peer: " + peer)
+
+    // Mine block
+    fungsi tambang_blok():
+        tampilkan("Menambang blok baru...")
+        ini.rantai_blok.tambang_transaksi_pending(ini.alamat)
+        buat blok_baru = ini.rantai_blok.dapatkan_blok_terakhir()
+        ini.siaran_blok(blok_baru)
+        kembalikan blok_baru
+
+    // Add transaction
+    fungsi tambah_transaksi(transaksi):
+        jika ini.rantai_blok.tambah_transaksi(transaksi):
+            ini.siaran_transaksi(transaksi)
+            kembalikan benar
+        kembalikan salah
+
+    // Get node information
+    fungsi dapatkan_info():
+        kembalikan {
+            alamat: ini.alamat,
+            peers: ini.peers.panjang,
+            panjang_rantai: ini.rantai_blok.blok.panjang,
+            pending_transaksi: ini.rantai_blok.pending_transaksi.panjang
+        }
+
+ekspor Node

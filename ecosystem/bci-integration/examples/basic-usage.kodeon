@@ -1,0 +1,193 @@
+// KODEON BCI Integration - Basic Usage Example
+// Demonstrates how to use the BCI framework
+
+// Import the BCI framework
+impor BCI
+
+// Example 1: Basic BCI Setup
+fungsi contoh_bci_dasar() {
+    tampilkan("=== Contoh Penggunaan BCI Dasar ===")
+
+    // Create BCI instance for motor imagery
+    buat bci = BCI("motorik")
+
+    // Connect to BCI device
+    bci.hubungkan("Device_EEG_16_Channel")
+
+    // Start signal acquisition
+    bci.mulai_akuisisi()
+
+    // Add signal processor
+    buat pemroses = bci.tambah_pemroses_sinyal("filter_rendah")
+    pemroser.atur_parameter({ frekuensi_cutoff: 30 })
+
+    // Add classifier
+    buat klasifikasi = bci.tambah_klasifikasi("lda")
+
+    // Simulate some EEG data processing
+    untuk buat i = 0 sampai i < 5:
+        // In a real implementation, this would read actual EEG data
+        buat sinyal = SinyalEEG(16, 256)
+        // Process the signal
+        buat sinyal_diproses = bci.proses_sinyal(sinyal)
+        tampilkan("Sinyal diproses: " + (i + 1))
+
+    // Send stimulus
+    buat stimulus = Stimulus("visual")
+    stimulus.inisialisasi_visual(10, 0.8, { lebar: 200, tinggi: 200 })
+    bci.kirim_stimulus(stimulus)
+
+    // Get response
+    buat respons = bci.dapatkan_respons()
+    jika respons bukan_tidak_ada {
+        tampilkan("Respons diterima: " + respons.tipe + " (kepercayaan: " + respons.kepercayaan.toFixed(2) + ")")
+    }
+
+    // Stop acquisition
+    bci.hentikan_akuisisi()
+
+    // Disconnect
+    bci.putuskan_koneksi()
+
+    tampilkan("BCI setup selesai\n")
+}
+
+// Example 2: BCI Calibration
+fungsi contoh_kalibrasi() {
+    tampilkan("=== Contoh Kalibrasi BCI ===")
+
+    // Create BCI instance
+    buat bci = BCI("motorik")
+    bci.hubungkan("Device_EEG_16_Channel")
+
+    // Generate mock calibration data
+    buat data_kalibrasi = []
+    buat kelas = ["gerak_kiri", "gerak_kanan", "gerak_atas", "gerak_bawah", "istirahat"]
+
+    // Create 50 samples for each class
+    untuk setiap kelas_nama dalam kelas {
+        untuk buat i = 0 sampai i < 10:
+            data_kalibrasi.tambah({
+                kelas: kelas_nama,
+                sinyal: SinyalEEG(16, 256),
+                timestamp: sekarang()
+            })
+    }
+
+    // Perform calibration
+    buat hasil_kalibrasi = bci.kalibrasi(data_kalibrasi)
+
+    jika hasil_kalibrasi.berhasil {
+        tampilkan("Kalibrasi berhasil!")
+        tampilkan("Akurasi: " + (hasil_kalibrasi.akurasi * 100).toFixed(2) + "%")
+    } lain {
+        tampilkan("Kalibrasi gagal")
+    }
+
+    bci.putuskan_koneksi()
+    tampilkan("Kalibrasi selesai\n")
+}
+
+// Example 3: BCI with Multiple Stimuli
+fungsi contoh_stimulus_multipel() {
+    tampilkan("=== Contoh Stimulus Multipel ===")
+
+    // Create BCI instance for visual BCI
+    buat bci = BCI("visual")
+    bci.hubungkan("Device_EEG_8_Channel")
+
+    // Create multiple stimuli
+    buat stimulus1 = Stimulus("visual")
+    stimulus1.inisialisasi_visual(8, 0.9, { lebar: 150, tinggi: 150 })
+
+    buat stimulus2 = Stimulus("visual")
+    stimulus2.inisialisasi_visual(12, 0.7, { lebar: 150, tinggi: 150 })
+
+    buat stimulus3 = Stimulus("auditori")
+    stimulus3.inisialisasi_auditori(500, 0.6, 0.5)
+
+    // Send stimuli in sequence
+    buat stimuli = [stimulus1, stimulus2, stimulus3]
+    untuk setiap stimulus dalam stimuli {
+        bci.kirim_stimulus(stimulus)
+        tampilkan("Stimulus " + stimulus.tipe + " dikirim")
+
+        // Wait for response
+        buat respons = bci.dapatkan_respons()
+        jika respons bukan_tidak_ada {
+            tampilkan("Respons: " + respons.tipe + " (kepercayaan: " + respons.kepercayaan.toFixed(2) + ")")
+        }
+    }
+
+    bci.putuskan_koneksi()
+    tampilkan("Stimulus multipel selesai\n")
+}
+
+// Example 4: BCI Response Processing
+fungsi contoh_pemrosesan_respons() {
+    tampilkan("=== Contoh Pemrosesan Respons ===")
+
+    // Create sample responses
+    buat respons1 = Respons("gerak_kiri", { arah: "kiri", kekuatan: 0.8 }, 0.9)
+    buat respons2 = Respons("gerak_kanan", { arah: "kanan", kekuatan: 0.7 }, 0.85)
+    buat respons3 = Respons("istirahat", { durasi: 2.0 }, 0.95)
+
+    // Check response validity
+    tampilkan("Respons 1 valid: " + respons1.apakah_valid())
+    tampilkan("Respons 2 valid: " + respons2.apakah_valid())
+    tampilkan("Respons 3 valid: " + respons3.apakah_valid())
+
+    // Map responses to actions
+    tampilkan("Aksi respons 1: " + respons1.petakan_ke_aksi())
+    tampilkan("Aksi respons 2: " + respons2.petakan_ke_aksi())
+    tampilkan("Aksi respons 3: " + respons3.petakan_ke_aksi())
+
+    // Calculate similarity between responses
+    buat kesamaan = respons1.hitung_kesamaan(respons2)
+    tampilkan("Kesamaan antara respons 1 dan 2: " + kesamaan.toFixed(2))
+
+    // Merge responses
+    buat respons_gabungan = respons1.gabung(respons2)
+    tampilkan("Respons gabungan dibuat dengan kepercayaan: " + respons_gabungan.kepercayaan.toFixed(2))
+
+    tampilkan("Pemrosesan respons selesai\n")
+}
+
+// Example 5: BCI Signal Processing
+fungsi contoh_pemrosesan_sinyal() {
+    tampilkan("=== Contoh Pemrosesan Sinyal ===")
+
+    // Create sample EEG signal
+    buat sinyal = SinyalEEG(16, 256)
+
+    // Get signal information
+    buat info = sinyal.dapatkan_info()
+    tampilkan("Informasi sinyal: " + JSON.stringify(info))
+
+    // Normalize signal
+    buat sinyal_dinormalisasi = sinyal.normalisasi()
+    tampilkan("Sinyal dinormalisasi")
+
+    // Apply filtering
+    buat sinyal_difilter = sinyal_dinormalisasi.saring(30)
+    tampilkan("Filter rendah diterapkan")
+
+    // Extract features
+    buat fitur = sinyal_difilter.ekstrak_fitur()
+    tampilkan("Fitur diekstraksi: " + Object.keys(fitur).panjang + " jenis fitur")
+
+    // Segment signal
+    buat segmen = sinyal_difilter.segmentasi(1.0, 0.5) // 1 second windows, 0.5 second steps
+    tampilkan("Sinyal disegmentasi menjadi " + segmen.panjang + " segmen")
+
+    tampilkan("Pemrosesan sinyal selesai\n")
+}
+
+// Run examples
+contoh_bci_dasar()
+contoh_kalibrasi()
+contoh_stimulus_multipel()
+contoh_pemrosesan_respons()
+contoh_pemrosesan_sinyal()
+
+tampilkan("Semua contoh telah dijalankan!")

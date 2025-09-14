@@ -1,0 +1,11 @@
+// KODEON Web Framework - Logger Middleware
+// Logs incoming requests
+
+fungsi logger_middleware(permintaan, respons):
+    buat timestamp = sekarang()
+    buat metode = permintaan.metode
+    buat jalur = permintaan.jalur
+    
+    tampilkan("[" + timestamp + "] " + metode + " " + jalur)
+
+ekspor logger_middleware

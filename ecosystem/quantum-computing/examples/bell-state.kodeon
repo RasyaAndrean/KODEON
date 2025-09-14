@@ -1,0 +1,53 @@
+// KODEON Quantum Computing - Bell State Example
+// Demonstrates creating and measuring a Bell state (entangled qubits)
+
+// Import the quantum computing framework
+impor "quantum" sebagai kuantum
+
+fungsi utama():
+    tampilkan("=== Contoh Keadaan Bell ===")
+    tampilkan("Membuat dua qubit terentang (keadaan Bell)")
+    tampilkan("")
+
+    // Create a quantum engine
+    buat mesin = kuantum.buat_mesin_kuantum()
+
+    // Initialize with 2 qubits
+    mesin.inisialisasi_mesin(2)
+
+    // Apply Hadamard gate to first qubit (creates superposition)
+    tampilkan("1. Menerapkan gerbang Hadamard pada qubit 0")
+    mesin.terapkan_gerbang(kuantum.hadamard.GerbangH(), 0)
+
+    // Apply CNOT gate (creates entanglement)
+    tampilkan("2. Menerapkan gerbang CNOT dengan kontrol=0, target=1")
+    mesin.terapkan_gerbang(kuantum.cnot.GerbangCNOT(), 1, 0)
+
+    // Show the circuit
+    tampilkan("3. Sirkuit yang dibuat:")
+    tampilkan(mesin.sirkuit.visualisasi())
+
+    // Run the circuit multiple times to see entanglement
+    tampilkan("4. Menjalankan sirkuit dan mengukur 1000 kali:")
+    buat hasil_pengukuran = []
+
+    untuk buat i = 0 sampai i < 1000:
+        // Reset the system for each run
+        mesin.reset()
+
+        // Reapply the gates
+        mesin.terapkan_gerbang(kuantum.hadamard.GerbangH(), 0)
+        mesin.terapkan_gerbang(kuantum.cnot.GerbangCNOT(), 1, 0)
+
+        // Measure
+        buat hasil = mesin.ukur_semua()
+        hasil_pengukuran.tambah(hasil)
+
+    // Visualize the results
+    buat visualisasi = kuantum.visualisasi.buat_visualisasi()
+    tampilkan(visualisasi.visualisasi_pengukuran(hasil_pengukuran, 1000))
+
+    tampilkan("Hasil menunjukkan entanglement: hanya keadaan |00⟩ dan |11⟩ yang muncul!")
+    tampilkan("Ini menunjukkan bahwa kedua qubit terhubung kuantum secara sempurna.")
+
+utama()

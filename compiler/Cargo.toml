@@ -40,7 +40,7 @@ tempfile = "3.0"
 
 [[bin]]
 name = "test_package_resolution"
-path = "../test_package_resolution.rs"
+path = "tests/test_package_resolution.rs"
 
 [[bench]]
 name = "compiler_benchmarks"

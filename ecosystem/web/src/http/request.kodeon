@@ -1,0 +1,39 @@
+// KODEON Web Framework - Request Class
+// Represents an HTTP request
+
+kelas Permintaan:
+    fungsi inisialisasi(metode, jalur, header, tubuh):
+        ini.metode = metode
+        ini.jalur = jalur
+        ini.header = header atau {}
+        ini.tubuh = tubuh atau {}
+        ini.query = ini.parse_kueri()
+        ini.parameter = {}
+    
+    // Parse query parameters from the URL
+    fungsi parse_kueri():
+        buat kueri = {}
+        // In a real implementation, this would parse the actual query string
+        kembalikan kueri
+    
+    // Get a specific header
+    fungsi header(nama):
+        kembalikan ini.header[nama]
+    
+    // Get a specific query parameter
+    fungsi kueri(nama):
+        kembalikan ini.query[nama]
+    
+    // Get a specific route parameter
+    fungsi parameter(nama):
+        kembalikan ini.parameter[nama]
+    
+    // Get the request body as JSON
+    fungsi json():
+        kembalikan ini.tubuh
+    
+    // Get a specific field from the request body
+    fungsi tubuh(nama):
+        kembalikan ini.tubuh[nama]
+
+ekspor Permintaan

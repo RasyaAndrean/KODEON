@@ -1,0 +1,14 @@
+// KODEON Neural Networks - Optimizer Base Class
+// Base class for all optimizers
+
+kelas Optimizer:
+    fungsi inisialisasi(learning_rate):
+        ini.learning_rate = learning_rate
+        ini.nama = "Optimizer"
+
+    // Update weights
+    fungsi perbarui_bobot(jaringan):
+        // This will be implemented by subclasses
+        tampilkan("Memperbarui bobot dengan optimizer " + ini.nama)
+
+ekspor Optimizer

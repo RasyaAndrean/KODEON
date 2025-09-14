@@ -1,0 +1,41 @@
+// KODEON Web Framework - Hello World Example
+
+// Import the web framework
+impor "web" sebagai web
+
+// Create a new web application
+buat aplikasi = web.buat_aplikasi()
+
+// Use middleware
+aplikasi.gunakan(web.logger)
+aplikasi.gunakan(web.cors)
+
+// Define routes
+aplikasi.dapatkan("/", fungsi(permintaan, respons):
+    respons.kirim("<h1>Selamat Datang di KODEON Web Framework!</h1><p>Framework web modern untuk bahasa pemrograman KODEON.</p>")
+)
+
+aplikasi.dapatkan("/tentang", fungsi(permintaan, respons):
+    respons.json({
+        nama: "KODEON Web Framework",
+        versi: "1.0.0",
+        deskripsi: "Framework web modern untuk bahasa pemrograman KODEON"
+    })
+)
+
+aplikasi.kirim("/kontak", fungsi(permintaan, respons):
+    buat data = permintaan.json()
+    respons.json({
+        pesan: "Terima kasih atas pesan Anda, " + data.nama + "!",
+        data_diterima: data
+    })
+)
+
+// Start the server
+aplikasi.dengarkan(3000, fungsi():
+    tampilkan("Server KODEON Web Framework berjalan di http://localhost:3000")
+    tampilkan("Coba akses:")
+    tampilkan("  - http://localhost:3000/ (Halaman utama)")
+    tampilkan("  - http://localhost:3000/tentang (API tentang)")
+    tampilkan("  - Kirim POST ke http://localhost:3000/kontak (API kontak)")
+)

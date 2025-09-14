@@ -233,6 +233,46 @@ pub enum Token {
     Bayangkan,      // imagine
     Mimpi,          // dream
 
+    // Quantum Computing Keywords - Indonesian
+    Kubit,          // qubit
+    Gerbang,        // gate
+    Sirkuit,        // circuit
+    Ukur,           // measure
+    Superposisi,    // superposition
+    Keterkaitan,    // entanglement
+    Simulasi,       // simulate
+
+    // Quantum Computing Keywords - English
+    Qubit,          // qubit
+    Gate,           // gate
+    Circuit,        // circuit
+    Measure,        // measure
+    Superposition,  // superposition
+    Entanglement,   // entanglement
+    Simulate,       // simulate
+
+    // Neural Network Keywords - Indonesian
+    Jaringan,       // network
+    Lapisan,        // layer
+    Tensor,         // tensor
+    Model,          // model
+    Latih,          // train
+    Prediksi,       // predict
+    Optimisasi,     // optimize
+    FungsiHilang,   // loss_function
+    Gradien,        // gradient
+
+    // Neural Network Keywords - English
+    Network,        // network
+    Layer,          // layer
+    TensorEng,      // tensor
+    ModelEng,       // model
+    Train,          // train
+    Predict,        // predict
+    Optimize,       // optimize
+    LossFunction,   // loss_function
+    Gradient,       // gradient
+
     // Keywords - English
     Create,         // create
     If,             // if
@@ -945,20 +985,51 @@ impl<'a> Lexer<'a> {
             "balik" => Ok(Token::Balik),
             "panjang" => Ok(Token::Panjang),
 
-            // Concurrency keywords - Indonesian
-            "jalan" => Ok(Token::Jalan),
-            "buat_channel" => Ok(Token::BuatChannel),
-            "kirim" => Ok(Token::Kirim),
-            "terima" => Ok(Token::Terima),
-            "kunci_mutex" => Ok(Token::KunciMutex),
-            "buka_kunci_mutex" => Ok(Token::BukaKunciMutex),
-            "buat_kondisi" => Ok(Token::BuatKondisi),
-            "tunggu_kondisi" => Ok(Token::TungguKondisi),
-            "sinyal_kondisi" => Ok(Token::SinyalKondisi),
-            "siarkan_kondisi" => Ok(Token::SiarkanKondisi),
-            "muat_atomik" => Ok(Token::MuatAtomik),
-            "simpan_atomik" => Ok(Token::SimpanAtomik),
-            "buat_alamat" => Ok(Token::BuatAlamat),
+            // Quantum Computing Keywords - Indonesian
+            "kubit" => Ok(Token::Kubit),
+            "gerbang" => Ok(Token::Gerbang),
+            "sirkuit" => Ok(Token::Sirkuit),
+            "ukur" => Ok(Token::Ukur),
+            "superposisi" => Ok(Token::Superposisi),
+            "keterkaitan" => Ok(Token::Keterkaitan),
+            "simulasi" => Ok(Token::Simulasi),
+
+            // Neural Network Keywords - Indonesian
+            "jaringan" => Ok(Token::Jaringan),
+            "lapisan" => Ok(Token::Lapisan),
+            "tensor" => Ok(Token::Tensor),
+            "model" => Ok(Token::Model),
+            "latih" => Ok(Token::Latih),
+            "prediksi" => Ok(Token::Prediksi),
+            "optimisasi" => Ok(Token::Optimisasi),
+            "fungsi_hilang" => Ok(Token::FungsiHilang),
+            "gradien" => Ok(Token::Gradien),
+
+            // Neural Network Keywords - English
+            "network" => Ok(Token::Network),
+            "layer" => Ok(Token::Layer),
+            "tensor" => Ok(Token::TensorEng),
+            "model" => Ok(Token::ModelEng),
+            "train" => Ok(Token::Train),
+            "predict" => Ok(Token::Predict),
+            "optimize" => Ok(Token::Optimize),
+            "loss_function" => Ok(Token::LossFunction),
+            "gradient" => Ok(Token::Gradient),
+
+            // Concurrency keywords - English
+            "go" => Ok(Token::Go),
+            "make_channel" => Ok(Token::MakeChannel),
+            "send" => Ok(Token::Send),
+            "receive" => Ok(Token::Receive),
+            "lock_mutex" => Ok(Token::LockMutex),
+            "unlock_mutex" => Ok(Token::UnlockMutex),
+            "create_condition" => Ok(Token::CreateCondition),
+            "wait_condition" => Ok(Token::WaitCondition),
+            "signal_condition" => Ok(Token::SignalCondition),
+            "broadcast_condition" => Ok(Token::BroadcastCondition),
+            "atomic_load" => Ok(Token::AtomicLoad),
+            "atomic_store" => Ok(Token::AtomicStore),
+            "create_address" => Ok(Token::CreateAddress),
 
             // English keywords
             "create" => Ok(Token::Create),
@@ -1042,6 +1113,15 @@ impl<'a> Lexer<'a> {
             "sort" => Ok(Token::Sort),
             "reverse" => Ok(Token::Reverse),
             "length" => Ok(Token::Length),
+
+            // Quantum Computing Keywords - English
+            "qubit" => Ok(Token::Qubit),
+            "gate" => Ok(Token::Gate),
+            "circuit" => Ok(Token::Circuit),
+            "measure" => Ok(Token::Measure),
+            "superposition" => Ok(Token::Superposition),
+            "entanglement" => Ok(Token::Entanglement),
+            "simulate" => Ok(Token::Simulate),
 
             // Concurrency keywords - English
             "go" => Ok(Token::Go),

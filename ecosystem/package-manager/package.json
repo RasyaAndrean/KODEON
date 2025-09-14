@@ -1,0 +1,35 @@
+{
+  "name": "kodeon-package-manager",
+  "version": "1.0.0",
+  "description": "Package manager for the KODEON programming language",
+  "main": "src/package-manager.kodeon",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "kodeon",
+    "package-manager",
+    "programming-language"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "kodeon-core": "^1.0.0"
+  },
+  "devDependencies": {
+    "kodeon-testing": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon/kodeon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon/kodeon/issues"
+  },
+  "homepage": "https://kodeon.dev"
+}

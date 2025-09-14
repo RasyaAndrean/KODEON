@@ -1,0 +1,24 @@
+// KODEON Neural Networks - Mean Squared Error Loss
+// Mean Squared Error loss function implementation
+
+kelas LossMSE meluas FungsiLoss:
+    fungsi inisialisasi():
+        induk.inisialisasi("MSE")
+
+    // Calculate MSE loss
+    fungsi hitung(prediksi, target):
+        buat total = 0.0
+        untuk buat i = 0 sampai i < prediksi.panjang:
+            buat diff = prediksi[i] - target[i]
+            total = total + diff * diff
+        kembalikan total / prediksi.panjang
+
+    // Calculate gradient of MSE
+    fungsi gradient(prediksi, target):
+        buat gradient = []
+        untuk buat i = 0 sampai i < prediksi.panjang:
+            buat grad = 2 * (prediksi[i] - target[i]) / prediksi.panjang
+            gradient.tambah(grad)
+        kembalikan gradient
+
+ekspor LossMSE

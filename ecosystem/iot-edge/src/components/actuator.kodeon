@@ -1,0 +1,143 @@
+// KODEON IoT/Edge Integration - Actuator Component
+// Actuator representation and management for IoT
+
+kelas Aktuator {
+    fungsi inisialisasi(id, tipe) {
+        ini.id = id
+        ini.tipe = tipe // "relay", "servo", "motor", "led", "pompa", "kipas"
+        ini.status = "mati" // "mati", "hidup", "berkedip"
+        ini.nilai = 0 // 0-100% for analog actuators
+        ini.berfungsi = benar
+        ini.mode = "manual" // "manual", "otomatis"
+        ini.perintah_terakhir = tidak_ada
+    }
+
+    // Control actuator
+    fungsi kendalikan(perintah) {
+        jika bukan ini.berfungsi {
+            tampilkan("Kesalahan: Aktuator " + ini.id + " tidak berfungsi")
+            kembalikan salah
+        }
+
+        ini.perintah_terakhir = {
+            perintah: perintah,
+            timestamp: sekarang()
+        }
+
+        pilih perintah.tindakan:
+            kasus "hidupkan":
+                kembalikan ini.hidupkan(perintah.nilai)
+            kasus "matikan":
+                kembalikan ini.matikan()
+            kasus "atur":
+                kembalikan ini.atur(perintah.nilai)
+            kasus "berkedip":
+                kembalikan ini.berkedip(perintah.durasi, perintah.interval)
+            bawaan:
+                tampilkan("Perintah tidak dikenal: " + perintah.tindakan)
+                kembalikan salah
+
+    // Turn on actuator
+    fungsi hidupkan(nilai) {
+        ini.status = "hidup"
+        ini.nilai = nilai || 100 // Default to 100% if no value specified
+
+        // Clamp value between 0 and 100
+        ini.nilai = Math.max(0, Math.min(100, ini.nilai))
+
+        tampilkan("Aktuator " + ini.id + " dihidupkan dengan nilai: " + ini.nilai + "%")
+        kembalikan benar
+    }
+
+    // Turn off actuator
+    fungsi matikan() {
+        ini.status = "mati"
+        ini.nilai = 0
+        tampilkan("Aktuator " + ini.id + " dimatikan")
+        kembalikan benar
+    }
+
+    // Set actuator value
+    fungsi atur(nilai) {
+        jika ini.status == "mati" {
+            tampilkan("Peringatan: Mengatur nilai aktuator yang mati")
+        }
+
+        ini.nilai = nilai
+
+        // Clamp value between 0 and 100
+        ini.nilai = Math.max(0, Math.min(100, ini.nilai))
+
+        tampilkan("Nilai aktuator " + ini.id + " diatur ke: " + ini.nilai + "%")
+        kembalikan benar
+    }
+
+    // Blink actuator
+    fungsi berkedip(durasi, interval) {
+        // In a real implementation, this would create a blinking pattern
+        // For now, we'll just simulate the behavior
+        ini.status = "berkedip"
+        tampilkan("Aktuator " + ini.id + " berkedip (durasi: " + durasi + "ms, interval: " + interval + "ms)")
+        kembalikan benar
+    }
+
+    // Toggle actuator
+    fungsi jungkit() {
+        jika ini.status == "hidup" {
+            kembalikan ini.matikan()
+        } lain {
+            kembalikan ini.hidupkan()
+        }
+    }
+
+    // Simulate actuator failure
+    fungsi simulasi_kegagalan() {
+        ini.berfungsi = salah
+        tampilkan("Aktuator " + ini.id + " gagal")
+    }
+
+    // Restore actuator function
+    fungsi pulihkan() {
+        ini.berfungsi = benar
+        tampilkan("Aktuator " + ini.id + " dipulihkan")
+    }
+
+    // Check if actuator is functioning
+    fungsi apakah_berfungsi() {
+        kembalikan ini.berfungsi
+    }
+
+    // Get actuator status
+    fungsi dapatkan_status() {
+        kembalikan {
+            id: ini.id,
+            tipe: ini.tipe,
+            status: ini.status,
+            nilai: ini.nilai,
+            berfungsi: ini.berfungsi,
+            mode: ini.mode,
+            perintah_terakhir: ini.perintah_terakhir
+        }
+    }
+
+    // Set automation mode
+    fungsi atur_mode(mode) {
+        jika mode == "manual" atau mode == "otomatis" {
+            ini.mode = mode
+            tampilkan("Mode aktuator " + ini.id + " diatur ke: " + mode)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Update actuator (for automated control)
+    fungsi perbarui() {
+        jika ini.mode == "otomatis" dan ini.berfungsi {
+            // In a real implementation, this would implement control logic
+            // For now, we'll just log that automation is active
+            // tampilkan("Aktuator " + ini.id + " dalam mode otomatis")
+        }
+    }
+}
+
+ekspor Aktuator

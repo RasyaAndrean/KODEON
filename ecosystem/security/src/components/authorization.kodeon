@@ -1,0 +1,259 @@
+// KODEON Security Framework - Authorization Component
+// Access control and permissions
+
+kelas Otorisasi {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.peran = []
+        ini.izin = []
+        ini.tugas = []
+        ini.kebijakan = []
+    }
+
+    // Add role
+    fungsi tambah_peran(nama, deskripsi) {
+        // Check if role already exists
+        jika ini.peran.cari(fungsi(r) { kembalikan r.nama == nama }) {
+            tampilkan("Peran sudah ada: " + nama)
+            kembalikan salah
+        }
+
+        buat peran = {
+            nama: nama,
+            deskripsi: deskripsi || "",
+            izin: [],
+            pengguna: [],
+            dibuat: sekarang()
+        }
+
+        ini.peran.tambah(peran)
+        tampilkan("Peran ditambahkan: " + nama)
+        kembalikan benar
+    }
+
+    // Add permission
+    fungsi tambah_izin(nama, deskripsi) {
+        // Check if permission already exists
+        jika ini.izin.cari(fungsi(i) { kembalikan i.nama == nama }) {
+            tampilkan("Izin sudah ada: " + nama)
+            kembalikan salah
+        }
+
+        buat izin = {
+            nama: nama,
+            deskripsi: deskripsi || "",
+            dibuat: sekarang()
+        }
+
+        ini.izin.tambah(izin)
+        tampilkan("Izin ditambahkan: " + nama)
+        kembalikan benar
+    }
+
+    // Assign permission to role
+    fungsi berikan_izin_ke_peran(peran_nama, izin_nama) {
+        buat peran = ini.peran.cari(fungsi(r) { kembalikan r.nama == peran_nama })
+        jika bukan peran {
+            tampilkan("Peran tidak ditemukan: " + peran_nama)
+            kembalikan salah
+        }
+
+        buat izin = ini.izin.cari(fungsi(i) { kembalikan i.nama == izin_nama })
+        jika bukan izin {
+            tampilkan("Izin tidak ditemukan: " + izin_nama)
+            kembalikan salah
+        }
+
+        jika bukan peran.izin.includes(izin_nama) {
+            peran.izin.tambah(izin_nama)
+            tampilkan("Izin " + izin_nama + " diberikan kepada peran " + peran_nama)
+            kembalikan benar
+        }
+
+        tampilkan("Peran sudah memiliki izin: " + izin_nama)
+        kembalikan salah
+    }
+
+    // Assign role to user
+    fungsi berikan_peran_ke_pengguna(email, peran_nama) {
+        buat peran = ini.peran.cari(fungsi(r) { kembalikan r.nama == peran_nama })
+        jika bukan peran {
+            tampilkan("Peran tidak ditemukan: " + peran_nama)
+            kembalikan salah
+        }
+
+        jika bukan peran.pengguna.includes(email) {
+            peran.pengguna.tambah(email)
+            tampilkan("Peran " + peran_nama + " diberikan kepada pengguna " + email)
+            kembalikan benar
+        }
+
+        tampilkan("Pengguna sudah memiliki peran: " + peran_nama)
+        kembalikan salah
+    }
+
+    // Check if user has permission
+    fungsi periksa_izin(email, izin_nama) {
+        // Find all roles assigned to the user
+        buat peran_pengguna = []
+        untuk setiap peran dalam ini.peran {
+            jika peran.pengguna.includes(email) {
+                peran_pengguna.tambah(peran)
+            }
+        }
+
+        // Check if any role has the required permission
+        untuk setiap peran dalam peran_pengguna {
+            jika peran.izin.includes(izin_nama) {
+                kembalikan benar
+            }
+        }
+
+        kembalikan salah
+    }
+
+    // Check if user has role
+    fungsi periksa_peran(email, peran_nama) {
+        buat peran = ini.peran.cari(fungsi(r) { kembalikan r.nama == peran_nama })
+        jika peran dan peran.pengguna.includes(email) {
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Remove permission from role
+    fungsi hapus_izin_dari_peran(peran_nama, izin_nama) {
+        buat peran = ini.peran.cari(fungsi(r) { kembalikan r.nama == peran_nama })
+        jika bukan peran {
+            tampilkan("Peran tidak ditemukan: " + peran_nama)
+            kembalikan salah
+        }
+
+        buat indeks = peran.izin.cari_indeks(izin_nama)
+        jika indeks != -1 {
+            peran.izin.hapus_pada(indeks)
+            tampilkan("Izin " + izin_nama + " dihapus dari peran " + peran_nama)
+            kembalikan benar
+        }
+
+        tampilkan("Peran tidak memiliki izin: " + izin_nama)
+        kembalikan salah
+    }
+
+    // Remove role from user
+    fungsi hapus_peran_dari_pengguna(email, peran_nama) {
+        buat peran = ini.peran.cari(fungsi(r) { kembalikan r.nama == peran_nama })
+        jika bukan peran {
+            tampilkan("Peran tidak ditemukan: " + peran_nama)
+            kembalikan salah
+        }
+
+        buat indeks = peran.pengguna.cari_indeks(email)
+        jika indeks != -1 {
+            peran.pengguna.hapus_pada(indeks)
+            tampilkan("Peran " + peran_nama + " dihapus dari pengguna " + email)
+            kembalikan benar
+        }
+
+        tampilkan("Pengguna tidak memiliki peran: " + peran_nama)
+        kembalikan salah
+    }
+
+    // Create policy
+    fungsi buat_kebijakan(nama, kondisi, izin) {
+        buat kebijakan = {
+            nama: nama,
+            kondisi: kondisi, // Function that returns true/false
+            izin: izin, // Permission required
+            dibuat: sekarang()
+        }
+
+        ini.kebijakan.tambah(kebijakan)
+        tampilkan("Kebijakan dibuat: " + nama)
+        kembalikan kebijakan
+    }
+
+    // Evaluate policy
+    fungsi evaluasi_kebijakan(nama, konteks) {
+        buat kebijakan = ini.kebijakan.cari(fungsi(k) { kembalikan k.nama == nama })
+        jika bukan kebijakan {
+            tampilkan("Kebijakan tidak ditemukan: " + nama)
+            kembalikan salah
+        }
+
+        // In a real implementation, this would evaluate the policy conditions
+        // For now, we'll simulate policy evaluation
+        kembalikan benar
+    }
+
+    // Add task
+    fungsi tambah_tugas(nama, deskripsi, izin_diperlukan) {
+        buat tugas = {
+            nama: nama,
+            deskripsi: deskripsi || "",
+            izin_diperlukan: izin_diperlukan || [],
+            dibuat: sekarang()
+        }
+
+        ini.tugas.tambah(tugas)
+        tampilkan("Tugas ditambahkan: " + nama)
+        kembalikan tugas
+    }
+
+    // Check if user can perform task
+    fungsi dapat_melakukan_tugas(email, tugas_nama) {
+        buat tugas = ini.tugas.cari(fungsi(t) { kembalikan t.nama == tugas_nama })
+        jika bukan tugas {
+            tampilkan("Tugas tidak ditemukan: " + tugas_nama)
+            kembalikan salah
+        }
+
+        // Check if user has all required permissions
+        untuk setiap izin dalam tugas.izin_diperlukan {
+            jika bukan ini.periksa_izin(email, izin) {
+                kembalikan salah
+            }
+        }
+
+        kembalikan benar
+    }
+
+    // Get user roles
+    fungsi dapatkan_peran_pengguna(email) {
+        buat peran_pengguna = []
+        untuk setiap peran dalam ini.peran {
+            jika peran.pengguna.includes(email) {
+                peran_pengguna.tambah(peran.nama)
+            }
+        }
+        kembalikan peran_pengguna
+    }
+
+    // Get role permissions
+    fungsi dapatkan_izin_peran(peran_nama) {
+        buat peran = ini.peran.cari(fungsi(r) { kembalikan r.nama == peran_nama })
+        jika peran {
+            kembalikan peran.izin
+        }
+        kembalikan []
+    }
+
+    // Get all roles
+    fungsi dapatkan_semua_peran() {
+        kembalikan ini.peran
+    }
+
+    // Get all permissions
+    fungsi dapatkan_semua_izin() {
+        kembalikan ini.izin
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic authorization tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Otorisasi diperbarui")
+    }
+}
+
+ekspor Otorisasi

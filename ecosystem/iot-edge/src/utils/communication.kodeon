@@ -1,0 +1,194 @@
+// KODEON IoT/Edge Integration - Communication Utility
+// Communication utilities for IoT/Edge applications
+
+kelas Komunikasi {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe || "mqtt" // "mqtt", "http", "coap", "websocket"
+        ini.parameter = parameter || {}
+        ini.terhubung = salah
+        ini.topik = {}
+        ini.callback = tidak_ada
+    }
+
+    // Connect to communication broker
+    fungsi hubungkan(broker, kredensial) {
+        tampilkan("Menghubungkan ke broker " + ini.tipe + " di " + broker)
+
+        // In a real implementation, this would establish connection to broker
+        // For now, we'll simulate successful connection
+        ini.terhubung = benar
+        tampilkan("Berhasil terhubung ke broker " + broker)
+        kembalikan benar
+    }
+
+    // Disconnect from communication broker
+    fungsi putuskan_koneksi() {
+        ini.terhubung = salah
+        tampilkan("Diputuskan koneksi dari broker")
+    }
+
+    // Publish message
+    fungsi terbitkan(topik, pesan, qos) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke broker")
+            kembalikan salah
+        }
+
+        qos = qos || 0 // Quality of Service: 0, 1, or 2
+
+        // In a real implementation, this would publish message to broker
+        tampilkan("Pesan diterbitkan ke topik '" + topik + "' dengan QoS " + qos)
+        tampilkan("Isi pesan: " + JSON.stringify(pesan))
+
+        // Store message for potential subscribers
+        jika ini.topik[topik] bukan_tidak_ada {
+            ini.topik[topik].pesan.tambah({
+                isi: pesan,
+                qos: qos,
+                timestamp: sekarang()
+            })
+        }
+
+        kembalikan benar
+    }
+
+    // Subscribe to topic
+    fungsi berlangganan(topik, callback, qos) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke broker")
+            kembalikan salah
+        }
+
+        qos = qos || 0 // Quality of Service: 0, 1, or 2
+
+        // Create topic if it doesn't exist
+        jika ini.topik[topik] == tidak_ada {
+            ini.topik[topik] = {
+                callback: callback,
+                qos: qos,
+                pesan: []
+            }
+        } lain {
+            // Update existing subscription
+            ini.topik[topik].callback = callback
+            ini.topik[topik].qos = qos
+        }
+
+        tampilkan("Berlangganan ke topik '" + topik + "' dengan QoS " + qos)
+        kembalikan benar
+    }
+
+    // Unsubscribe from topic
+    fungsi berhenti_berlangganan(topik) {
+        jika ini.topik[topik] bukan_tidak_ada {
+            hapus ini.topik[topik]
+            tampilkan("Berhenti berlangganan dari topik '" + topik + "'")
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Send HTTP request
+    fungsi kirim_http(metode, url, data, header) {
+        jika bukan ini.terhubung dan ini.tipe != "http" {
+            tampilkan("Kesalahan: Tidak terhubung ke broker atau tipe bukan HTTP")
+            kembalikan tidak_ada
+        }
+
+        metode = metode.toUpperCase()
+
+        // In a real implementation, this would send HTTP request
+        tampilkan("Mengirim permintaan HTTP " + metode + " ke " + url)
+
+        // Simulate response
+        kembalikan {
+            status: 200,
+            data: { pesan: "Permintaan " + metode + " berhasil diproses" },
+            header: { "content-type": "application/json" }
+        }
+    }
+
+    // Handle incoming messages
+    fungsi tangani_pesan() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Process messages for each subscribed topic
+        untuk setiap topik dalam ini.topik {
+            jika ini.topik[topik].pesan.panjang > 0 {
+                buat pesan = ini.topik[topik].pesan[0]
+                ini.topik[topik].pesan.hapus_pada(0)
+
+                // Call callback if exists
+                jika ini.topik[topik].callback bukan_tidak_ada {
+                    ini.topik[topik].callback(pesan.isi, topik)
+                }
+
+                tampilkan("Pesan diterima dari topik '" + topik + "'")
+            }
+        }
+    }
+
+    // Set message callback
+    fungsi atur_callback(callback) {
+        ini.callback = callback
+    }
+
+    // Get communication statistics
+    fungsi dapatkan_statistik() {
+        buat jumlah_topik = Object.keys(ini.topik).panjang
+        buat jumlah_pesan = 0
+
+        untuk setiap topik dalam ini.topik {
+            jumlah_pesan = jumlah_pesan + ini.topik[topik].pesan.panjang
+        }
+
+        kembalikan {
+            tipe: ini.tipe,
+            terhubung: ini.terhubung,
+            jumlah_topik: jumlah_topik,
+            jumlah_pesan: jumlah_pesan
+        }
+    }
+
+    // Simulate message reception (for testing)
+    fungsi simulasi_pesan_diterima(topik, pesan) {
+        jika ini.topik[topik] bukan_tidak_ada {
+            ini.topik[topik].pesan.tambah({
+                isi: pesan,
+                qos: 0,
+                timestamp: sekarang()
+            })
+
+            // Call callback if exists
+            jika ini.topik[topik].callback bukan_tidak_ada {
+                ini.topik[topik].callback(pesan, topik)
+            }
+
+            tampilkan("Pesan simulasi diterima di topik '" + topik + "'")
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Update communication parameters
+    fungsi atur_parameter(parameter_baru) {
+        untuk setiap kunci dalam parameter_baru {
+            ini.parameter[kunci] = parameter_baru[kunci]
+        }
+
+        tampilkan("Parameter komunikasi diperbarui")
+    }
+
+    // Check connection status
+    fungsi dapatkan_status() {
+        kembalikan {
+            tipe: ini.tipe,
+            terhubung: ini.terhubung,
+            jumlah_langganan: Object.keys(ini.topik).panjang
+        }
+    }
+}
+
+ekspor Komunikasi

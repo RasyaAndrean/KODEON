@@ -1,0 +1,27 @@
+{
+  "name": "kodeon-ai-assistant",
+  "version": "1.0.0",
+  "description": "AI Assistant for the KODEON programming language",
+  "main": "src/core/assistant.kodeon",
+  "scripts": {
+    "test": "kodeon tests/",
+    "example": "kodeon examples/",
+    "docs": "kodeon docs/"
+  },
+  "keywords": [
+    "kodeon",
+    "ai",
+    "assistant",
+    "nlp",
+    "code-generation"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "kodeon-core": "^1.0.0",
+    "kodeon-nlp": "^1.0.0"
+  },
+  "devDependencies": {
+    "kodeon-testing": "^1.0.0"
+  }
+}

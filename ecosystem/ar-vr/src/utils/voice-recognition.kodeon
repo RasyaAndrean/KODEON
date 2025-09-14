@@ -1,0 +1,123 @@
+// KODEON AR/VR Integration - Voice Recognition Utility
+// Voice recognition for hands-free AR/VR interactions
+
+kelas PengenalanSuara {
+    fungsi inisialisasi() {
+        ini.pengenalan_aktif = salah
+        ini.bahasa = "id-ID" // Default to Indonesian
+        ini.perintah_terdaftar = {}
+        ini.callback_suara = tidak_ada
+        ini.kata_kunci_aktif = "kodeon"
+    }
+
+    // Enable voice recognition
+    fungsi aktifkan() {
+        // In a real implementation, this would initialize speech recognition APIs
+        ini.pengenalan_aktif = benar
+        tampilkan("Pengenalan suara diaktifkan")
+    }
+
+    // Disable voice recognition
+    fungsi nonaktifkan() {
+        ini.pengenalan_aktif = salah
+        tampilkan("Pengenalan suara dinonaktifkan")
+    }
+
+    // Set language
+    fungsi atur_bahasa(bahasa) {
+        ini.bahasa = bahasa
+    }
+
+    // Set wake word
+    fungsi atur_kata_kunci(kata_kunci) {
+        ini.kata_kunci_aktif = kata_kunci
+    }
+
+    // Set voice callback
+    fungsi atur_callback(callback) {
+        ini.callback_suara = callback
+    }
+
+    // Register voice command
+    fungsi daftarkan_perintah(perintah, aksi) {
+        ini.perintah_terdaftar[perintah.toLowerCase()] = aksi
+    }
+
+    // Process voice input
+    fungsi proses_suara(teks) {
+        jika bukan ini.pengenalan_aktif {
+            kembalikan
+        }
+
+        // Convert to lowercase for matching
+        buat teks_kecil = teks.toLowerCase()
+
+        // Check if wake word is present
+        jika bukan teks_kecil.mengandung(ini.kata_kunci_aktif) {
+            kembalikan
+        }
+
+        // Remove wake word
+        buat perintah = teks_kecil.ganti(ini.kata_kunci_aktif, "").trim()
+
+        // Check if command is registered
+        jika ini.perintah_terdaftar[perintah] bukan_tidak_ada {
+            // Execute the action
+            buat hasil = ini.perintah_terdaftar[perintah]()
+
+            // Trigger callback if set
+            jika ini.callback_suara bukan_tidak_ada {
+                ini.callback_suara(perintah, hasil)
+            }
+
+            kembalikan hasil
+        } lain {
+            tampilkan("Perintah tidak dikenal: " + perintah)
+            kembalikan tidak_ada
+        }
+    }
+
+    // Simulate voice input (placeholder)
+    fungsi simulasi_input_suara() {
+        // In a real implementation, this would use speech-to-text APIs
+        // For now, we'll simulate some common commands
+        buat perintah_umum = [
+            "kodeon buka menu",
+            "kodeon pindah ke kanan",
+            "kodeon pindah ke kiri",
+            "kodeon tingkatkan ukuran",
+            "kodeon kurangi ukuran",
+            "kodeon putar objek",
+            "kodeon hentikan rotasi"
+        ]
+
+        buat perintah_acak = perintah_umum[Math.floor(Math.random() * perintah_umum.panjang)]
+        tampilkan("Mensimulasikan perintah suara: " + perintah_acak)
+        kembalikan ini.proses_suara(perintah_acak)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.pengenalan_aktif {
+            kembalikan
+        }
+
+        // In a real implementation, this would listen for voice input
+        // For simulation, we'll randomly process voice commands
+        jika Math.random() < 0.1 { // 10% chance each update
+            ini.simulasi_input_suara()
+        }
+    }
+
+    // Get recognition information
+    fungsi dapatkan_info() {
+        kembalikan {
+            pengenalan_aktif: ini.pengenalan_aktif,
+            bahasa: ini.bahasa,
+            kata_kunci: ini.kata_kunci_aktif,
+            jumlah_perintah: Object.keys(ini.perintah_terdaftar).panjang
+        }
+    }
+}
+
+ekspor PengenalanSuara

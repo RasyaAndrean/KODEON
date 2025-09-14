@@ -1,0 +1,64 @@
+// KODEON Neural Networks - Dense Layer
+// Fully connected layer implementation
+
+kelas LapisanPadat meluas Lapisan:
+    fungsi inisialisasi(jumlah_input, jumlah_output, fungsi_aktivasi):
+        induk.inisialisasi("Dense", jumlah_input, jumlah_output)
+        ini.fungsi_aktivasi = fungsi_aktivasi
+        ini.inisialisasi_bobot()
+
+    // Forward pass through dense layer
+    fungsi maju(input):
+        induk.maju(input)
+
+        // Matrix multiplication: output = input * weights + bias
+        buat output = []
+
+        untuk buat j = 0 sampai j < ini.jumlah_output:
+            buat nilai = ini.bias[j]
+            untuk buat i = 0 sampai i < ini.jumlah_input:
+                nilai = nilai + input[i] * ini.bobot[i][j]
+            output.tambah(nilai)
+
+        // Apply activation function
+        jika ini.fungsi_aktivasi bukan_tidak_ada:
+            untuk buat i = 0 sampai i < output.panjang:
+                output[i] = ini.fungsi_aktivasi.hitung(output[i])
+
+        ini.output_terakhir = output
+        kembalikan output
+
+    // Backward pass through dense layer
+    fungsi mundur(gradient):
+        // Calculate gradient with respect to weights
+        buat gradient_bobot = []
+        buat gradient_bias = [...gradient]
+        buat gradient_input = []
+
+        // Initialize gradient_input
+        untuk buat i = 0 sampai i < ini.jumlah_input:
+            gradient_input.tambah(0.0)
+
+        // Calculate gradients
+        untuk buat i = 0 sampai i < ini.jumlah_input:
+            buat baris = []
+            untuk buat j = 0 sampai j < ini.jumlah_output:
+                buat grad = gradient[j] * ini.input_terakhir[i]
+                baris.tambah(grad)
+
+                // Accumulate input gradient
+                gradient_input[i] = gradient_input[i] + gradient[j] * ini.bobot[i][j]
+            gradient_bobot.tambah(baris)
+
+        // Store gradients for optimizer
+        ini.gradient_bobot = gradient_bobot
+        ini.gradient_bias = gradient_bias
+
+        kembalikan gradient_input
+
+    // Update weights and biases
+    fungsi perbarui_bobot(learning_rate):
+        jika ini.gradient_bobot bukan_tidak_ada dan ini.gradient_bias bukan_tidak_ada:
+            induk.perbarui_bobot(learning_rate, ini.gradient_bobot, ini.gradient_bias)
+
+ekspor LapisanPadat

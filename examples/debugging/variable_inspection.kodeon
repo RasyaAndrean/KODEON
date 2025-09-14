@@ -1,0 +1,36 @@
+// Variable inspection demonstration program in KODEON
+
+fungsi utama() {
+    // Variable declarations with different types
+    angka x = 10;
+    angka y = 20;
+    teks nama = "KODEON";
+    boolean aktif = benar;
+
+    // Arithmetic operations
+    angka hasil = x + y;
+    angka perkalian = x * y;
+
+    // Conditional statement
+    jika (hasil > 15) {
+        tampilkan("Hasil lebih besar dari 15");
+    } lainnya {
+        tampilkan("Hasil lebih kecil atau sama dengan 15");
+    }
+
+    // Loop
+    untuk (angka i = 0; i < 5; i = i + 1) {
+        tampilkan("Iterasi: " + i.ke_teks());
+    }
+
+    // Function call
+    angka kuadrat_hasil = hitung_kuadrat(hasil);
+    tampilkan("Kuadrat dari hasil: " + kuadrat_hasil.ke_teks());
+
+    kembalikan 0;
+}
+
+fungsi hitung_kuadrat(angka n) {
+    angka hasil = n * n;
+    kembalikan hasil;
+}

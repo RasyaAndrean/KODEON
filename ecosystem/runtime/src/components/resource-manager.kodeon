@@ -1,0 +1,249 @@
+// KODEON Runtime - Resource Manager
+// Resource management functionality
+
+kelas PengelolaSumberDaya {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.sumber_daya = {
+            cpu: { total: 100, digunakan: 0, tersedia: 100 },
+            memori: { total: 8192, digunakan: 0, tersedia: 8192 }, // in MB
+            disk: { total: 1000000, digunakan: 0, tersedia: 1000000 }, // in MB
+            jaringan: { bandwidth: 1000, digunakan: 0, tersedia: 1000 } // in Mbps
+        }
+        ini.alokasi = []
+        ini.kebijakan = {
+            prioritas: "seimbang",
+            batas_otomatis: benar
+        }
+    }
+
+    // Initialize resource manager
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Pengelola sumber daya diinisialisasi")
+    }
+
+    // Shutdown resource manager
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.alokasi = []
+        tampilkan("Pengelola sumber daya dihentikan")
+    }
+
+    // Allocate resources
+    fungsi alokasikan_sumber_daya(proses, permintaan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika bukan proses atau bukan permintaan {
+            tampilkan("Kesalahan: Parameter tidak valid")
+            kembalikan salah
+        }
+
+        // Check if resources are available
+        jika permintaan.cpu > ini.sumber_daya.cpu.tersedia {
+            tampilkan("Sumber daya CPU tidak mencukupi")
+            kembalikan salah
+        }
+
+        jika permintaan.memori > ini.sumber_daya.memori.tersedia {
+            tampilkan("Sumber daya memori tidak mencukupi")
+            kembalikan salah
+        }
+
+        jika permintaan.disk > ini.sumber_daya.disk.tersedia {
+            tampilkan("Sumber daya disk tidak mencukupi")
+            kembalikan salah
+        }
+
+        // Allocate resources
+        ini.sumber_daya.cpu.digunakan += permintaan.cpu
+        ini.sumber_daya.cpu.tersedia -= permintaan.cpu
+
+        ini.sumber_daya.memori.digunakan += permintaan.memori
+        ini.sumber_daya.memori.tersedia -= permintaan.memori
+
+        ini.sumber_daya.disk.digunakan += permintaan.disk
+        ini.sumber_daya.disk.tersedia -= permintaan.disk
+
+        jika permintaan.jaringan {
+            ini.sumber_daya.jaringan.digunakan += permintaan.jaringan
+            ini.sumber_daya.jaringan.tersedia -= permintaan.jaringan
+        }
+
+        buat alokasi = {
+            id: ini.alokasi.panjang + 1,
+            proses: proses,
+            permintaan: permintaan,
+            dialokasikan: sekarang(),
+            status: "aktif"
+        }
+
+        ini.alokasi.tambah(alokasi)
+        tampilkan("Sumber daya dialokasikan untuk proses: " + proses)
+        kembalikan alokasi
+    }
+
+    // Release resources
+    fungsi lepaskan_sumber_daya(alokasi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika bukan alokasi {
+            tampilkan("Kesalahan: Alokasi tidak valid")
+            kembalikan salah
+        }
+
+        buat permintaan = alokasi.permintaan
+
+        // Release resources
+        ini.sumber_daya.cpu.digunakan -= permintaan.cpu
+        ini.sumber_daya.cpu.tersedia += permintaan.cpu
+
+        ini.sumber_daya.memori.digunakan -= permintaan.memori
+        ini.sumber_daya.memori.tersedia += permintaan.memori
+
+        ini.sumber_daya.disk.digunakan -= permintaan.disk
+        ini.sumber_daya.disk.tersedia += permintaan.disk
+
+        jika permintaan.jaringan {
+            ini.sumber_daya.jaringan.digunakan -= permintaan.jaringan
+            ini.sumber_daya.jaringan.tersedia += permintaan.jaringan
+        }
+
+        alokasi.status = "dilepaskan"
+        alokasi.dilepaskan = sekarang()
+
+        tampilkan("Sumber daya dilepaskan untuk alokasi: " + alokasi.id)
+        kembalikan benar
+    }
+
+    // Get resource status
+    fungsi dapatkan_status_sumber_daya() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        kembalikan {
+            cpu: {
+                total: ini.sumber_daya.cpu.total,
+                digunakan: ini.sumber_daya.cpu.digunakan,
+                tersedia: ini.sumber_daya.cpu.tersedia,
+                persentase: (ini.sumber_daya.cpu.digunakan / ini.sumber_daya.cpu.total) * 100
+            },
+            memori: {
+                total: ini.sumber_daya.memori.total,
+                digunakan: ini.sumber_daya.memori.digunakan,
+                tersedia: ini.sumber_daya.memori.tersedia,
+                persentase: (ini.sumber_daya.memori.digunakan / ini.sumber_daya.memori.total) * 100
+            },
+            disk: {
+                total: ini.sumber_daya.disk.total,
+                digunakan: ini.sumber_daya.disk.digunakan,
+                tersedia: ini.sumber_daya.disk.tersedia,
+                persentase: (ini.sumber_daya.disk.digunakan / ini.sumber_daya.disk.total) * 100
+            },
+            jaringan: {
+                bandwidth: ini.sumber_daya.jaringan.bandwidth,
+                digunakan: ini.sumber_daya.jaringan.digunakan,
+                tersedia: ini.sumber_daya.jaringan.tersedia,
+                persentase: (ini.sumber_daya.jaringan.digunakan / ini.sumber_daya.jaringan.bandwidth) * 100
+            }
+        }
+    }
+
+    // List allocations
+    fungsi daftar_alokasi() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan []
+        }
+
+        kembalikan ini.alokasi
+    }
+
+    // Optimize resource allocation
+    fungsi optimalkan_alokasi() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would optimize resource allocation
+        // For now, we'll just rebalance based on priority
+
+        buat alokasi_aktif = ini.alokasi.saring(fungsi(a) { kembalikan a.status == "aktif" })
+
+        tampilkan("Mengoptimalkan alokasi untuk " + alokasi_aktif.panjang + " alokasi aktif")
+
+        // Simple optimization: sort by priority and adjust allocations
+        alokasi_aktif = alokasi_aktif.urutkan(fungsi(a, b) {
+            buat prioritas_a = a.permintaan.prioritas || 0
+            buat prioritas_b = b.permintaan.prioritas || 0
+            kembalikan prioritas_b - prioritas_a
+        })
+
+        kembalikan benar
+    }
+
+    // Set allocation policy
+    fungsi atur_kebijakan(kebijakan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika kebijakan.prioritas {
+            ini.kebijakan.prioritas = kebijakan.prioritas
+        }
+
+        jika kebijakan.batas_otomatis bukan_tidak_ada {
+            ini.kebijakan.batas_otomatis = kebijakan.batas_otomatis
+        }
+
+        tampilkan("Kebijakan alokasi diperbarui")
+        kembalikan benar
+    }
+
+    // Get allocation policy
+    fungsi dapatkan_kebijakan() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pengelola sumber daya belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.kebijakan
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Periodically optimize allocations
+        jika Math.acak() > 0.9 {
+            ini.optimalkan_alokasi()
+        }
+
+        // Update resource usage with some randomness
+        ini.sumber_daya.cpu.digunakan = Math.max(0, Math.min(
+            ini.sumber_daya.cpu.total,
+            ini.sumber_daya.cpu.digunakan + (Math.acak() * 20 - 10)
+        ))
+        ini.sumber_daya.cpu.tersedia = ini.sumber_daya.cpu.total - ini.sumber_daya.cpu.digunakan
+
+        ini.sumber_daya.memori.digunakan = Math.max(0, Math.min(
+            ini.sumber_daya.memori.total,
+            ini.sumber_daya.memori.digunakan + (Math.acak() * 100 - 50)
+        ))
+        ini.sumber_daya.memori.tersedia = ini.sumber_daya.memori.total - ini.sumber_daya.memori.digunakan
+    }
+}
+
+ekspor PengelolaSumberDaya

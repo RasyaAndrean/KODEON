@@ -1,0 +1,123 @@
+// KODEON Package Manager Integration - Package Component
+// Package representation and management
+
+kelas Paket {
+    fungsi inisialisasi(nama, versi, deskripsi) {
+        ini.nama = nama
+        ini.versi = versi || "1.0.0"
+        ini.deskripsi = deskripsi || ""
+        ini.dependensi = []
+        ini.penulis = []
+        ini.lisensi = ""
+        ini.repository = ""
+        ini.keywords = []
+        ini.status = "uninstalled"
+        ini.terpasang_pada = tidak_ada
+        ini.diperbarui_pada = tidak_ada
+        ini.ukuran = 0
+        ini.hash = ""
+    }
+
+    // Add dependency
+    fungsi tambah_dependensi(nama, versi) {
+        ini.dependensi.tambah({
+            nama: nama,
+            versi: versi
+        })
+        tampilkan("Dependensi ditambahkan: " + nama + " versi " + versi)
+    }
+
+    // Remove dependency
+    fungsi hapus_dependensi(nama) {
+        buat indeks = ini.dependensi.cari_indeks(fungsi(d) { kembalikan d.nama == nama })
+        jika indeks != -1 {
+            ini.dependensi.hapus_pada(indeks)
+            tampilkan("Dependensi dihapus: " + nama)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Install package
+    fungsi pasang() {
+        ini.status = "installed"
+        ini.terpasang_pada = sekarang()
+        tampilkan("Paket terpasang: " + ini.nama)
+    }
+
+    // Uninstall package
+    fungsi hapus() {
+        ini.status = "uninstalled"
+        ini.terpasang_pada = tidak_ada
+        tampilkan("Paket dihapus: " + ini.nama)
+    }
+
+    // Update package
+    fungsi perbarui(versi) {
+        buat versi_lama = ini.versi
+        ini.versi = versi
+        ini.diperbarui_pada = sekarang()
+        tampilkan("Paket diperbarui: " + ini.nama + " dari " + versi_lama + " ke " + versi)
+    }
+
+    // Verify package integrity
+    fungsi verifikasi() {
+        // In a real implementation, this would verify package integrity
+        tampilkan("Memverifikasi paket: " + ini.nama)
+        kembalikan benar
+    }
+
+    // Get package metadata
+    fungsi dapatkan_metadata() {
+        kembalikan {
+            nama: ini.nama,
+            versi: ini.versi,
+            deskripsi: ini.deskripsi,
+            dependensi: ini.dependensi,
+            penulis: ini.penulis,
+            lisensi: ini.lisensi,
+            repository: ini.repository,
+            keywords: ini.keywords,
+            status: ini.status,
+            terpasang_pada: ini.terpasang_pada,
+            diperbarui_pada: ini.diperbarui_pada,
+            ukuran: ini.ukuran,
+            hash: ini.hash
+        }
+    }
+
+    // Set package metadata
+    fungsi atur_metadata(metadata) {
+        jika metadata.deskripsi bukan_tidak_ada {
+            ini.deskripsi = metadata.deskripsi
+        }
+        jika metadata.penulis bukan_tidak_ada {
+            ini.penulis = metadata.penulis
+        }
+        jika metadata.lisensi bukan_tidak_ada {
+            ini.lisensi = metadata.lisensi
+        }
+        jika metadata.repository bukan_tidak_ada {
+            ini.repository = metadata.repository
+        }
+        jika metadata.keywords bukan_tidak_ada {
+            ini.keywords = metadata.keywords
+        }
+        jika metadata.ukuran bukan_tidak_ada {
+            ini.ukuran = metadata.ukuran
+        }
+        jika metadata.hash bukan_tidak_ada {
+            ini.hash = metadata.hash
+        }
+        tampilkan("Metadata paket diperbarui: " + ini.nama)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Paket diperbarui: " + ini.nama)
+    }
+}
+
+ekspor Paket

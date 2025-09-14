@@ -1,0 +1,46 @@
+// KODEON Web3/Blockchain - ABI
+// Application Binary Interface utilities
+
+kelas ABI:
+    // Encode parameters according to ABI
+    fungsi encode_parameter(tipe, nilai):
+        // In a real implementation, this would properly encode parameters
+        // according to the Ethereum ABI specification
+        kembalikan nilai
+
+    // Decode parameters according to ABI
+    fungsi decode_parameter(tipe, data):
+        // In a real implementation, this would properly decode parameters
+        // according to the Ethereum ABI specification
+        kembalikan data
+
+    // Encode function call
+    fungsi encode_function_call(nama_fungsi, tipe_parameter, nilai_parameter):
+        // In a real implementation, this would properly encode a function call
+        // according to the Ethereum ABI specification
+        buat signature = nama_fungsi + "(" + tipe_parameter.gabung(",") + ")"
+        buat encoded_params = []
+
+        untuk buat i = 0 sampai i < nilai_parameter.panjang:
+            encoded_params.tambah(ABI.encode_parameter(tipe_parameter[i], nilai_parameter[i]))
+
+        kembalikan {
+            signature: signature,
+            parameter: encoded_params
+        }
+
+    // Decode function result
+    fungsi decode_function_result(tipe_output, data):
+        // In a real implementation, this would properly decode function results
+        // according to the Ethereum ABI specification
+        jika tipe_output.panjang == 1:
+            kembalikan ABI.decode_parameter(tipe_output[0], data)
+        lain:
+            buat hasil = []
+            untuk setiap tipe dalam tipe_output:
+                // In a real implementation, we would parse the data correctly
+                hasil.tambah(ABI.decode_parameter(tipe, data))
+            kembalikan hasil
+
+// Export ABI utilities
+ekspor ABI

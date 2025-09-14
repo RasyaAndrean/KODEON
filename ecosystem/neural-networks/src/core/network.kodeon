@@ -1,0 +1,125 @@
+// KODEON Neural Networks - Network
+// Main neural network class that orchestrates all functionalities
+
+kelas JaringanNeural:
+    fungsi inisialisasi():
+        ini.lapisan = []
+        ini.pelatih = tidak_ada
+        ini.kompilasi_selesai = salah
+        ini.bobot = []
+        ini.bias = []
+
+    // Add a layer to the network
+    fungsi tambah_lapisan(lapisan):
+        ini.lapisan.tambah(lapisan)
+        tampilkan("Lapisan " + lapisan.nama + " ditambahkan ke jaringan")
+
+    // Compile the network with optimizer and loss function
+    fungsi kompilasi(optimizer, fungsi_loss):
+        ini.optimizer = optimizer
+        ini.fungsi_loss = fungsi_loss
+        ini.kompilasi_selesai = benar
+        tampilkan("Jaringan telah dikompilasi dengan optimizer " + optimizer.nama + " dan loss " + fungsi_loss.nama)
+
+    // Forward pass through the network
+    fungsi maju(input_data):
+        buat output = input_data
+
+        untuk setiap lapisan dalam ini.lapisan:
+            output = lapisan.maju(output)
+
+        kembalikan output
+
+    // Backward pass through the network
+    fungsi mundur(gradient):
+        buat grad = gradient
+
+        // Backpropagate through layers in reverse order
+        untuk buat i = ini.lapisan.panjang - 1 sampai i >= 0:
+            grad = ini.lapisan[i].mundur(grad)
+
+        kembalikan grad
+
+    // Train the network
+    fungsi latih(data_latih, label_latih, epochs, batch_size):
+        jika bukan ini.kompilasi_selesai:
+            tampilkan("Kesalahan: Jaringan belum dikompilasi")
+            kembalikan tidak_ada
+
+        tampilkan("Memulai pelatihan jaringan selama " + epochs + " epochs")
+
+        buat riwayat = {
+            loss: [],
+            akurasi: []
+        }
+
+        untuk buat epoch = 1 sampai epoch <= epochs:
+            buat total_loss = 0
+            buat total_akurasi = 0
+            buat jumlah_batch = 0
+
+            // Process data in batches
+            untuk buat i = 0 sampai i < data_latih.panjang:
+                jika i % batch_size == 0 atau i == data_latih.panjang - 1:
+                    // Forward pass
+                    buat prediksi = ini.maju(data_latih[i])
+
+                    // Calculate loss
+                    buat loss = ini.fungsi_loss.hitung(prediksi, label_latih[i])
+                    total_loss = total_loss + loss
+
+                    // Calculate accuracy
+                    buat akurasi = ini.hitung_akurasi(prediksi, label_latih[i])
+                    total_akurasi = total_akurasi + akurasi
+
+                    // Backward pass
+                    buat gradient = ini.fungsi_loss.gradient(prediksi, label_latih[i])
+                    ini.mundur(gradient)
+
+                    // Update weights
+                    ini.optimizer.perbarui_bobot(ini)
+
+                    jumlah_batch = jumlah_batch + 1
+
+            // Calculate average loss and accuracy for this epoch
+            buat rata_rata_loss = total_loss / jumlah_batch
+            buat rata_rata_akurasi = total_akurasi / jumlah_batch
+
+            riwayat.loss.tambah(rata_rata_loss)
+            riwayat.akurasi.tambah(rata_rata_akurasi)
+
+            jika epoch % 10 == 0:
+                tampilkan("Epoch " + epoch + "/" + epochs + " - Loss: " + rata_rata_loss.bulat(4) + " - Akurasi: " + (rata_rata_akurasi * 100).bulat(2) + "%")
+
+        tampilkan("Pelatihan selesai!")
+        kembalikan riwayat
+
+    // Predict using the network
+    fungsi prediksi(input_data):
+        kembalikan ini.maju(input_data)
+
+    // Calculate accuracy
+    fungsi hitung_akurasi(prediksi, label_sebenarnya):
+        // Simple accuracy calculation (this would be more complex in practice)
+        buat benar = 0
+        untuk buat i = 0 sampai i < prediksi.panjang:
+            jika prediksi[i].bulat() == label_sebenarnya[i].bulat():
+                benar = benar + 1
+        kembalikan benar / prediksi.panjang
+
+    // Save the network
+    fungsi simpan(nama_file):
+        tampilkan("Menyimpan jaringan ke " + nama_file)
+        // In a real implementation, this would serialize the network
+
+    // Load a network
+    fungsi muat(nama_file):
+        tampilkan("Memuat jaringan dari " + nama_file)
+        // In a real implementation, this would deserialize the network
+
+// Export the Neural Network class
+fungsi buat_jaringan():
+    kembalikan JaringanNeural()
+
+ekspor buat_jaringan
+ekspor JaringanNeural

@@ -1,0 +1,201 @@
+// KODEON Implementation Details - Implementation Validator Utility
+// Utility for validating implementation details structure and content
+
+kelas ValidatorImplementasi {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.aturan_validasi = ini.opsi.aturan_validasi || ini.buat_aturan_default()
+        ini.hasil_validasi = []
+        ini.aktif = salah
+    }
+
+    // Create default validation rules
+    fungsi buat_aturan_default() {
+        kembalikan {
+            "wajib": ["nama", "versi", "deskripsi", "arsitektur", "teknologi"],
+            "format": {
+                "versi": "^\\d+\\.\\d+\\.\\d+$",
+                "tanggal": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "panjang_min": {
+                "deskripsi": 10,
+                "arsitektur": 20
+            },
+            "panjang_maks": {
+                "nama": 50
+            }
+        }
+    }
+
+    // Initialize validator
+    fungsi inisialisasi_validator() {
+        ini.aktif = benar
+        tampilkan("Validator implementasi diinisialisasi")
+        kembalikan benar
+    }
+
+    // Validate implementation details
+    fungsi validasi(detail_implementasi) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Validator implementasi belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat hasil = {
+            id: ini.hasil_validasi.panjang + 1,
+            waktu_validasi: sekarang(),
+            valid: benar,
+            kesalahan: [],
+            peringatan: []
+        }
+
+        // Check required fields
+        untuk setiap field dalam ini.aturan_validasi.wajib {
+            jika bukan detail_implementasi[field] {
+                hasil.valid = salah
+                hasil.kesalahan.tambah("Field wajib tidak ditemukan: " + field)
+            }
+        }
+
+        // Check format rules
+        untuk setiap field dalam ini.aturan_validasi.format {
+            jika detail_implementasi[field] {
+                buat regex = baru RegExp(ini.aturan_validasi.format[field])
+                jika bukan regex.test(detail_implementasi[field]) {
+                    hasil.valid = salah
+                    hasil.kesalahan.tambah("Format tidak valid untuk field: " + field)
+                }
+            }
+        }
+
+        // Check minimum length rules
+        untuk setiap field dalam ini.aturan_validasi.panjang_min {
+            jika detail_implementasi[field] dan detail_implementasi[field].panjang < ini.aturan_validasi.panjang_min[field] {
+                hasil.peringatan.tambah("Field " + field + " terlalu pendek (min: " + ini.aturan_validasi.panjang_min[field] + " karakter)")
+            }
+        }
+
+        // Check maximum length rules
+        untuk setiap field dalam ini.aturan_validasi.panjang_maks {
+            jika detail_implementasi[field] dan detail_implementasi[field].panjang > ini.aturan_validasi.panjang_maks[field] {
+                hasil.valid = salah
+                hasil.kesalahan.tambah("Field " + field + " terlalu panjang (maks: " + ini.aturan_validasi.panjang_maks[field] + " karakter)")
+            }
+        }
+
+        // Additional custom validations
+        hasil = ini.validasi_kustom(detail_implementasi, hasil)
+
+        ini.hasil_validasi.tambah(hasil)
+
+        jika hasil.valid {
+            tampilkan("Validasi berhasil")
+        } lain {
+            tampilkan("Validasi gagal dengan " + hasil.kesalahan.panjang + " kesalahan")
+        }
+
+        kembalikan hasil
+    }
+
+    // Custom validations
+    fungsi validasi_kustom(detail_implementasi, hasil) {
+        // Check for component dependencies
+        jika detail_implementasi.dependensi {
+            jika bukan Array.isArray(detail_implementasi.dependensi) {
+                hasil.peringatan.tambah("Dependensi harus berupa array")
+            }
+        }
+
+        // Check for technology stack
+        jika detail_implementasi.teknologi {
+            jika typeof detail_implementasi.teknologi !== "object" {
+                hasil.peringatan.tambah("Teknologi harus berupa objek")
+            }
+        }
+
+        // Check for architecture details
+        jika detail_implementasi.arsitektur {
+            jika typeof detail_implementasi.arsitektur !== "object" {
+                hasil.peringatan.tambah("Arsitektur harus berupa objek")
+            }
+        }
+
+        kembalikan hasil
+    }
+
+    // Get validation results
+    fungsi dapatkan_hasil_validasi(limit) {
+        buat hasil = [...ini.hasil_validasi].reverse()
+        jika limit {
+            kembalikan hasil.slice(0, limit)
+        }
+        kembalikan hasil
+    }
+
+    // Get validation statistics
+    fungsi dapatkan_statistik() {
+        buat total = ini.hasil_validasi.panjang
+        buat valid = ini.hasil_validasi.filter(fungsi(hasil) { kembalikan hasil.valid }).panjang
+        buat tidak_valid = total - valid
+
+        kembalikan {
+            total_validasi: total,
+            validasi_berhasil: valid,
+            validasi_gagal: tidak_valid,
+            tingkat_keberhasilan: total > 0 ? (valid / total * 100).toFixed(2) + "%" : "0%"
+        }
+    }
+
+    // Add custom validation rule
+    fungsi tambah_aturan_validasi(tipe, field, aturan) {
+        jika bukan ini.aturan_validasi[tipe] {
+            ini.aturan_validasi[tipe] = {}
+        }
+
+        ini.aturan_validasi[tipe][field] = aturan
+        tampilkan("Aturan validasi ditambahkan: " + tipe + "." + field)
+        kembalikan benar
+    }
+
+    // Remove validation rule
+    fungsi hapus_aturan_validasi(tipe, field) {
+        jika ini.aturan_validasi[tipe] dan ini.aturan_validasi[tipe][field] {
+            hapus ini.aturan_validasi[tipe][field]
+            tampilkan("Aturan validasi dihapus: " + tipe + "." + field)
+            kembalikan benar
+        }
+
+        tampilkan("Aturan validasi tidak ditemukan: " + tipe + "." + field)
+        kembalikan salah
+    }
+
+    // Get validation rules
+    fungsi dapatkan_aturan_validasi() {
+        kembalikan { ...ini.aturan_validasi }
+    }
+
+    // Get system status
+    fungsi dapatkan_status() {
+        kembalikan {
+            aktif: ini.aktif,
+            total_validasi: ini.hasil_validasi.panjang,
+            statistik: ini.dapatkan_statistik()
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Periodically log validation status
+        jika Math.acak() > 0.9 {
+            buat statistik = ini.dapatkan_statistik()
+            tampilkan("Status validasi: " + statistik.total_validasi + " validasi, " +
+                     statistik.tingkat_keberhasilan + " tingkat keberhasilan")
+        }
+    }
+}
+
+ekspor ValidatorImplementasi

@@ -1,0 +1,82 @@
+// KODEON Implementation Details - Advanced Example
+// Advanced example of using the implementation details framework with full workflow
+
+kelas ContohLanjutan {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.nama = ini.opsi.nama || "Contoh Lanjutan"
+        ini.deskripsi = "Contoh lanjutan penggunaan framework implementation details dengan alur kerja penuh"
+    }
+
+    // Run advanced example
+    fungsi jalankan() {
+        tampilkan("=== Contoh Lanjutan Implementation Details ===")
+        tampilkan("Nama: " + ini.nama)
+        tampilkan("Deskripsi: " + ini.deskripsi)
+        tampilkan("")
+
+        // Simulate complete workflow
+        tampilkan("1. Alur kerja lengkap implementation details:")
+        tampilkan("")
+
+        // Component registration
+        tampilkan("   a. Pendaftaran komponen:")
+        tampilkan("      - Mendaftarkan 'voice-gesture' v1.0.0")
+        tampilkan("      - Mendaftarkan 'university' v1.0.0")
+        tampilkan("      - Mendaftarkan 'security' v1.0.0")
+        tampilkan("")
+
+        // Implementation tracking
+        tampilkan("   b. Pelacakan implementasi:")
+        tampilkan("      - Memulai pelacakan untuk 'voice-gesture' (0%)")
+        tampilkan("      - Memperbarui progres ke 50%")
+        tampilkan("      - Menyelesaikan pelacakan (100%)")
+        tampilkan("")
+
+        // Documentation generation
+        tampilkan("   c. Pembuatan dokumentasi:")
+        tampilkan("      - Menghasilkan ringkasan implementasi")
+        tampilkan("      - Menghasilkan detail teknis")
+        tampilkan("      - Menghasilkan laporan kemajuan")
+        tampilkan("")
+
+        // Validation and verification
+        tampilkan("   d. Validasi dan verifikasi:")
+        tampilkan("      - Memvalidasi struktur detail implementasi")
+        tampilkan("      - Memverifikasi kualitas kode (95/100)")
+        tampilkan("      - Memverifikasi dokumentasi (85/100)")
+        tampilkan("      - Memverifikasi pengujian (90/100)")
+        tampilkan("")
+
+        // Reporting
+        tampilkan("   e. Pelaporan:")
+        tampilkan("      - Menghasilkan laporan implementasi komprehensif")
+        tampilkan("      - Mengekspor ke format Markdown")
+        tampilkan("      - Menyimpan ke sistem file")
+        tampilkan("")
+
+        // Advanced features
+        tampilkan("2. Fitur lanjutan:")
+        tampilkan("   - Template dokumentasi kustom")
+        tampilkan("   - Aturan validasi tambahan")
+        tampilkan("   - Metrik pelacakan real-time")
+        tampilkan("   - Integrasi dengan sistem CI/CD")
+        tampilkan("   - Notifikasi perubahan status")
+        tampilkan("")
+
+        tampilkan("Contoh lanjutan selesai dijalankan.")
+        kembalikan benar
+    }
+
+    // Get example info
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            deskripsi: ini.deskripsi,
+            tingkat_kesulitan: "lanjutan",
+            waktu_estimasi: "15 menit"
+        }
+    }
+}
+
+ekspor ContohLanjutan

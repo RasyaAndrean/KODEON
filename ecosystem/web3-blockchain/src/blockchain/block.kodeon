@@ -1,0 +1,46 @@
+// KODEON Web3/Blockchain - Block
+// Represents a block in the blockchain
+
+kelas Blok:
+    fungsi inisialisasi(indeks, timestamp, data, hash_sebelumnya):
+        ini.indeks = indeks
+        ini.timestamp = timestamp
+        ini.data = data
+        ini.hash_sebelumnya = hash_sebelumnya
+        ini.hash = ini.hitung_hash()
+        ini.nonce = 0
+
+    // Calculate block hash
+    fungsi hitung_hash():
+        buat konten = ini.indeks + ini.timestamp + JSON.stringify(ini.data) + ini.hash_sebelumnya + ini.nonce
+        kembalikan hash.sha256(konten)
+
+    // Mine block
+    fungsi tambang(kesulitan):
+        buat target = "0".ulang(kesulitan)
+
+        selama ini.hash.potong(0, kesulitan) != target:
+            ini.nonce = ini.nonce + 1
+            ini.hash = ini.hitung_hash()
+
+        tampilkan("Blok ditambang: " + ini.hash)
+
+    // Validate block
+    fungsi validasi():
+        buat hash_sebelumnya = ini.hash
+        ini.hash = ini.hitung_hash()
+
+        kembalikan ini.hash == hash_sebelumnya
+
+    // Get block information
+    fungsi dapatkan_info():
+        kembalikan {
+            indeks: ini.indeks,
+            timestamp: ini.timestamp,
+            data: ini.data,
+            hash_sebelumnya: ini.hash_sebelumnya,
+            hash: ini.hash,
+            nonce: ini.nonce
+        }
+
+ekspor Blok

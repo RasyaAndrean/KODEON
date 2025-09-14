@@ -1,0 +1,399 @@
+.mentors-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mentors-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.mentors-header h1 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.mentors-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.mentors-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 15px 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666;
+  border-bottom: 3px solid transparent;
+}
+
+.tab.active {
+  color: #667eea;
+  border-bottom: 3px solid #667eea;
+}
+
+.tab:hover:not(.active) {
+  color: #333;
+  background: #f8f9fa;
+}
+
+.mentors-search {
+  margin-bottom: 30px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.mentors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.mentor-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.mentor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mentor-header {
+  display: flex;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.mentor-avatar {
+  margin-right: 15px;
+}
+
+.mentor-avatar .avatar-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #667eea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.mentor-info h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.mentor-title {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.mentor-rating {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #667eea;
+}
+
+.mentor-details {
+  padding: 20px;
+}
+
+.mentor-section {
+  margin-bottom: 20px;
+}
+
+.mentor-section h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  background: #e9ecef;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.mentor-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.availability {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.availability.available {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.availability.unavailable {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.request-btn {
+  width: 100%;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.request-btn:hover:not(:disabled) {
+  background: #5a6fd8;
+}
+
+.request-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.mentees-content h2,
+.my-mentor-content h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.mentees-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.mentee-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.mentee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.mentee-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.mentee-status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+}
+
+.mentee-details p {
+  margin: 10px 0;
+  color: #666;
+}
+
+.mentee-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.action-btn {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.action-btn:hover {
+  background: #e9ecef;
+}
+
+.request-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.mentor-preview {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.mentor-preview .mentor-avatar {
+  margin-right: 20px;
+}
+
+.mentor-preview .mentor-avatar .avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  font-size: 2rem;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.send-btn,
+.cancel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.send-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.send-btn:hover {
+  background: #45a049;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #d32f2f;
+}
+
+@media (max-width: 768px) {
+  .mentors-tabs {
+    flex-direction: column;
+  }
+
+  .mentors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mentor-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .mentor-avatar {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .mentor-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .mentee-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .mentee-actions {
+    flex-direction: column;
+  }
+}

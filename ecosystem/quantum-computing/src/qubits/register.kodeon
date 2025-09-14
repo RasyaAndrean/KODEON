@@ -1,0 +1,86 @@
+// KODEON Quantum Computing - Qubit Register
+// Manages a collection of qubits
+
+kelas RegisterQubit:
+    fungsi inisialisasi(jumlah_qubit):
+        ini.jumlah_qubit = jumlah_qubit
+        ini.qubit = []
+        ini.inisialisasi_qubit()
+
+    // Initialize all qubits to |0⟩ state
+    fungsi inisialisasi_qubit():
+        untuk buat i = 0 sampai i < ini.jumlah_qubit:
+            ini.qubit.tambah(Qubit())
+        tampilkan("Register qubit diinisialisasi dengan " + ini.jumlah_qubit + " qubit")
+
+    // Get a specific qubit
+    fungsi dapatkan_qubit(indeks):
+        jika indeks >= 0 dan indeks < ini.jumlah_qubit:
+            kembalikan ini.qubit[indeks]
+        lain:
+            tampilkan("Kesalahan: Indeks qubit " + indeks + " tidak valid")
+            kembalikan tidak_ada
+
+    // Apply a single-qubit gate to a specific qubit
+    fungsi terapkan_gerbang_tunggal(gerbang_matriks, indeks_qubit):
+        jika indeks_qubit >= 0 dan indeks_qubit < ini.jumlah_qubit:
+            ini.qubit[indeks_qubit].terapkan_gerbang(gerbang_matriks)
+            tampilkan("Gerbang diterapkan pada qubit " + indeks_qubit)
+        lain:
+            tampilkan("Kesalahan: Indeks qubit " + indeks_qubit + " tidak valid")
+
+    // Apply a controlled gate
+    fungsi terapkan_gerbang_terkontrol(gerbang_matriks, qubit_kontrol, qubit_target):
+        jika qubit_kontrol >= 0 dan qubit_kontrol < ini.jumlah_qubit dan
+           qubit_target >= 0 dan qubit_target < ini.jumlah_qubit dan
+           qubit_kontrol != qubit_target:
+
+            // In a real implementation, this would apply the controlled gate
+            // For simulation, we'll just apply the gate to the target if control is |1⟩
+            tampilkan("Gerbang terkontrol diterapkan: kontrol=" + qubit_kontrol + ", target=" + qubit_target)
+        lain:
+            tampilkan("Kesalahan: Indeks qubit kontrol atau target tidak valid")
+
+    // Measure a specific qubit
+    fungsi ukur_qubit(indeks):
+        jika indeks >= 0 dan indeks < ini.jumlah_qubit:
+            buat hasil = ini.qubit[indeks].ukur()
+            kembalikan hasil
+        lain:
+            tampilkan("Kesalahan: Indeks qubit " + indeks + " tidak valid")
+            kembalikan tidak_ada
+
+    // Measure all qubits
+    fungsi ukur_semua():
+        buat hasil = []
+        untuk buat i = 0 sampai i < ini.jumlah_qubit:
+            buat nilai = ini.qubit[i].ukur()
+            hasil.tambah(nilai)
+        kembalikan hasil
+
+    // Reset all qubits to |0⟩ state
+    fungsi reset():
+        untuk setiap q dalam ini.qubit:
+            q.reset()
+        tampilkan("Semua qubit dalam register telah direset")
+
+    // Get the overall state as a string
+    fungsi dapatkan_keadaan_string():
+        buat deskripsi = "Register Qubit (" + ini.jumlah_qubit + " qubit):\n"
+        untuk buat i = 0 sampai i < ini.jumlah_qubit:
+            deskripsi = deskripsi + "  Qubit " + i + ": " + ini.qubit[i].dapatkan_keadaan_string() + "\n"
+        kembalikan deskripsi
+
+    // Entangle two qubits (simplified implementation)
+    fungsi entangle(qubit1, qubit2):
+        jika qubit1 >= 0 dan qubit1 < ini.jumlah_qubit dan
+           qubit2 >= 0 dan qubit2 < ini.jumlah_qubit dan
+           qubit1 != qubit2:
+
+            // Create a simple entangled state (Bell state)
+            // In a real implementation, this would involve more complex operations
+            tampilkan("Qubit " + qubit1 + " dan " + qubit2 + " telah di-entangle")
+        lain:
+            tampilkan("Kesalahan: Indeks qubit tidak valid untuk entanglement")
+
+ekspor RegisterQubit

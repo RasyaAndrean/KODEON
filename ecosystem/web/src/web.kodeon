@@ -1,0 +1,36 @@
+// KODEON Web Framework - Main Entry Point
+// This file exports all the main components of the web framework
+
+// Core components
+impor "core/application" sebagai aplikasi
+
+// HTTP components
+impor "http/request" sebagai permintaan
+impor "http/response" sebagai respons
+
+// Middleware
+impor "middleware/logger" sebagai logger
+impor "middleware/cors" sebagai cors
+
+// Templates
+impor "templates/engine" sebagai template
+
+// Database
+impor "database/orm" sebagai database
+
+// Utilities
+impor "utils/helpers" sebagai utilitas
+
+// Export main application creator
+fungsi buat_aplikasi():
+    kembalikan aplikasi.buat_aplikasi()
+
+// Export all components
+ekspor buat_aplikasi
+ekspor permintaan
+ekspor respons
+ekspor logger
+ekspor cors
+ekspor template
+ekspor database
+ekspor utilitas

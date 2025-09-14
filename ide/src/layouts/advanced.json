@@ -1,0 +1,35 @@
+{
+  "name": "Advanced",
+  "description": "Advanced layout with multiple panels and full toolbar",
+  "fontSize": 14,
+  "zoomLevel": 1.0,
+  "panels": {
+    "editor": {
+      "visible": true,
+      "position": "center",
+      "size": "70%"
+    },
+    "output": {
+      "visible": true,
+      "position": "right",
+      "size": "30%"
+    },
+    "problems": {
+      "visible": true,
+      "position": "bottom",
+      "size": "30%"
+    }
+  },
+  "toolbar": {
+    "visible": true,
+    "buttons": [
+      "newFile",
+      "openFile",
+      "saveFile",
+      "compile",
+      "run",
+      "undo",
+      "redo"
+    ]
+  }
+}

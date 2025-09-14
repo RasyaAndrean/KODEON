@@ -1,0 +1,176 @@
+// KODEON Voice/Gesture - Device Connector Utility
+// Utility for connecting and managing devices for voice/gesture control
+
+kelas PenghubungPerangkat {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.perangkat_terhubung = []
+        ini.tipe_koneksi_didukung = ["bluetooth", "wifi", "usb", "serial"]
+        ini.aktif = salah
+    }
+
+    // Initialize device connector
+    fungsi inisialisasi_penghubung() {
+        ini.aktif = benar
+        tampilkan("Penghubung perangkat diinisialisasi")
+        kembalikan benar
+    }
+
+    // Connect to device
+    fungsi hubungkan_perangkat(alamat, tipe_koneksi, nama_perangkat) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Penghubung perangkat belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika bukan ini.tipe_koneksi_didukung.termasuk(tipe_koneksi) {
+            tampilkan("Kesalahan: Tipe koneksi tidak didukung: " + tipe_koneksi)
+            kembalikan salah
+        }
+
+        // Simulate device connection
+        buat perangkat = {
+            id: ini.perangkat_terhubung.panjang + 1,
+            nama: nama_perangkat || "Perangkat_" + (ini.perangkat_terhubung.panjang + 1),
+            alamat: alamat,
+            tipe: tipe_koneksi,
+            terhubung: benar,
+            waktu_koneksi: sekarang(),
+            status: "aktif"
+        }
+
+        ini.perangkat_terhubung.tambah(perangkat)
+        tampilkan("Perangkat terhubung: " + perangkat.nama + " (" + tipe_koneksi + ")")
+
+        kembalikan {
+            berhasil: benar,
+            id_perangkat: perangkat.id,
+            perangkat: perangkat
+        }
+    }
+
+    // Disconnect device
+    fungsi putuskan_perangkat(id_perangkat) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Penghubung perangkat belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat perangkat = ini.perangkat_terhubung.cari(fungsi(p) {
+            kembalikan p.id === id_perangkat
+        })
+
+        jika bukan perangkat {
+            tampilkan("Perangkat tidak ditemukan: " + id_perangkat)
+            kembalikan salah
+        }
+
+        perangkat.terhubung = salah
+        perangkat.status = "terputus"
+        tampilkan("Perangkat diputuskan: " + perangkat.nama)
+
+        kembalikan benar
+    }
+
+    // Get connected devices
+    fungsi dapatkan_perangkat_terhubung() {
+        kembalikan ini.perangkat_terhubung.filter(fungsi(perangkat) {
+            kembalikan perangkat.terhubung
+        })
+    }
+
+    // Get all devices
+    fungsi dapatkan_semua_perangkat() {
+        kembalikan [...ini.perangkat_terhubung]
+    }
+
+    // Send data to device
+    fungsi kirim_data(id_perangkat, data) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Penghubung perangkat belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat perangkat = ini.perangkat_terhubung.cari(fungsi(p) {
+            kembalikan p.id === id_perangkat
+        })
+
+        jika bukan perangkat {
+            tampilkan("Perangkat tidak ditemukan: " + id_perangkat)
+            kembalikan salah
+        }
+
+        jika bukan perangkat.terhubung {
+            tampilkan("Perangkat tidak terhubung: " + perangkat.nama)
+            kembalikan salah
+        }
+
+        // Simulate data transmission
+        tampilkan("Data dikirim ke " + perangkat.nama + ": " + JSON.stringify(data))
+
+        kembalikan {
+            berhasil: benar,
+            perangkat: perangkat.nama,
+            data_terkirim: data
+        }
+    }
+
+    // Receive data from device
+    fungsi terima_data(id_perangkat) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Penghubung perangkat belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat perangkat = ini.perangkat_terhubung.cari(fungsi(p) {
+            kembalikan p.id === id_perangkat
+        })
+
+        jika bukan perangkat {
+            tampilkan("Perangkat tidak ditemukan: " + id_perangkat)
+            kembalikan tidak_ada
+        }
+
+        jika bukan perangkat.terhubung {
+            tampilkan("Perangkat tidak terhubung: " + perangkat.nama)
+            kembalikan tidak_ada
+        }
+
+        // Simulate data reception
+        buat data_diterima = {
+            timestamp: sekarang(),
+            data: "data_simulasi_dari_" + perangkat.nama,
+            ukuran: Math.floor(Math.acak() * 1000) + 1
+        }
+
+        tampilkan("Data diterima dari " + perangkat.nama)
+
+        kembalikan data_diterima
+    }
+
+    // Get connector status
+    fungsi dapatkan_status() {
+        kembalikan {
+            aktif: ini.aktif,
+            total_perangkat: ini.perangkat_terhubung.panjang,
+            perangkat_terhubung: ini.dapatkan_perangkat_terhubung().panjang,
+            tipe_koneksi_didukung: [...ini.tipe_koneksi_didukung]
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Check device connections
+        untuk setiap perangkat dalam ini.perangkat_terhubung {
+            jika perangkat.terhubung dan Math.acak() > 0.95 {
+                tampilkan("Memeriksa koneksi perangkat: " + perangkat.nama)
+            }
+        }
+    }
+}
+
+ekspor PenghubungPerangkat

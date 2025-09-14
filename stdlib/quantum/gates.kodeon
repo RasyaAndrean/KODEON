@@ -1,0 +1,53 @@
+// Quantum Computing Gates Module
+// This module provides implementations of common quantum gates
+
+// Pauli-X Gate (Quantum NOT gate)
+fungsi pauli_x(qubit) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// Pauli-Y Gate
+fungsi pauli_y(qubit) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// Pauli-Z Gate
+fungsi pauli_z(qubit) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// Hadamard Gate
+fungsi hadamard(qubit) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// CNOT Gate (Controlled NOT)
+fungsi cnot(control_qubit, target_qubit) {
+    // Implementation would go here
+    kembalikan [control_qubit, target_qubit]
+}
+
+// Phase Gate
+fungsi phase(qubit, angle) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// T Gate (π/4 phase gate)
+fungsi t_gate(qubit) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// S Gate (π/2 phase gate)
+fungsi s_gate(qubit) {
+    // Implementation would go here
+    kembalikan qubit
+}
+
+// Export the functions
+ekspor pauli_x, pauli_y, pauli_z, hadamard, cnot, phase, t_gate, s_gate

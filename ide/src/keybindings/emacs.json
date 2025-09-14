@@ -1,0 +1,18 @@
+{
+  "name": "Emacs",
+  "shortcuts": {
+    "newFile": "Ctrl+X Ctrl+N",
+    "openFile": "Ctrl+X Ctrl+F",
+    "saveFile": "Ctrl+X Ctrl+S",
+    "compile": "Ctrl+C Ctrl+C",
+    "run": "Ctrl+C Ctrl+R",
+    "undo": "Ctrl+X U",
+    "redo": "Ctrl+Y",
+    "cut": "Ctrl+W",
+    "copy": "Alt+W",
+    "paste": "Ctrl+Y",
+    "find": "Ctrl+S",
+    "replace": "Alt+%",
+    "selectAll": "Ctrl+X H"
+  }
+}

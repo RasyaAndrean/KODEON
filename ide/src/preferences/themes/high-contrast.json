@@ -1,0 +1,26 @@
+{
+  "name": "High Contrast",
+  "type": "high-contrast",
+  "colors": {
+    "editor.background": "#000000",
+    "editor.foreground": "#ffffff",
+    "editor.lineHighlightBackground": "#1a1a1a",
+    "editor.selectionBackground": "#008000",
+    "panel.background": "#000000",
+    "panel.border": "#ffffff",
+    "button.background": "#0000ff",
+    "button.foreground": "#ffffff",
+    "toolbar.background": "#000000",
+    "toolbar.border": "#ffffff",
+    "statusBar.background": "#0000ff",
+    "statusBar.foreground": "#ffffff"
+  },
+  "tokenColors": {
+    "keyword": "#ffff00",
+    "comment": "#00ff00",
+    "string": "#ff00ff",
+    "number": "#00ffff",
+    "operator": "#ffffff",
+    "identifier": "#ffffff"
+  }
+}

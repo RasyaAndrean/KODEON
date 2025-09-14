@@ -1,0 +1,23 @@
+{
+  "name": "@kodeon/sustainable-tech",
+  "version": "1.0.0",
+  "description": "KODEON Sustainable Technology - Tools for building environmentally responsible applications",
+  "main": "src/sustainable-tech.kodeon",
+  "scripts": {
+    "test": "kodeon test",
+    "build": "kodeon build",
+    "start": "kodeon run examples/basic-usage.kodeon"
+  },
+  "keywords": [
+    "kodeon",
+    "sustainability",
+    "green-tech",
+    "carbon-footprint",
+    "energy-efficiency",
+    "environment"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

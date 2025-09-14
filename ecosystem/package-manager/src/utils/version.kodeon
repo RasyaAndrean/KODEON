@@ -1,0 +1,155 @@
+// KODEON Package Manager Integration - Version Utility
+// Version management and comparison
+
+kelas Versi {
+    fungsi inisialisasi() {
+        ini.versi = []
+    }
+
+    // Parse version string
+    fungsi parse_versi(versi_str) {
+        // Parse semantic versioning (e.g., "1.2.3")
+        buat bagian = versi_str.split(".")
+        jika bagian.panjang < 3 {
+            // Pad with zeros if needed
+            selama bagian.panjang < 3 {
+                bagian.tambah("0")
+            }
+        }
+
+        kembalikan {
+            mayor: parseInt(bagian[0]) || 0,
+            minor: parseInt(bagian[1]) || 0,
+            patch: parseInt(bagian[2]) || 0,
+            asli: versi_str
+        }
+    }
+
+    // Compare versions
+    fungsi bandingkan_versi(versi1, versi2) {
+        buat v1 = ini.parse_versi(versi1)
+        buat v2 = ini.parse_versi(versi2)
+
+        jika v1.mayor != v2.mayor {
+            kembalikan v1.mayor - v2.mayor
+        }
+
+        jika v1.minor != v2.minor {
+            kembalikan v1.minor - v2.minor
+        }
+
+        jika v1.patch != v2.patch {
+            kembalikan v1.patch - v2.patch
+        }
+
+        kembalikan 0 // Versions are equal
+    }
+
+    // Check if version satisfies constraint
+    fungsi puaskan_kendala(versi, kendala) {
+        // Simple constraint checking (e.g., "^1.2.3", "~1.2.3", ">=1.2.3")
+        jika kendala.dimulai_dengan("^") {
+            // Compatible with version (same major)
+            buat target = kendala.slice(1)
+            buat target_parsed = ini.parse_versi(target)
+            buat versi_parsed = ini.parse_versi(versi)
+            kembalikan versi_parsed.mayor == target_parsed.mayor dan
+                   ini.bandingkan_versi(versi, target) >= 0
+        } lain jika kendala.dimulai_dengan("~") {
+            // Approximately equal (same major and minor)
+            buat target = kendala.slice(1)
+            buat target_parsed = ini.parse_versi(target)
+            buat versi_parsed = ini.parse_versi(versi)
+            kembalikan versi_parsed.mayor == target_parsed.mayor dan
+                   versi_parsed.minor == target_parsed.minor dan
+                   ini.bandingkan_versi(versi, target) >= 0
+        } lain jika kendala.dimulai_dengan(">=") {
+            // Greater than or equal
+            buat target = kendala.slice(2)
+            kembalikan ini.bandingkan_versi(versi, target) >= 0
+        } lain jika kendala.dimulai_dengan(">") {
+            // Greater than
+            buat target = kendala.slice(1)
+            kembalikan ini.bandingkan_versi(versi, target) > 0
+        } lain jika kendala.dimulai_dengan("<=") {
+            // Less than or equal
+            buat target = kendala.slice(2)
+            kembalikan ini.bandingkan_versi(versi, target) <= 0
+        } lain jika kendala.dimulai_dengan("<") {
+            // Less than
+            buat target = kendala.slice(1)
+            kembalikan ini.bandingkan_versi(versi, target) < 0
+        } lain {
+            // Exact match
+            kembalikan versi == kendala
+        }
+    }
+
+    // Get latest version from list
+    fungsi dapatkan_terbaru(daftar_versi) {
+        jika daftar_versi.panjang == 0 {
+            kembalikan tidak_ada
+        }
+
+        buat terbaru = daftar_versi[0]
+        untuk setiap versi dalam daftar_versi {
+            jika ini.bandingkan_versi(versi, terbaru) > 0 {
+                terbaru = versi
+            }
+        }
+
+        kembalikan terbaru
+    }
+
+    // Get oldest version from list
+    fungsi dapatkan_terlama(daftar_versi) {
+        jika daftar_versi.panjang == 0 {
+            kembalikan tidak_ada
+        }
+
+        buat terlama = daftar_versi[0]
+        untuk setiap versi dalam daftar_versi {
+            jika ini.bandingkan_versi(versi, terlama) < 0 {
+                terlama = versi
+            }
+        }
+
+        kembalikan terlama
+    }
+
+    // Increment version
+    fungsi naikkan_versi(versi, bagian) {
+        buat parsed = ini.parse_versi(versi)
+
+        jika bagian == "mayor" {
+            parsed.mayor += 1
+            parsed.minor = 0
+            parsed.patch = 0
+        } lain jika bagian == "minor" {
+            parsed.minor += 1
+            parsed.patch = 0
+        } lain jika bagian == "patch" {
+            parsed.patch += 1
+        } lain {
+            parsed.patch += 1 // Default to patch
+        }
+
+        kembalikan parsed.mayor + "." + parsed.minor + "." + parsed.patch
+    }
+
+    // Validate version format
+    fungsi validasi_format(versi) {
+        // Simple validation for semantic versioning
+        buat regex = /^\d+\.\d+\.\d+$/
+        kembalikan regex.test(versi)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Versi diperbarui")
+    }
+}
+
+ekspor Versi

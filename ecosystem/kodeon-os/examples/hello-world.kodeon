@@ -1,0 +1,13 @@
+// Conceptual KODEON-OS example
+// This is a placeholder for future implementation
+
+fungsi utama():
+    // This would be a system call in KODEON-OS
+    tampilkan("Hello, KODEON-OS World!")
+
+    // Example of natural language system calls
+    // buat_proses("system_service.kodeon")
+    // alokasi_memori(4096 bytes)
+    // minta_akses_berkas("config.txt", "baca")
+
+    kembalikan 0

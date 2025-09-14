@@ -1,0 +1,45 @@
+{
+  "name": "@kodeon/ar-vr",
+  "version": "1.0.0",
+  "description": "Natural language programming framework for Augmented Reality (AR) and Virtual Reality (VR) applications in KODEON",
+  "main": "src/ar-vr.kodeon",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "kodeon-test tests/",
+    "example": "kodeon-run examples/basic-usage.kodeon",
+    "docs": "kodeon-docs docs/"
+  },
+  "keywords": [
+    "kodeon",
+    "ar",
+    "vr",
+    "augmented-reality",
+    "virtual-reality",
+    "natural-language",
+    "indonesian-programming",
+    "3d",
+    "immersive"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "@kodeon/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@kodeon/testing": "^1.0.0",
+    "@kodeon/docs": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon-lang/kodeon.git",
+    "directory": "ecosystem/ar-vr"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon-lang/kodeon/issues"
+  },
+  "homepage": "https://github.com/kodeon-lang/kodeon/tree/main/ecosystem/ar-vr#readme"
+}

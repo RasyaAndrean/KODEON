@@ -1,0 +1,99 @@
+// KODEON Web3/Blockchain - Web3 Core
+// Main web3 class that orchestrates all functionalities
+
+kelas Web3:
+    fungsi inisialisasi(penyedia):
+        ini.penyedia = penyedia
+        ini.dompet = tidak_ada
+        ini.akun = tidak_ada
+        ini.rantai_blok = tidak_ada
+        ini.kontrak = tidak_ada
+
+    // Set provider
+    fungsi atur_penyedia(penyedia):
+        ini.penyedia = penyedia
+        tampilkan("Penyedia diatur ke: " + penyedia.url)
+
+    // Get accounts
+    fungsi dapatkan_akun():
+        jika ini.penyedia bukan_tidak_ada:
+            kembalikan ini.penyedia.dapatkan_akun()
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan []
+
+    // Get balance
+    fungsi dapatkan_saldo(alamat):
+        jika ini.penyedia bukan_tidak_ada:
+            kembalikan ini.penyedia.dapatkan_saldo(alamat)
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan 0
+
+    // Send transaction
+    fungsi kirim_transaksi(transaksi):
+        jika ini.penyedia bukan_tidak_ada:
+            kembalikan ini.penyedia.kirim_transaksi(transaksi)
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan tidak_ada
+
+    // Deploy contract
+    fungsi deploy_kontrak(abi, bytecode, parameter):
+        jika ini.penyedia bukan_tidak_ada:
+            buat akun = ini.dapatkan_akun()[0]
+            buat kontrak = kontrak.Kontrak(abi, bytecode)
+            kembalikan kontrak.deploy(akun, parameter, ini.penyedia)
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan tidak_ada
+
+    // Interact with contract
+    fungsi interaksi_kontrak(alamat_kontrak, abi):
+        kembalikan kontrak.Kontrak(abi, tidak_ada, alamat_kontrak)
+
+    // Get block
+    fungsi dapatkan_blok(nomor_blok):
+        jika ini.penyedia bukan_tidak_ada:
+            kembalikan ini.penyedia.dapatkan_blok(nomor_blok)
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan tidak_ada
+
+    // Get transaction receipt
+    fungsi dapatkan_tanda_terima_transaksi(hash):
+        jika ini.penyedia bukan_tidak_ada:
+            kembalikan ini.penyedia.dapatkan_tanda_terima_transaksi(hash)
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan tidak_ada
+
+    // Create account
+    fungsi buat_akun():
+        buat akun_baru = akun.Akun()
+        akun_baru.buat_baru()
+        kembalikan akun_baru
+
+    // Create wallet
+    fungsi buat_dompet():
+        buat dompet_baru = dompet.Dompet()
+        kembalikan dompet_baru
+
+    // Sign transaction
+    fungsi tandatangani_transaksi(transaksi, kunci_pribadi):
+        kembalikan transaksi.tandatangani(kunci_pribadi)
+
+    // Estimate gas
+    fungsi perkirakan_gas(transaksi):
+        jika ini.penyedia bukan_tidak_ada:
+            kembalikan ini.penyedia.perkirakan_gas(transaksi)
+        lain:
+            tampilkan("Kesalahan: Penyedia belum diatur")
+            kembalikan 0
+
+// Export the Web3 class
+fungsi buat_web3(penyedia):
+    kembalikan Web3(penyedia)
+
+ekspor buat_web3
+ekspor Web3

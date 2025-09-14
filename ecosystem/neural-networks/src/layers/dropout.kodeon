@@ -1,0 +1,53 @@
+// KODEON Neural Networks - Dropout Layer
+// Dropout layer implementation for regularization
+
+kelas LapisanDropout:
+    fungsi inisialisasi(tingkat_dropout):
+        ini.tingkat_dropout = tingkat_dropout
+        ini.mask = tidak_ada
+        ini.nama = "Dropout"
+        ini.latih_mode = benar
+
+    // Forward pass through dropout layer
+    fungsi maju(input):
+        ini.input_terakhir = input
+
+        jika bukan ini.latih_mode:
+            // In inference mode, just return the input
+            kembalikan input
+
+        // Create dropout mask
+        ini.mask = []
+        buat output = []
+
+        untuk setiap nilai dalam input:
+            // Randomly set some values to zero
+            buat acak_val = acak(0, 1000) / 1000.0
+            buat mask_val = jika acak_val > ini.tingkat_dropout maka 1.0 lain 0.0
+            ini.mask.tambah(mask_val)
+
+            // Scale the output to maintain expected value
+            buat output_val = nilai * mask_val / (1.0 - ini.tingkat_dropout)
+            output.tambah(output_val)
+
+        ini.output_terakhir = output
+        kembalikan output
+
+    // Backward pass through dropout layer
+    fungsi mundur(gradient):
+        jika bukan ini.latih_mode atau ini.mask == tidak_ada:
+            kembalikan gradient
+
+        // Apply the same mask to the gradient
+        buat gradient_output = []
+        untuk buat i = 0 sampai i < gradient.panjang:
+            buat grad_val = gradient[i] * ini.mask[i] / (1.0 - ini.tingkat_dropout)
+            gradient_output.tambah(grad_val)
+
+        kembalikan gradient_output
+
+    // Set training mode
+    fungsi atur_mode_latih(latih):
+        ini.latih_mode = latih
+
+ekspor LapisanDropout

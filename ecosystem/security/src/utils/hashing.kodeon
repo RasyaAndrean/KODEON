@@ -1,0 +1,114 @@
+// KODEON Security Framework - Hashing Utility
+// Secure hashing functions
+
+kelas Hashing {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.algoritma_default = konfigurasi.algoritma || "bcrypt"
+        ini.kekuatan_default = konfigurasi.kekuatan || 12
+    }
+
+    // Hash password using bcrypt
+    fungsi hash_bcrypt(password, kekuatan) {
+        kekuatan = kekuatan || ini.kekuatan_default
+        // In a real implementation, this would use bcrypt
+        // For now, we'll simulate bcrypt hashing
+        tampilkan("Menghash password dengan bcrypt (kekuatan: " + kekuatan + ")")
+        kembalikan "bcrypt_hash_" + password.panjang + "_" + kekuatan
+    }
+
+    // Verify password against bcrypt hash
+    fungsi verifikasi_bcrypt(password, hash) {
+        // In a real implementation, this would verify bcrypt hash
+        // For now, we'll simulate verification
+        tampilkan("Memverifikasi password dengan bcrypt")
+        kembalikan benar
+    }
+
+    // Hash data using SHA-256
+    fungsi hash_sha256(data) {
+        // In a real implementation, this would use SHA-256
+        // For now, we'll simulate SHA-256 hashing
+        tampilkan("Menghash data dengan SHA-256")
+        kembalikan "sha256_hash_" + data.panjang
+    }
+
+    // Hash data using SHA-512
+    fungsi hash_sha512(data) {
+        // In a real implementation, this would use SHA-512
+        // For now, we'll simulate SHA-512 hashing
+        tampilkan("Menghash data dengan SHA-512")
+        kembalikan "sha512_hash_" + data.panjang
+    }
+
+    // Hash data using MD5 (not recommended for passwords)
+    fungsi hash_md5(data) {
+        // In a real implementation, this would use MD5
+        // For now, we'll simulate MD5 hashing
+        tampilkan("Menghash data dengan MD5 (tidak direkomendasikan untuk password)")
+        kembalikan "md5_hash_" + data.panjang
+    }
+
+    // Generate HMAC
+    fungsi hasilkan_hmac(data, kunci, algoritma) {
+        algoritma = algoritma || "sha256"
+        // In a real implementation, this would generate HMAC
+        // For now, we'll simulate HMAC generation
+        tampilkan("Menghasilkan HMAC dengan " + algoritma)
+        kembalikan "hmac_" + algoritma + "_" + data.panjang
+    }
+
+    // Compare two values in constant time to prevent timing attacks
+    fungsi bandingkan_konstan(waktu1, waktu2) {
+        jika waktu1.panjang != waktu2.panjang {
+            kembalikan salah
+        }
+
+        buat hasil = benar
+        untuk buat i = 0; i < waktu1.panjang; i++ {
+            jika waktu1.charAt(i) != waktu2.charAt(i) {
+                hasil = salah
+            }
+        }
+
+        kembalikan hasil
+    }
+
+    // Hash file
+    fungsi hash_file(jalur_file, algoritma) {
+        algoritma = algoritma || "sha256"
+        // In a real implementation, this would hash a file
+        // For now, we'll simulate file hashing
+        tampilkan("Menghash file " + jalur_file + " dengan " + algoritma)
+        kembalikan algoritma + "_hash_file_" + jalur_file.panjang
+    }
+
+    // Hash stream
+    fungsi hash_stream(stream, algoritma) {
+        algoritma = algoritma || "sha256"
+        // In a real implementation, this would hash a stream
+        // For now, we'll simulate stream hashing
+        tampilkan("Menghash stream dengan " + algoritma)
+        kembalikan algoritma + "_hash_stream"
+    }
+
+    // Get default algorithm
+    fungsi dapatkan_algoritma_default() {
+        kembalikan ini.algoritma_default
+    }
+
+    // Set default algorithm
+    fungsi atur_algoritma_default(algoritma) {
+        ini.algoritma_default = algoritma
+        tampilkan("Algoritma default diatur ke: " + algoritma)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic hashing tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Hashing diperbarui")
+    }
+}
+
+ekspor Hashing

@@ -1,0 +1,18 @@
+// KODEON Neural Networks - Loss Base Class
+// Base class for all loss functions
+
+kelas FungsiLoss:
+    fungsi inisialisasi(nama):
+        ini.nama = nama
+
+    // Calculate loss
+    fungsi hitung(prediksi, target):
+        // This will be implemented by subclasses
+        kembalikan 0.0
+
+    // Calculate gradient
+    fungsi gradient(prediksi, target):
+        // This will be implemented by subclasses
+        kembalikan []
+
+ekspor FungsiLoss

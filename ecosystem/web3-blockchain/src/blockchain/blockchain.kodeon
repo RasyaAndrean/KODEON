@@ -1,0 +1,95 @@
+// KODEON Web3/Blockchain - Blockchain
+// Represents a blockchain
+
+kelas RantaiBlok:
+    fungsi inisialisasi():
+        ini.blok = [ini.buat_blok_genesis()]
+        ini.kesulitan = 2
+        ini.pending_transaksi = []
+        ini.blok_reward = 100
+
+    // Create genesis block
+    fungsi buat_blok_genesis():
+        kembalikan blok.Blok(0, sekarang(), "Genesis Block", "0")
+
+    // Get latest block
+    fungsi dapatkan_blok_terakhir():
+        kembalikan ini.blok[ini.blok.panjang - 1]
+
+    // Add new block
+    fungsi tambah_blok(blok_baru):
+        blok_baru.hash_sebelumnya = ini.dapatkan_blok_terakhir().hash
+        blok_baru.tambang(ini.kesulitan)
+        ini.blok.tambah(blok_baru)
+
+    // Add transaction
+    fungsi tambah_transaksi(transaksi):
+        jika transaksi.dari_alamat == tidak_ada atau transaksi.ke_alamat == tidak_ada:
+            tampilkan("Kesalahan: Transaksi harus memiliki alamat pengirim dan penerima")
+            kembalikan
+
+        jika bukan transaksi.apakah_valid():
+            tampilkan("Kesalahan: Tidak dapat menambahkan transaksi yang tidak valid ke rantai")
+            kembalikan
+
+        ini.pending_transaksi.tambah(transaksi)
+
+    // Mine pending transactions
+    fungsi tambang_transaksi_pending(alamat_penambang):
+        buat blok_baru = blok.Blok(ini.blok.panjang, sekarang(), ini.pending_transaksi, ini.dapatkan_blok_terakhir().hash)
+        blok_baru.tambang(ini.kesulitan)
+
+        ini.blok.tambah(blok_baru)
+
+        // Reset pending transactions and send mining reward
+        ini.pending_transaksi = [
+            transaksi.Transaksi(tidak_ada, alamat_penambang, ini.blok_reward)
+        ]
+
+    // Get balance of an address
+    fungsi dapatkan_saldo_alamat(alamat):
+        buat saldo = 0
+
+        untuk setiap blok_dalam_rantai dalam ini.blok:
+            untuk setiap transaksi dalam blok_dalam_rantai.data:
+                jika transaksi.ke_alamat == alamat:
+                    saldo = saldo + transaksi.jumlah
+
+                jika transaksi.dari_alamat == alamat:
+                    saldo = saldo - transaksi.jumlah
+
+                    // If it's a mining reward, don't subtract fee
+                    jika transaksi.dari_alamat == tidak_ada:
+                        saldo = saldo + transaksi.jumlah
+
+        kembalikan saldo
+
+    // Validate blockchain
+    fungsi apakah_valid():
+        // Check if genesis block hasn't been tampered with
+        jika JSON.stringify(ini.blok[0]) != JSON.stringify(ini.buat_blok_genesis()):
+            kembalikan salah
+
+        // Check the remaining blocks
+        untuk buat i = 1 sampai i < ini.blok.panjang:
+            buat blok_sekarang = ini.blok[i]
+            buat blok_sebelumnya = ini.blok[i - 1]
+
+            jika bukan blok_sekarang.validasi():
+                kembalikan salah
+
+            jika blok_sekarang.hash_sebelumnya != blok_sebelumnya.hash:
+                kembalikan salah
+
+        kembalikan benar
+
+    // Get blockchain information
+    fungsi dapatkan_info():
+        kembalikan {
+            panjang: ini.blok.panjang,
+            kesulitan: ini.kesulitan,
+            pending_transaksi: ini.pending_transaksi.panjang,
+            blok_reward: ini.blok_reward
+        }
+
+ekspor RantaiBlok

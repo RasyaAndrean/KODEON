@@ -1,0 +1,84 @@
+// KODEON Quantum Computing - Qubit
+// Represents a single quantum bit
+
+kelas Qubit:
+    fungsi inisialisasi():
+        // Qubit state represented as [α, β] where |ψ⟩ = α|0⟩ + β|1⟩
+        // With constraint |α|² + |β|² = 1
+        ini.keadaan = [1.0 + 0.0i, 0.0 + 0.0i]  // Initially |0⟩ state
+        ini.terukur = salah
+        ini.hasil_pengukuran = tidak_ada
+
+    // Set the qubit to a specific state
+    fungsi atur_keadaan(alpha, beta):
+        // Normalize the state vector
+        buat norm = akar_kuadrat(alpha.nyata * alpha.nyata + alpha.imajiner * alpha.imajiner +
+                               beta.nyata * beta.nyata + beta.imajiner * beta.imajiner)
+
+        jika norm != 0:
+            ini.keadaan[0] = alpha / norm
+            ini.keadaan[1] = beta / norm
+        lain:
+            // Default to |0⟩ state
+            ini.keadaan = [1.0 + 0.0i, 0.0 + 0.0i]
+
+    // Apply a quantum gate to this qubit
+    fungsi terapkan_gerbang(gerbang_matriks):
+        // Apply 2x2 matrix to the 2x1 state vector
+        buat alpha = ini.keadaan[0]
+        buat beta = ini.keadaan[1]
+
+        // Matrix multiplication: |ψ'⟩ = U|ψ⟩
+        buat alpha_baru = gerbang_matriks[0][0] * alpha + gerbang_matriks[0][1] * beta
+        buat beta_baru = gerbang_matriks[1][0] * alpha + gerbang_matriks[1][1] * beta
+
+        ini.keadaan[0] = alpha_baru
+        ini.keadaan[1] = beta_baru
+
+    // Measure the qubit (collapses the state)
+    fungsi ukur():
+        jika ini.terukur:
+            kembalikan ini.hasil_pengukuran
+
+        // Calculate probabilities
+        buat prob_0 = ini.keadaan[0].nyata * ini.keadaan[0].nyata + ini.keadaan[0].imajiner * ini.keadaan[0].imajiner
+        buat prob_1 = ini.keadaan[1].nyata * ini.keadaan[1].nyata + ini.keadaan[1].imajiner * ini.keadaan[1].imajiner
+
+        // Simulate measurement
+        buat acak_val = acak(0, 1000) / 1000.0
+        buat hasil = jika acak_val < prob_0 maka 0 lain 1
+
+        // Collapse the state
+        ini.keadaan[0] = jika hasil == 0 maka 1.0 + 0.0i lain 0.0 + 0.0i
+        ini.keadaan[1] = jika hasil == 1 maka 1.0 + 0.0i lain 0.0 + 0.0i
+        ini.terukur = benar
+        ini.hasil_pengukuran = hasil
+
+        kembalikan hasil
+
+    // Get the probability of measuring |0⟩
+    fungsi dapatkan_probabilitas_0():
+        kembalikan ini.keadaan[0].nyata * ini.keadaan[0].nyata + ini.keadaan[0].imajiner * ini.keadaan[0].imajiner
+
+    // Get the probability of measuring |1⟩
+    fungsi dapatkan_probabilitas_1():
+        kembalikan ini.keadaan[1].nyata * ini.keadaan[1].nyata + ini.keadaan[1].imajiner * ini.keadaan[1].imajiner
+
+    // Reset the qubit to |0⟩ state
+    fungsi reset():
+        ini.keadaan = [1.0 + 0.0i, 0.0 + 0.0i]
+        ini.terukur = salah
+        ini.hasil_pengukuran = tidak_ada
+
+    // Get the current state as a string
+    fungsi dapatkan_keadaan_string():
+        buat alpha = ini.keadaan[0]
+        buat beta = ini.keadaan[1]
+
+        jika alpha.imajiner == 0 dan beta.imajiner == 0:
+            kembalikan alpha.nyata.bulat(3) + "|0⟩ + " + beta.nyata.bulat(3) + "|1⟩"
+        lain:
+            kembalikan "(" + alpha.nyata.bulat(3) + "+" + alpha.imajiner.bulat(3) + "i)|0⟩ + (" +
+                   beta.nyata.bulat(3) + "+" + beta.imajiner.bulat(3) + "i)|1⟩"
+
+ekspor Qubit

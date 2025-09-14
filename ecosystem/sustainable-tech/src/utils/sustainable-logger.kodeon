@@ -1,0 +1,239 @@
+// KODEON Sustainable Technology - Sustainable Logger Utility
+// Logging functionality for sustainability metrics
+
+kelas LoggerSustainable {
+    fungsi inisialisasi(opsi) {
+        ini.level = opsi.level || "info"
+        ini.format = opsi.format || "teks"
+        ini.output = opsi.output || "konsol"
+        ini.file = opsi.file || tidak_ada
+        ini.terhubung = benar
+        ini.log = []
+        ini.kategori = opsi.kategori || "umum"
+    }
+
+    // Log sustainability message
+    fungsi catat(level, pesan, metadata) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        // Check if log level is enabled
+        buat level_prioritas = {
+            "debug": 1,
+            "info": 2,
+            "peringatan": 3,
+            "kesalahan": 4,
+            "fatal": 5
+        }
+
+        jika level_prioritas[level] < level_prioritas[ini.level] {
+            kembalikan benar // Don't log but not an error
+        }
+
+        buat entri = {
+            waktu: sekarang(),
+            level: level,
+            kategori: ini.kategori,
+            pesan: pesan,
+            metadata: metadata || {}
+        }
+
+        ini.log.tambah(entri)
+
+        // Keep only last 1000 log entries
+        jika ini.log.panjang > 1000 {
+            ini.log = ini.log.slice(-1000)
+        }
+
+        // Output log
+        jika ini.output == "konsol" {
+            tampilkan("[" + level.toUpperCase() + "][" + ini.kategori.toUpperCase() + "] " + pesan)
+        } lain jika ini.output == "file" dan ini.file {
+            // In a real implementation, this would write to a file
+            tampilkan("Menulis ke file log: " + pesan)
+        }
+
+        kembalikan benar
+    }
+
+    // Debug log
+    fungsi debug(pesan, metadata) {
+        kembalikan ini.catat("debug", pesan, metadata)
+    }
+
+    // Info log
+    fungsi info(pesan, metadata) {
+        kembalikan ini.catat("info", pesan, metadata)
+    }
+
+    // Warning log
+    fungsi peringatan(pesan, metadata) {
+        kembalikan ini.catat("peringatan", pesan, metadata)
+    }
+
+    // Error log
+    fungsi kesalahan(pesan, metadata) {
+        kembalikan ini.catat("kesalahan", pesan, metadata)
+    }
+
+    // Fatal log
+    fungsi fatal(pesan, metadata) {
+        kembalikan ini.catat("fatal", pesan, metadata)
+    }
+
+    // Log carbon emission
+    fungsi catat_emisi_karbon(sumber, jumlah, unit) {
+        kembalikan ini.info("Emisi karbon: " + jumlah + " " + unit + " dari " + sumber, {
+            jenis: "karbon",
+            sumber: sumber,
+            jumlah: jumlah,
+            unit: unit
+        })
+    }
+
+    // Log energy consumption
+    fungsi catat_konsumsi_energi(sumber, jumlah, unit) {
+        kembalikan ini.info("Konsumsi energi: " + jumlah + " " + unit + " dari " + sumber, {
+            jenis: "energi",
+            sumber: sumber,
+            jumlah: jumlah,
+            unit: unit
+        })
+    }
+
+    // Log optimization applied
+    fungsi catat_optimasi(deskripsi, penghematan_estimasi) {
+        kembalikan ini.info("Optimasi diterapkan: " + deskripsi, {
+            jenis: "optimasi",
+            deskripsi: deskripsi,
+            penghematan_estimasi: penghematan_estimasi
+        })
+    }
+
+    // Get logs
+    fungsi dapatkan_log(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.log
+        }
+
+        kembalikan ini.log.saring(fungsi(entrI) {
+            untuk setiap kunci dalam filter {
+                jika entrI[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Clear logs
+    fungsi hapus_log() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        ini.log = []
+        kembalikan benar
+    }
+
+    // Set log level
+    fungsi atur_level(level) {
+        ini.level = level
+        tampilkan("Level log diatur ke: " + level)
+        kembalikan benar
+    }
+
+    // Get log level
+    fungsi dapatkan_level() {
+        kembalikan ini.level
+    }
+
+    // Export logs
+    fungsi ekspor_log(format) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        format = format || ini.format
+
+        jika format == "json" {
+            kembalikan JSON.stringify(ini.log)
+        } lain {
+            buat hasil = ""
+            untuk setiap entrI dalam ini.log {
+                hasil += "[" + entrI.waktu + "] " + entrI.level.toUpperCase() + " " + entrI.pesan
+                jika Object.kunci(entrI.metadata).panjang > 0 {
+                    hasil += " " + JSON.stringify(entrI.metadata)
+                }
+                hasil += "\n"
+            }
+            kembalikan hasil
+        }
+    }
+
+    // Generate sustainability log report
+    fungsi buat_laporan() {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        buat total_karbon = 0
+        buat total_energi = 0
+        buat total_optimasi = 0
+
+        untuk setiap entrI dalam ini.log {
+            jika entrI.metadata.jenis == "karbon" {
+                total_karbon += entrI.metadata.jumlah
+            } lain jika entrI.metadata.jenis == "energi" {
+                total_energi += entrI.metadata.jumlah
+            } lain jika entrI.metadata.jenis == "optimasi" {
+                total_optimasi++
+            }
+        }
+
+        kembalikan {
+            ringkasan: {
+                total_entri: ini.log.panjang,
+                total_karbon: total_karbon,
+                total_energi: total_energi,
+                total_optimasi: total_optimasi
+            },
+            log_per_kategori: ini.hitung_log_per_kategori(),
+            waktu_laporan: sekarang()
+        }
+    }
+
+    // Count logs by category
+    fungsi hitung_log_per_kategori() {
+        jika bukan ini.terhubung {
+            kembalikan {}
+        }
+
+        buat per_kategori = {}
+
+        untuk setiap entrI dalam ini.log {
+            buat kategori = entrI.kategori || "umum"
+            jika bukan per_kategori[kategori] {
+                per_kategori[kategori] = 0
+            }
+            per_kategori[kategori]++
+        }
+
+        kembalikan per_kategori
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Periodic log maintenance
+        jika ini.log.panjang > 1000 {
+            ini.log = ini.log.slice(-1000)
+        }
+    }
+}
+
+ekspor LoggerSustainable

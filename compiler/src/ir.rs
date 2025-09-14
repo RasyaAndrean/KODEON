@@ -4,12 +4,56 @@ use std::collections::HashMap;
 use crate::parser::{ASTNode, Statement, BinaryOperator, UnaryOperator, ParseError};
 use crate::module_resolver::ModuleResolver;
 
-/// Debug information for source code locations
+/// Enhanced debug information for source code locations
 #[derive(Debug, Clone)]
 pub struct DebugInfo {
     pub file_name: String,
     pub line: usize,
     pub column: usize,
+    pub scope: Option<String>,        // Variable scope information
+    pub function: Option<String>,     // Function name
+    pub module: Option<String>,       // Module name
+    pub timestamp: std::time::SystemTime, // When this debug info was created
+}
+
+impl DebugInfo {
+    /// Create new debug information
+    pub fn new(file_name: String, line: usize, column: usize) -> Self {
+        DebugInfo {
+            file_name,
+            line,
+            column,
+            scope: None,
+            function: None,
+            module: None,
+            timestamp: std::time::SystemTime::now(),
+        }
+    }
+
+    /// Create debug information with scope
+    pub fn with_scope(file_name: String, line: usize, column: usize, scope: String) -> Self {
+        DebugInfo {
+            file_name,
+            line,
+            column,
+            scope: Some(scope),
+            function: None,
+            module: None,
+            timestamp: std::time::SystemTime::now(),
+        }
+    }
+
+    /// Set function name
+    pub fn with_function(mut self, function: String) -> Self {
+        self.function = Some(function);
+        self
+    }
+
+    /// Set module name
+    pub fn with_module(mut self, module: String) -> Self {
+        self.module = Some(module);
+        self
+    }
 }
 
 /// IR module containing functions and global variables
@@ -18,6 +62,25 @@ pub struct IRModule {
     pub functions: Vec<Function>,
     pub global_vars: Vec<GlobalVariable>,
     pub debug_info: Option<DebugInfo>, // Module-level debug info
+    pub module_name: String,           // Name of the module
+}
+
+impl IRModule {
+    /// Create a new IR module
+    pub fn new(module_name: String) -> Self {
+        IRModule {
+            functions: Vec::new(),
+            global_vars: Vec::new(),
+            debug_info: None,
+            module_name,
+        }
+    }
+
+    /// Set module-level debug information
+    pub fn with_debug_info(mut self, debug_info: DebugInfo) -> Self {
+        self.debug_info = Some(debug_info);
+        self
+    }
 }
 
 /// Function in IR
@@ -28,6 +91,42 @@ pub struct Function {
     pub return_type: Type,
     pub blocks: Vec<BasicBlock>,
     pub debug_info: Option<DebugInfo>, // Function-level debug info
+    pub scope_variables: Vec<String>,  // Variables in function scope
+}
+
+impl Function {
+    /// Create a new function
+    pub fn new(name: String, return_type: Type) -> Self {
+        Function {
+            name,
+            parameters: Vec::new(),
+            return_type,
+            blocks: Vec::new(),
+            debug_info: None,
+            scope_variables: Vec::new(),
+        }
+    }
+
+    /// Add a parameter to the function
+    pub fn add_parameter(&mut self, param: Parameter) {
+        self.parameters.push(param);
+    }
+
+    /// Add a basic block to the function
+    pub fn add_block(&mut self, block: BasicBlock) {
+        self.blocks.push(block);
+    }
+
+    /// Set function-level debug information
+    pub fn with_debug_info(mut self, debug_info: DebugInfo) -> Self {
+        self.debug_info = Some(debug_info);
+        self
+    }
+
+    /// Add a variable to the function scope
+    pub fn add_scope_variable(&mut self, var_name: String) {
+        self.scope_variables.push(var_name);
+    }
 }
 
 /// Basic block in IR
@@ -37,6 +136,41 @@ pub struct BasicBlock {
     pub instructions: Vec<Instruction>,
     pub terminator: Terminator,
     pub debug_info: Option<DebugInfo>, // Block-level debug info
+    pub block_variables: Vec<String>,  // Variables in block scope
+}
+
+impl BasicBlock {
+    /// Create a new basic block
+    pub fn new(name: String) -> Self {
+        BasicBlock {
+            name,
+            instructions: Vec::new(),
+            terminator: Terminator::Return { value: None },
+            debug_info: None,
+            block_variables: Vec::new(),
+        }
+    }
+
+    /// Add an instruction to the block
+    pub fn add_instruction(&mut self, instruction: Instruction) {
+        self.instructions.push(instruction);
+    }
+
+    /// Set terminator for the block
+    pub fn set_terminator(&mut self, terminator: Terminator) {
+        self.terminator = terminator;
+    }
+
+    /// Set block-level debug information
+    pub fn with_debug_info(mut self, debug_info: DebugInfo) -> Self {
+        self.debug_info = Some(debug_info);
+        self
+    }
+
+    /// Add a variable to the block scope
+    pub fn add_block_variable(&mut self, var_name: String) {
+        self.block_variables.push(var_name);
+    }
 }
 
 /// Parameter for a function
@@ -47,6 +181,23 @@ pub struct Parameter {
     pub debug_info: Option<DebugInfo>, // Parameter-level debug info
 }
 
+impl Parameter {
+    /// Create a new parameter
+    pub fn new(name: String, param_type: Type) -> Self {
+        Parameter {
+            name,
+            param_type,
+            debug_info: None,
+        }
+    }
+
+    /// Set parameter-level debug information
+    pub fn with_debug_info(mut self, debug_info: DebugInfo) -> Self {
+        self.debug_info = Some(debug_info);
+        self
+    }
+}
+
 /// Global variable
 #[derive(Debug)]
 pub struct GlobalVariable {
@@ -54,6 +205,30 @@ pub struct GlobalVariable {
     pub var_type: Type,
     pub initializer: Option<Value>,
     pub debug_info: Option<DebugInfo>, // Variable-level debug info
+}
+
+impl GlobalVariable {
+    /// Create a new global variable
+    pub fn new(name: String, var_type: Type) -> Self {
+        GlobalVariable {
+            name,
+            var_type,
+            initializer: None,
+            debug_info: None,
+        }
+    }
+
+    /// Set initializer for the global variable
+    pub fn with_initializer(mut self, initializer: Value) -> Self {
+        self.initializer = Some(initializer);
+        self
+    }
+
+    /// Set variable-level debug information
+    pub fn with_debug_info(mut self, debug_info: DebugInfo) -> Self {
+        self.debug_info = Some(debug_info);
+        self
+    }
 }
 
 /// Types in IR

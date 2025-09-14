@@ -1,0 +1,236 @@
+// KODEON Microservices Integration - API Component
+// API representation and management for Microservices
+
+kelas API {
+    fungsi inisialisasi(nama, versi, basePath) {
+        ini.nama = nama
+        ini.versi = versi || "v1"
+        ini.basePath = basePath || "/api/" + nama
+        ini.endpoints = []
+        ini.middleware = []
+        ini.dokumentasi = {}
+        ini.rateLimit = {
+            maks_permintaan: 1000,
+            jendela_waktu: 3600000 // 1 hour in milliseconds
+        }
+        ini.permintaan_terakhir = {}
+    }
+
+    // Add endpoint
+    fungsi tambah_endpoint(method, path, handler, middleware) {
+        buat endpoint = {
+            method: method.toUpperCase(),
+            path: path,
+            handler: handler,
+            middleware: middleware || [],
+            dokumentasi: {}
+        }
+
+        ini.endpoints.tambah(endpoint)
+        tampilkan("Endpoint ditambahkan: " + method.toUpperCase() + " " + ini.basePath + path)
+        kembalikan endpoint
+    }
+
+    // Remove endpoint
+    fungsi hapus_endpoint(method, path) {
+        buat indeks = ini.endpoints.cari_indeks(fungsi(endpoint) {
+            kembalikan endpoint.method == method.toUpperCase() dan endpoint.path == path
+        })
+
+        jika indeks != -1 {
+            ini.endpoints.hapus_pada(indeks)
+            tampilkan("Endpoint dihapus: " + method.toUpperCase() + " " + ini.basePath + path)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Add middleware
+    fungsi tambah_middleware(middleware) {
+        ini.middleware.tambah(middleware)
+        tampilkan("Middleware ditambahkan ke API: " + ini.nama)
+    }
+
+    // Remove middleware
+    fungsi hapus_middleware(middleware) {
+        buat indeks = ini.middleware.cari_indeks(middleware)
+        jika indeks != -1 {
+            ini.middleware.hapus_pada(indeks)
+            tampilkan("Middleware dihapus dari API: " + ini.nama)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Handle request
+    fungsi tangani_permintaan(permintaan) {
+        // Check rate limiting
+        jika bukan ini.periksa_rate_limit(permintaan.clientId) {
+            kembalikan {
+                status: 429,
+                data: { pesan: "Terlalu banyak permintaan" }
+            }
+        }
+
+        // Find matching endpoint
+        buat endpoint = ini.temukan_endpoint(permintaan.method, permintaan.path)
+
+        jika endpoint == tidak_ada {
+            kembalikan {
+                status: 404,
+                data: { pesan: "Endpoint tidak ditemukan" }
+            }
+        }
+
+        // Apply global middleware
+        untuk setiap mw dalam ini.middleware {
+            buat hasil = mw(permintaan)
+            jika hasil.status >= 400 {
+                kembalikan hasil
+            }
+        }
+
+        // Apply endpoint middleware
+        untuk setiap mw dalam endpoint.middleware {
+            buat hasil = mw(permintaan)
+            jika hasil.status >= 400 {
+                kembalikan hasil
+            }
+        }
+
+        // Call endpoint handler
+        coba {
+            buat respons = endpoint.handler(permintaan)
+            kembalikan respons
+        } tangkap(error) {
+            tampilkan("Kesalahan dalam handler endpoint: " + error)
+            kembalikan {
+                status: 500,
+                data: { pesan: "Kesalahan internal server" }
+            }
+        }
+    }
+
+    // Find matching endpoint
+    fungsi temukan_endpoint(method, path) {
+        // Remove base path from path
+        buat relativePath = path.mengganti(ini.basePath, "")
+
+        untuk setiap endpoint dalam ini.endpoints {
+            jika endpoint.method == method.toUpperCase() dan endpoint.path == relativePath {
+                kembalikan endpoint
+            }
+        }
+
+        kembalikan tidak_ada
+    }
+
+    // Check rate limit
+    fungsi periksa_rate_limit(clientId) {
+        clientId = clientId || "anonymous"
+
+        buat sekarang = Date.now()
+        buat jendela = ini.rateLimit.jendela_waktu
+
+        jika ini.permintaan_terakhir[clientId] == tidak_ada {
+            ini.permintaan_terakhir[clientId] = {
+                hitung: 1,
+                waktu_pertama: sekarang
+            }
+            kembalikan benar
+        }
+
+        buat record = ini.permintaan_terakhir[clientId]
+
+        // Reset counter if window has passed
+        jika sekarang - record.waktu_pertama > jendela {
+            record.hitung = 1
+            record.waktu_pertama = sekarang
+            kembalikan benar
+        }
+
+        // Check if limit exceeded
+        jika record.hitung >= ini.rateLimit.maks_permintaan {
+            kembalikan salah
+        }
+
+        // Increment counter
+        record.hitung = record.hitung + 1
+        kembalikan benar
+    }
+
+    // Set rate limit
+    fungsi atur_rate_limit(maks_permintaan, jendela_waktu) {
+        ini.rateLimit.maks_permintaan = maks_permintaan
+        ini.rateLimit.jendela_waktu = jendela_waktu || ini.rateLimit.jendela_waktu
+        tampilkan("Rate limit diperbarui untuk API: " + ini.nama)
+    }
+
+    // Add documentation
+    fungsi tambah_dokumentasi(endpointPath, dokumentasi) {
+        ini.dokumentasi[endpointPath] = dokumentasi
+        tampilkan("Dokumentasi ditambahkan untuk endpoint: " + endpointPath)
+    }
+
+    // Generate OpenAPI specification
+    fungsi hasilkan_openapi() {
+        buat spesifikasi = {
+            openapi: "3.0.0",
+            info: {
+                title: ini.nama,
+                version: ini.versi,
+                description: "API untuk layanan " + ini.nama
+            },
+            paths: {},
+            components: {
+                schemas: {}
+            }
+        }
+
+        untuk setiap endpoint dalam ini.endpoints {
+            buat fullPath = ini.basePath + endpoint.path
+            jika spesifikasi.paths[fullPath] == tidak_ada {
+                spesifikasi.paths[fullPath] = {}
+            }
+
+            spesifikasi.paths[fullPath][endpoint.method.toLowerCase()] = {
+                summary: endpoint.dokumentasi.ringkasan || "Endpoint " + endpoint.method + " " + endpoint.path,
+                description: endpoint.dokumentasi.deskripsi || "",
+                responses: {
+                    "200": {
+                        description: "Sukses"
+                    }
+                }
+            }
+        }
+
+        kembalikan spesifikasi
+    }
+
+    // Get API information
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            versi: ini.versi,
+            basePath: ini.basePath,
+            jumlah_endpoints: ini.endpoints.panjang,
+            jumlah_middleware: ini.middleware.panjang,
+            rateLimit: ini.rateLimit
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Clean up old rate limit records
+        buat sekarang = Date.now()
+        buat jendela = ini.rateLimit.jendela_waktu
+
+        untuk setiap clientId dalam ini.permintaan_terakhir {
+            jika sekarang - ini.permintaan_terakhir[clientId].waktu_pertama > jendela * 2 {
+                hapus ini.permintaan_terakhir[clientId]
+            }
+        }
+    }
+}
+
+ekspor API

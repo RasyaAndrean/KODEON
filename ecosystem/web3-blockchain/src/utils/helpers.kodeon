@@ -1,0 +1,69 @@
+// KODEON Web3/Blockchain - Utility Functions
+// Helper functions for blockchain operations
+
+// Generate private key
+fungsi hasilkan_kunci_pribadi():
+    kembalikan "0x" + utilitas.id_acak() + utilitas.id_acak()
+
+ekspor hasilkan_kunci_pribadi
+
+// Generate public key from private key
+fungsi hasilkan_kunci_publik(kunci_pribadi):
+    kembalikan "0x" + hash.sha256(kunci_pribadi).potong(0, 64)
+
+ekspor hasilkan_kunci_publik
+
+// Generate address from public key
+fungsi hasilkan_alamat(kunci_publik):
+    buat hash_publik = hash.keccak256(kunci_publik)
+    kembalikan "0x" + hash_publik.potong(-40)  // Last 20 bytes as address
+
+ekspor hasilkan_alamat
+
+// Convert Wei to Ether
+fungsi wei_ke_ether(wei):
+    kembalikan wei / 1000000000000000000
+
+ekspor wei_ke_ether
+
+// Convert Ether to Wei
+fungsi ether_ke_wei(ether):
+    kembalikan ether * 1000000000000000000
+
+ekspor ether_ke_wei
+
+// Validate address
+fungsi validasi_alamat(alamat):
+    jika alamat.panjang != 42:  // "0x" + 40 hex characters
+        kembalikan salah
+
+    jika bukan alamat.dimulai_dengan("0x"):
+        kembalikan salah
+
+    // Check if it's valid hex
+    coba:
+        parseInt(alamat.potong(2), 16)
+        kembalikan benar
+    tangkap:
+        kembalikan salah
+
+ekspor validasi_alamat
+
+// Generate random address
+fungsi hasilkan_alamat_acak():
+    kembalikan "0x" + utilitas.id_acak().potong(0, 40)
+
+ekspor hasilkan_alamat_acak
+
+// Get blockchain information
+fungsi dapatkan_info_blockchain():
+    kembalikan {
+        unit: {
+            ether: "10^18 Wei",
+            gwei: "10^9 Wei",
+            wei: "1 Wei"
+        },
+        jaringan: ["Ethereum", "Binance Smart Chain", "Polygon", "Avalanche"]
+    }
+
+ekspor dapatkan_info_blockchain

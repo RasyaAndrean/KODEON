@@ -1,0 +1,53 @@
+// Demo program to showcase debugging capabilities in KODEON (English version)
+
+class Counter {
+    var value: int
+    var mutex: mutex
+
+    function new() {
+        value = 0
+    }
+
+    function add(s: int) {
+        lock_mutex(mutex)
+        value = value + s
+        unlock_mutex(mutex)
+    }
+
+    function get(): int {
+        lock_mutex(mutex)
+        var result = value
+        unlock_mutex(mutex)
+        return result
+    }
+}
+
+function factorial(n: int): int {
+    if n <= 1 {
+        return 1
+    } else {
+        return n * factorial(n - 1)
+    }
+}
+
+function main() {
+    var counter = Counter.new()
+    var result = 0
+
+    // Add some values
+    for i in 1..5 {
+        counter.add(i)
+    }
+
+    // Calculate factorial
+    var fact = factorial(5)
+
+    // Get the counter value
+    result = counter.get()
+
+    // Print results
+    print("Sum result: ", result)
+    print("Factorial of 5: ", fact)
+
+    return 0
+}

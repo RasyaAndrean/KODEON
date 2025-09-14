@@ -1,0 +1,173 @@
+// KODEON Performance Optimization - Basic Usage Example
+// Demonstrates how to use the performance optimization framework in KODEON applications
+
+// Import the Performance framework
+impor Performance
+
+// Create Performance instance
+buat perf = Performance()
+
+// Initialize performance monitoring
+perf.inisialisasi_monitoring({
+    mode: "realtime",
+    interval: 1000,
+    lingkungan: "development"
+})
+
+// Create and add performance components
+impor komponen.{Profiler, Benchmark, Monitor, Optimizer}
+
+// Create profiler
+buat profiler = Profiler("MainProfiler", {interval: 500})
+perf.tambah_profiler(profiler)
+
+// Create benchmark
+buat benchmark = Benchmark("PerformanceBenchmark", {iterasi: 1000})
+perf.tambah_benchmark(benchmark)
+
+// Create monitor
+buat monitor = Monitor("SystemMonitor", {interval: 1000})
+perf.tambah_monitor(monitor)
+
+// Create optimizer
+buat optimizer = Optimizer("PerformanceOptimizer", {})
+perf.tambah_optimizer(optimizer)
+
+// Add test cases for benchmarking
+benchmark.tambah_uji("Array Creation", fungsi() {
+    buat arr = []
+    untuk buat i = 0; i < 10000; i++ {
+        arr.tambah(i)
+    }
+    kembalikan arr
+})
+
+benchmark.tambah_uji("Object Creation", fungsi() {
+    buat obj = {}
+    untuk buat i = 0; i < 10000; i++ {
+        obj["key" + i] = i
+    }
+    kembalikan obj
+})
+
+// Start performance profiling
+perf.mulai_profil()
+
+// Start memory profiling
+perf.mulai_profil_memori()
+
+// Start CPU profiling
+perf.mulai_profil_cpu()
+
+// Start I/O profiling
+perf.mulai_profil_io()
+
+// Your application code here
+fungsi aplikasi_berat() {
+    // Simulate CPU-intensive work
+    buat hasil = 0
+    untuk buat i = 0; i < 1000000; i++ {
+        hasil += Math.sqrt(i)
+    }
+
+    // Simulate memory allocation
+    buat data_besar = []
+    untuk buat i = 0; i < 100000; i++ {
+        data_besar.tambah({id: i, nilai: Math.random()})
+    }
+
+    // Simulate I/O operations (in real app, this would be actual I/O)
+    untuk buat i = 0; i < 1000; i++ {
+        // Simulate I/O operation
+        Math.random() // Just to simulate some work
+    }
+
+    kembalikan {hasil: hasil, data: data_besar.panjang}
+}
+
+// Run the application
+buat hasil_aplikasi = aplikasi_berat()
+tampilkan("Hasil aplikasi: " + hasil_aplikasi.hasil)
+
+// Run benchmark
+tampilkan("Menjalankan benchmark...")
+buat hasil_benchmark = benchmark.jalankan_semua(100, 10)
+
+// Record some metrics
+monitor.catat_cpu(75.5, {fungsi: "aplikasi_berat"})
+monitor.catat_memori(65.2, {tipe: "heap"})
+monitor.catat_io({kecepatan: 1200, operasi: "read"}, {file: "data.txt"})
+
+// Analyze performance data
+tampilkan("Menganalisis data kinerja...")
+buat data_analisis = {
+    cpu: [{penggunaan: 75.5}, {penggunaan: 68.2}],
+    memori: [{penggunaan: 65.2}, {penggunaan: 72.1}]
+}
+
+buat hasil_analisis = optimizer.analisis_data(data_analisis)
+jika hasil_analisis.temuan.panjang > 0 {
+    tampilkan("Ditemukan " + hasil_analisis.temuan.panjang + " masalah kinerja")
+
+    // Get recommendations
+    buat saran = optimizer.dapatkan_saran()
+    jika saran bukan_tidak_ada {
+        tampilkan("Saran optimasi:")
+        untuk setiap rekomendasi dalam saran.saran {
+            tampilkan("- " + rekomendasi.masalah + ": " + rekomendasi.rekomendasi.gabung(", "))
+        }
+    }
+}
+
+// Stop profiling
+perf.hentikan_profil()
+
+// Stop memory profiling
+perf.hentikan_profil_memori()
+
+// Stop CPU profiling
+perf.hentikan_profil_cpu()
+
+// Stop I/O profiling
+perf.hentikan_profil_io()
+
+// Get performance report
+tampilkan("Menghasilkan laporan kinerja...")
+buat laporan = perf.dapatkan_laporan()
+jika laporan bukan_tidak_ada {
+    tampilkan("Laporan kinerja dihasilkan")
+    // In a real application, you might save this to a file or display it
+}
+
+// Get memory report
+buat laporan_memori = perf.dapatkan_laporan_memori()
+jika laporan_memori bukan_tidak_ada {
+    tampilkan("Laporan memori: Penggunaan " + laporan_memori.penggunaan)
+}
+
+// Get CPU report
+buat laporan_cpu = perf.dapatkan_laporan_cpu()
+jika laporan_cpu bukan_tidak_ada {
+    tampilkan("Laporan CPU: Penggunaan " + laporan_cpu.penggunaan + "%")
+}
+
+// Get I/O report
+buat laporan_io = perf.dapatkan_laporan_io()
+jika laporan_io bukan_tidak_ada {
+    tampilkan("Laporan I/O: Dibaca " + laporan_io.dibaca + ", Ditulis " + laporan_io.ditulis)
+}
+
+// Get optimization suggestions
+tampilkan("Mendapatkan saran optimasi...")
+buat saran_optimasi = perf.dapatkan_saran_optimasi()
+jika saran_optimasi.panjang > 0 {
+    tampilkan("Saran optimasi:")
+    untuk setiap saran dalam saran_optimasi {
+        tampilkan("- " + saran)
+    }
+}
+
+// Shutdown performance monitoring
+perf.matikan_monitoring()
+
+tampilkan("Contoh penggunaan optimasi kinerja selesai!")

@@ -1,0 +1,278 @@
+.forums-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.forums-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.forums-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.new-thread-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.new-thread-btn:hover {
+  background: #5a6fd8;
+}
+
+.new-thread-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.submit-btn,
+.cancel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.submit-btn:hover {
+  background: #45a049;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #d32f2f;
+}
+
+.forums-content {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 30px;
+}
+
+.categories-sidebar {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.categories-sidebar h2 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.categories-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-item {
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+}
+
+.category-item:hover {
+  background: #f8f9fa;
+}
+
+.category-item.active {
+  background: #e3f2fd;
+  border-color: #667eea;
+}
+
+.category-item h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.category-item p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.category-stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.threads-main {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.threads-header h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.threads-header p {
+  color: #666;
+  margin-top: 5px;
+}
+
+.threads-list {
+  margin-top: 20px;
+}
+
+.thread-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.thread-item:last-child {
+  border-bottom: none;
+}
+
+.thread-info {
+  flex: 1;
+}
+
+.thread-title {
+  margin: 0 0 10px 0;
+  color: #333;
+  cursor: pointer;
+}
+
+.thread-title:hover {
+  color: #667eea;
+}
+
+.thread-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.thread-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+@media (max-width: 768px) {
+  .forums-content {
+    grid-template-columns: 1fr;
+  }
+
+  .categories-sidebar {
+    margin-bottom: 20px;
+  }
+
+  .thread-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .thread-stats {
+    align-self: flex-end;
+  }
+}

@@ -1,0 +1,84 @@
+// KODEON Neural Networks - Utility Functions
+// Helper functions for neural network operations
+
+// Initialize weights with Xavier initialization
+fungsi inisialisasi_xavier(jumlah_input, jumlah_output):
+    buat skala = akar_kuadrat(6.0 / (jumlah_input + jumlah_output))
+    buat bobot = []
+
+    untuk buat i = 0 sampai i < jumlah_input:
+        buat baris = []
+        untuk buat j = 0 sampai j < jumlah_output:
+            buat nilai = (acak(0, 1000) / 1000.0) * 2 * skala - skala
+            baris.tambah(nilai)
+        bobot.tambah(baris)
+
+    kembalikan bobot
+
+ekspor inisialisasi_xavier
+
+// Initialize weights with He initialization
+fungsi inisialisasi_he(jumlah_input, jumlah_output):
+    buat skala = akar_kuadrat(2.0 / jumlah_input)
+    buat bobot = []
+
+    untuk buat i = 0 sampai i < jumlah_input:
+        buat baris = []
+        untuk buat j = 0 sampai j < jumlah_output:
+            buat nilai = (acak(0, 1000) / 1000.0) * 2 * skala - skala
+            baris.tambah(nilai)
+        bobot.tambah(baris)
+
+    kembalikan bobot
+
+ekspor inisialisasi_he
+
+// One-hot encode labels
+fungsi one_hot_encode(label, jumlah_kelas):
+    buat encoded = []
+    untuk buat i = 0 sampai i < jumlah_kelas:
+        encoded.tambah(jika i == label maka 1.0 lain 0.0)
+    kembalikan encoded
+
+ekspor one_hot_encode
+
+// Normalize data
+fungsi normalisasi(data):
+    buat min_val = data.min()
+    buat max_val = data.maks()
+    buat range_val = max_val - min_val
+
+    jika range_val == 0:
+        kembalikan data.peta(fungsi(x): kembalikan 0.0)
+
+    kembalikan data.peta(fungsi(x): kembalikan (x - min_val) / range_val)
+
+ekspor normalisasi
+
+// Calculate accuracy
+fungsi hitung_akurasi(prediksi, label_sebenarnya):
+    buat benar = 0
+    untuk buat i = 0 sampai i < prediksi.panjang:
+        jika prediksi[i].bulat() == label_sebenarnya[i].bulat():
+            benar = benar + 1
+    kembalikan benar / prediksi.panjang
+
+ekspor hitung_akurasi
+
+// Split data into train and test sets
+fungsi bagi_data(data, label, rasio_latih):
+    buat jumlah_latih = (data.panjang * rasio_latih).bulat()
+
+    buat data_latih = data.potong(0, jumlah_latih)
+    buat label_latih = label.potong(0, jumlah_latih)
+    buat data_test = data.potong(jumlah_latih, data.panjang)
+    buat label_test = label.potong(jumlah_latih, data.panjang)
+
+    kembalikan {
+        data_latih: data_latih,
+        label_latih: label_latih,
+        data_test: data_test,
+        label_test: label_test
+    }
+
+ekspor bagi_data

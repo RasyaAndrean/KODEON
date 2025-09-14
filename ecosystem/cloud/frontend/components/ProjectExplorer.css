@@ -1,0 +1,96 @@
+.project-explorer {
+  width: 250px;
+  background-color: #252526;
+  border-right: 1px solid #3c3c3c;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.explorer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.explorer-header h3 {
+  font-size: 14px;
+  font-weight: normal;
+  color: #ffffff;
+}
+
+.new-project-button {
+  width: 24px;
+  height: 24px;
+  background-color: #007acc;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.project-item {
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.project-name {
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.project-name:hover {
+  background-color: #2a2d2e;
+}
+
+.project-name.selected {
+  background-color: #04395e;
+}
+
+.file-tree {
+  background-color: #1e1e1e;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #d4d4d4;
+}
+
+.file-item:hover {
+  background-color: #2a2d2e;
+}
+
+.file-item.selected {
+  background-color: #04395e;
+}
+
+.file-item.folder {
+  font-weight: bold;
+}
+
+.file-icon,
+.folder-icon {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.folder-children {
+  background-color: #1e1e1e;
+}

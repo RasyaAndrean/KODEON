@@ -1,0 +1,54 @@
+// KODEON Web Framework - Utility Functions
+// Helper functions for common operations
+
+// Generate a random ID
+fungsi id_acak():
+    buat karakter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    buat hasil = ""
+    untuk buat i = 0 sampai i < 16:
+        buat indeks_acak = acak(0, karakter.panjang - 1)
+        hasil = hasil + karakter[indeks_acak]
+    kembalikan hasil
+
+// Validate email format
+fungsi validasi_email(email):
+    // Simple email validation
+    buat pola = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+    kembalikan email.cocok(pola)
+
+// Sanitize input to prevent XSS
+fungsi sanitasi_input(input):
+    jika input adalah_tipe string:
+        kembalikan input
+            .ganti("<", "&lt;")
+            .ganti(">", "&gt;")
+            .ganti("\"", "&quot;")
+            .ganti("'", "&#x27;")
+    lain:
+        kembalikan input
+
+// Format date
+fungsi format_tanggal(tanggal):
+    jika tanggal bukan_tidak_ada:
+        kembalikan tanggal.dapat_tanggal() + "/" + tanggal.dapat_bulan() + "/" + tanggal.dapat_tahun()
+    lain:
+        kembalikan ""
+
+// Parse URL parameters
+fungsi parse_parameter_url(url):
+    buat parameter = {}
+    jika url.mengandung("?"):
+        buat bagian_query = url.pisah("?")[1]
+        buat pasangan = bagian_query.pisah("&")
+        untuk setiap pasangan_item dalam pasangan:
+            jika pasangan_item.mengandung("="):
+                buat [kunci, nilai] = pasangan_item.pisah("=")
+                parameter[kunci] = nilai
+    kembalikan parameter
+
+// Export functions
+ekspor id_acak
+ekspor validasi_email
+ekspor sanitasi_input
+ekspor format_tanggal
+ekspor parse_parameter_url

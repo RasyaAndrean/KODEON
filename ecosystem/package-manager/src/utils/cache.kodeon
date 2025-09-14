@@ -1,0 +1,124 @@
+// KODEON Package Manager Integration - Cache Utility
+// Package caching mechanisms
+
+kelas Cache {
+    fungsi inisialisasi(direktori, ukuran_maks) {
+        ini.direktori = direktori || "./.kodeon_cache"
+        ini.ukuran_maks = ukuran_maks || 1000000000 // 1GB default
+        ini.entri = []
+        ini.ukuran = 0
+    }
+
+    // Add item to cache
+    fungsi tambah(kunci, nilai, metadata) {
+        buat timestamp = sekarang()
+        buat entri = {
+            kunci: kunci,
+            nilai: nilai,
+            metadata: metadata || {},
+            timestamp: timestamp,
+            akses_terakhir: timestamp
+        }
+
+        // Calculate size (simplified)
+        buat ukuran_entri = JSON.stringify(nilai).panjang
+        entri.ukuran = ukuran_entri
+        ini.ukuran += ukuran_entri
+
+        ini.entri.tambah(entri)
+        tampilkan("Item di-cache: " + kunci + " (" + ukuran_entri + " bytes)")
+
+        // Check if we need to evict items
+        ini.periksa_evict()
+
+        kembalikan entri
+    }
+
+    // Get item from cache
+    fungsi dapatkan(kunci) {
+        buat indeks = ini.entri.cari_indeks(fungsi(e) { kembalikan e.kunci == kunci })
+        jika indeks != -1 {
+            buat entri = ini.entri[indeks]
+            entri.akses_terakhir = sekarang()
+            tampilkan("Item diakses dari cache: " + kunci)
+            kembalikan entri.nilai
+        }
+        kembalikan tidak_ada
+    }
+
+    // Remove item from cache
+    fungsi hapus(kunci) {
+        buat indeks = ini.entri.cari_indeks(fungsi(e) { kembalikan e.kunci == kunci })
+        jika indeks != -1 {
+            buat entri = ini.entri[indeks]
+            ini.ukuran -= entri.ukuran
+            ini.entri.hapus_pada(indeks)
+            tampilkan("Item dihapus dari cache: " + kunci)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Clear cache
+    fungsi bersihkan() {
+        ini.entri = []
+        ini.ukuran = 0
+        tampilkan("Cache dibersihkan")
+    }
+
+    // Check and evict items if necessary
+    fungsi periksa_evict() {
+        jika ini.ukuran > ini.ukuran_maks {
+            tampilkan("Cache penuh, mengosongkan item lama...")
+
+            // Sort by last access time (oldest first)
+            ini.entri.urutkan(fungsi(a, b) {
+                kembalikan a.akses_terakhir - b.akses_terakhir
+            })
+
+            // Remove oldest items until we're under the limit
+            selama ini.ukuran > ini.ukuran_maks dan ini.entri.panjang > 0 {
+                buat entri = ini.entri[0]
+                ini.ukuran -= entri.ukuran
+                ini.entri.hapus_pada(0)
+                tampilkan("Item di-evict dari cache: " + entri.kunci)
+            }
+        }
+    }
+
+    // Get cache statistics
+    fungsi dapatkan_statistik() {
+        kembalikan {
+            jumlah_entri: ini.entri.panjang,
+            ukuran_total: ini.ukuran,
+            ukuran_maks: ini.ukuran_maks,
+            direktori: ini.direktori
+        }
+    }
+
+    // Check if item exists in cache
+    fungsi ada(kunci) {
+        buat indeks = ini.entri.cari_indeks(fungsi(e) { kembalikan e.kunci == kunci })
+        kembalikan indeks != -1
+    }
+
+    // Get cache directory
+    fungsi dapatkan_direktori() {
+        kembalikan ini.direktori
+    }
+
+    // Set cache directory
+    fungsi atur_direktori(direktori) {
+        ini.direktori = direktori
+        tampilkan("Direktori cache diatur ke: " + direktori)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Cache diperbarui")
+    }
+}
+
+ekspor Cache

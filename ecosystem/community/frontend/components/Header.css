@@ -1,0 +1,100 @@
+.header {
+  background-color: #333333;
+  color: #ffffff;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.main-nav ul {
+  display: flex;
+  list-style: none;
+}
+
+.main-nav li {
+  margin: 0 15px;
+}
+
+.main-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.main-nav a:hover {
+  color: #4caf50;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.login-btn,
+.signup-btn,
+.logout-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.login-btn,
+.logout-btn {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.signup-btn {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.login-btn:hover,
+.logout-btn:hover {
+  background-color: #45a049;
+}
+
+.signup-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.connection-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.connection-status.disconnected {
+  background-color: #f44336;
+}

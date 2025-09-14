@@ -1,0 +1,184 @@
+// KODEON IoT/Edge Integration - Network Component
+// Network representation and management for IoT
+
+kelas Jaringan {
+    fungsi inisialisasi(tipe, alamat) {
+        ini.tipe = tipe // "wifi", "ethernet", "bluetooth", "lorawan", "zigbee", "cellular"
+        ini.alamat = alamat
+        ini.status = "terputus"
+        ini.perangkat_terhubung = []
+        ini.data_rate = 0 // bits per second
+        ini.latensi = 0 // milliseconds
+        ini.keamanan = "tidak_ada" // "tidak_ada", "wpa2", "wpa3", "tls"
+        ini.ssid = tidak_ada
+    }
+
+    // Connect to network
+    fungsi hubungkan(kredensial) {
+        // Simulate network connection process
+        tampilkan("Menghubungkan ke jaringan " + ini.tipe + "...")
+
+        // In a real implementation, this would authenticate and establish connection
+        jika ini.autentikasi(kredensial) {
+            ini.status = "terhubung"
+            tampilkan("Berhasil terhubung ke jaringan " + ini.tipe)
+            kembalikan benar
+        } lain {
+            tampilkan("Gagal terhubung ke jaringan " + ini.tipe)
+            kembalikan salah
+        }
+    }
+
+    // Disconnect from network
+    fungsi putuskan_koneksi() {
+        ini.status = "terputus"
+        ini.perangkat_terhubung = []
+        tampilkan("Diputuskan koneksi dari jaringan " + ini.tipe)
+    }
+
+    // Authenticate network connection
+    fungsi autentikasi(kredensial) {
+        // In a real implementation, this would perform actual authentication
+        // For now, we'll simulate successful authentication
+        jika kredensial bukan_tidak_ada {
+            tampilkan("Autentikasi berhasil")
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Connect device to network
+    fungsi hubungkan_perangkat(perangkat) {
+        jika ini.status != "terhubung" {
+            tampilkan("Kesalahan: Jaringan tidak terhubung")
+            kembalikan salah
+        }
+
+        // Check if device is already connected
+        jika ini.perangkat_terhubung.mengandung(perangkat) {
+            tampilkan("Perangkat sudah terhubung: " + perangkat.id)
+            kembalikan benar
+        }
+
+        // Add device to connected devices
+        ini.perangkat_terhubung.tambah(perangkat)
+        tampilkan("Perangkat terhubung ke jaringan: " + perangkat.id)
+        kembalikan benar
+    }
+
+    // Disconnect device from network
+    fungsi putuskan_perangkat(perangkat) {
+        buat indeks = ini.perangkat_terhubung.cari_indeks(perangkat)
+        jika indeks != -1 {
+            ini.perangkat_terhubung.hapus_pada(indeks)
+            tampilkan("Perangkat diputuskan koneksi: " + perangkat.id)
+            kembalikan benar
+        }
+        tampilkan("Perangkat tidak ditemukan dalam jaringan: " + perangkat.id)
+        kembalikan salah
+    }
+
+    // Send data over network
+    fungsi kirim_data(data, tujuan) {
+        jika ini.status != "terhubung" {
+            tampilkan("Kesalahan: Jaringan tidak terhubung")
+            kembalikan salah
+        }
+
+        // Simulate network transmission
+        buat ukuran_data = JSON.stringify(data).panjang * 8 // Convert to bits
+        buat waktu_transmisi = (ukuran_data / ini.data_rate) * 1000 // Convert to milliseconds
+
+        // Add network latency
+        buat waktu_total = waktu_transmisi + ini.latensi
+
+        tampilkan("Data dikirim ke " + tujuan + " (ukuran: " + ukuran_data + " bits, waktu: " + waktu_total.toFixed(2) + " ms)")
+        kembalikan benar
+    }
+
+    // Receive data from network
+    fungsi terima_data() {
+        jika ini.status != "terhubung" {
+            tampilkan("Kesalahan: Jaringan tidak terhubung")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would receive actual data
+        // For now, we'll simulate receiving data
+        tampilkan("Data diterima dari jaringan " + ini.tipe)
+        kembalikan {
+            sumber: "jaringan_" + ini.tipe,
+            data: "data_simulasi",
+            timestamp: sekarang()
+        }
+    }
+
+    // Set network parameters
+    fungsi atur_parameter(parameter) {
+        jika parameter.data_rate bukan_tidak_ada {
+            ini.data_rate = parameter.data_rate
+        }
+
+        jika parameter.latensi bukan_tidak_ada {
+            ini.latensi = parameter.latensi
+        }
+
+        jika parameter.keamanan bukan_tidak_ada {
+            ini.keamanan = parameter.keamanan
+        }
+
+        jika parameter.ssid bukan_tidak_ada {
+            ini.ssid = parameter.ssid
+        }
+
+        tampilkan("Parameter jaringan diperbarui")
+    }
+
+    // Scan for available networks
+    fungsi pindai_jaringan() {
+        // In a real implementation, this would scan for available networks
+        // For now, we'll simulate some available networks
+        tampilkan("Memindai jaringan...")
+
+        buat jaringan_tersedia = [
+            { ssid: "IoT_Network_1", tipe: "wifi", kekuatan_sinyal: -65 },
+            { ssid: "IoT_Network_2", tipe: "wifi", kekuatan_sinyal: -72 },
+            { ssid: "Edge_Gateway", tipe: "ethernet", kekuatan_sinyal: 0 }
+        ]
+
+        kembalikan jaringan_tersedia
+    }
+
+    // Get network information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            alamat: ini.alamat,
+            status: ini.status,
+            jumlah_perangkat: ini.perangkat_terhubung.panjang,
+            data_rate: ini.data_rate,
+            latensi: ini.latensi,
+            keamanan: ini.keamanan,
+            ssid: ini.ssid
+        }
+    }
+
+    // Check network quality
+    fungsi periksa_kualitas() {
+        buat kualitas = "baik"
+
+        jika ini.data_rate < 1000000 { // Less than 1 Mbps
+            kualitas = "buruk"
+        } lain jika ini.data_rate < 10000000 { // Less than 10 Mbps
+            kualitas = "sedang"
+        }
+
+        kembalikan {
+            kualitas: kualitas,
+            data_rate_mbps: (ini.data_rate / 1000000).toFixed(2),
+            latensi_ms: ini.latensi.toFixed(2)
+        }
+    }
+}
+
+ekspor Jaringan

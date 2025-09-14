@@ -1,0 +1,224 @@
+// KODEON Runtime - Configuration Utility
+// Configuration management functionality
+
+kelas Konfigurasi {
+    fungsi inisialisasi(opsi) {
+        ini.terhubung = benar
+        ini.konfigurasi = opsi || {}
+        ini.default = {
+            lingkungan: "lokal",
+            mode: "normal",
+            log_level: "info",
+            timeout: 30000,
+            max_memori: 1024,
+            max_cpu: 50
+        }
+        ini.tersimpan = {}
+    }
+
+    // Get configuration value
+    fungsi dapatkan(kunci, default_value) {
+        jika bukan ini.terhubung {
+            kembalikan default_value
+        }
+
+        jika ini.konfigurasi[kunci] bukan_tidak_ada {
+            kembalikan ini.konfigurasi[kunci]
+        }
+
+        jika ini.default[kunci] bukan_tidak_ada {
+            kembalikan ini.default[kunci]
+        }
+
+        kembalikan default_value
+    }
+
+    // Set configuration value
+    fungsi atur(kunci, nilai) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        ini.konfigurasi[kunci] = nilai
+        tampilkan("Konfigurasi diatur: " + kunci + " = " + nilai)
+        kembalikan benar
+    }
+
+    // Load configuration from file
+    fungsi muat_dari_file(jalur) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        // In a real implementation, this would load from a file
+        tampilkan("Memuat konfigurasi dari: " + jalur)
+
+        // Simulate loading configuration
+        buat konfigurasi_contoh = {
+            lingkungan: "produksi",
+            mode: "optimal",
+            log_level: "peringatan",
+            timeout: 60000,
+            max_memori: 2048,
+            max_cpu: 80
+        }
+
+        untuk setiap kunci dalam konfigurasi_contoh {
+            ini.konfigurasi[kunci] = konfigurasi_contoh[kunci]
+        }
+
+        ini.tersimpan = JSON.menyalin(ini.konfigurasi)
+        tampilkan("Konfigurasi dimuat dari file")
+        kembalikan benar
+    }
+
+    // Save configuration to file
+    fungsi simpan_ke_file(jalur) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        // In a real implementation, this would save to a file
+        tampilkan("Menyimpan konfigurasi ke: " + jalur)
+        ini.tersimpan = JSON.menyalin(ini.konfigurasi)
+        kembalikan benar
+    }
+
+    // Reset to default
+    fungsi reset_ke_default() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        ini.konfigurasi = JSON.menyalin(ini.default)
+        tampilkan("Konfigurasi direset ke default")
+        kembalikan benar
+    }
+
+    // Get all configuration
+    fungsi dapatkan_semua() {
+        jika bukan ini.terhubung {
+            kembalikan {}
+        }
+
+        kembalikan ini.konfigurasi
+    }
+
+    // Merge configuration
+    fungsi gabungkan(konfigurasi_baru) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        untuk setiap kunci dalam konfigurasi_baru {
+            ini.konfigurasi[kunci] = konfigurasi_baru[kunci]
+        }
+
+        tampilkan("Konfigurasi digabungkan")
+        kembalikan benar
+    }
+
+    // Validate configuration
+    fungsi validasi() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        buat kesalahan = []
+
+        // Validate environment
+        buat lingkungan_valid = ["lokal", "pengembangan", "staging", "produksi"]
+        jika bukan lingkungan_valid.includes(ini.konfigurasi.lingkungan) {
+            kesalahan.tambah("Lingkungan tidak valid: " + ini.konfigurasi.lingkungan)
+        }
+
+        // Validate mode
+        buat mode_valid = ["normal", "debug", "optimal", "performa"]
+        jika bukan mode_valid.includes(ini.konfigurasi.mode) {
+            kesalahan.tambah("Mode tidak valid: " + ini.konfigurasi.mode)
+        }
+
+        // Validate log level
+        buat level_valid = ["debug", "info", "peringatan", "kesalahan", "fatal"]
+        jika bukan level_valid.includes(ini.konfigurasi.log_level) {
+            kesalahan.tambah("Level log tidak valid: " + ini.konfigurasi.log_level)
+        }
+
+        // Validate numeric values
+        jika ini.konfigurasi.timeout < 0 {
+            kesalahan.tambah("Timeout harus positif: " + ini.konfigurasi.timeout)
+        }
+
+        jika ini.konfigurasi.max_memori < 0 {
+            kesalahan.tambah("Max memori harus positif: " + ini.konfigurasi.max_memori)
+        }
+
+        jika ini.konfigurasi.max_cpu < 0 atau ini.konfigurasi.max_cpu > 100 {
+            kesalahan.tambah("Max CPU harus antara 0-100: " + ini.konfigurasi.max_cpu)
+        }
+
+        jika kesalahan.panjang > 0 {
+            tampilkan("Kesalahan validasi konfigurasi:")
+            untuk setiap err dalam kesalahan {
+                tampilkan("- " + err)
+            }
+            kembalikan salah
+        }
+
+        tampilkan("Konfigurasi divalidasi dengan sukses")
+        kembalikan benar
+    }
+
+    // Get configuration schema
+    fungsi dapatkan_skema() {
+        kembalikan {
+            lingkungan: {
+                tipe: "string",
+                nilai_valid: ["lokal", "pengembangan", "staging", "produksi"],
+                default: "lokal",
+                deskripsi: "Lingkungan eksekusi aplikasi"
+            },
+            mode: {
+                tipe: "string",
+                nilai_valid: ["normal", "debug", "optimal", "performa"],
+                default: "normal",
+                deskripsi: "Mode operasi runtime"
+            },
+            log_level: {
+                tipe: "string",
+                nilai_valid: ["debug", "info", "peringatan", "kesalahan", "fatal"],
+                default: "info",
+                deskripsi: "Tingkat detail logging"
+            },
+            timeout: {
+                tipe: "number",
+                min: 0,
+                default: 30000,
+                deskripsi: "Timeout untuk operasi (ms)"
+            },
+            max_memori: {
+                tipe: "number",
+                min: 0,
+                default: 1024,
+                deskripsi: "Batas maksimum penggunaan memori (MB)"
+            },
+            max_cpu: {
+                tipe: "number",
+                min: 0,
+                max: 100,
+                default: 50,
+                deskripsi: "Batas maksimum penggunaan CPU (%)"
+            }
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Periodically validate configuration
+        jika Math.acak() > 0.99 {
+            ini.validasi()
+        }
+    }
+}
+
+ekspor Konfigurasi

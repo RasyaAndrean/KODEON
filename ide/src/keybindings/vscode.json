@@ -1,0 +1,18 @@
+{
+  "name": "Visual Studio Code",
+  "shortcuts": {
+    "newFile": "Ctrl+N",
+    "openFile": "Ctrl+O",
+    "saveFile": "Ctrl+S",
+    "compile": "Ctrl+F5",
+    "run": "F5",
+    "undo": "Ctrl+Z",
+    "redo": "Ctrl+Y",
+    "cut": "Ctrl+X",
+    "copy": "Ctrl+C",
+    "paste": "Ctrl+V",
+    "find": "Ctrl+F",
+    "replace": "Ctrl+H",
+    "selectAll": "Ctrl+A"
+  }
+}

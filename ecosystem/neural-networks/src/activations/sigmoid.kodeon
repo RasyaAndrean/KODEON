@@ -1,0 +1,17 @@
+// KODEON Neural Networks - Sigmoid Activation
+// Sigmoid activation function implementation
+
+kelas AktivasiSigmoid meluas FungsiAktivasi:
+    fungsi inisialisasi():
+        induk.inisialisasi("Sigmoid")
+
+    // Calculate sigmoid activation
+    fungsi hitung(input):
+        kembalikan 1 / (1 + e^(-input))
+
+    // Calculate derivative of sigmoid
+    fungsi turunan(input):
+        buat s = ini.hitung(input)
+        kembalikan s * (1 - s)
+
+ekspor AktivasiSigmoid

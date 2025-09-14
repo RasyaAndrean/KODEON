@@ -1,0 +1,223 @@
+// KODEON IoT/Edge Integration - Unit Tests
+// Tests for IoT/Edge framework components
+
+// Import required modules
+impor IoT
+impor { IntiIoT } dari '../src/core/iot-core.kodeon'
+impor { Perangkat, Sensor, Aktuator, Jaringan } dari '../src/components/device.kodeon'
+impor { PemrosesData, Komunikasi, Keamanan } dari '../src/utils/data-processor.kodeon'
+
+// Test IoT Main Class
+fungsi uji_iot_kelas_utama() {
+    tampilkan("Menguji IoT kelas utama...")
+
+    // Test initialization
+    buat iot = IoT("iot")
+    pastikan(iot.tipe == "iot", "IoT seharusnya diinisialisasi dengan tipe 'iot'")
+
+    // Test connection (simulated)
+    buat hasil_hubung = iot.hubungkan("Jaringan_Test")
+    pastikan(hasil_hubung, "Seharusnya dapat terhubung ke jaringan")
+
+    // Test component addition
+    buat perangkat = Perangkat("DEV_001", "sensor")
+    buat perangkat_ditambah = iot.tambah_perangkat(perangkat)
+    pastikan(iot.komponen.panjang == 1, "Seharusnya menambahkan perangkat ke komponen")
+
+    // Test utility addition
+    buat pemroses = iot.tambah_pemroses_data("filter")
+    pastikan(iot.utilitas.panjang == 1, "Seharusnya menambahkan pemroses ke utilitas")
+
+    tampilkan("Uji IoT kelas utama berhasil!")
+}
+
+// Test IntiIoT Class
+fungsi uji_intiiot_kelas() {
+    tampilkan("Menguji IntiIoT kelas...")
+
+    buat iot = IntiIoT()
+    pastikan(bukan iot.terhubung, "IoT seharusnya belum terhubung awalnya")
+
+    // Test connection
+    iot.hubungkan("Jaringan_Test")
+    pastikan(iot.terhubung, "IoT seharusnya terhubung setelah hubungkan() dipanggil")
+
+    // Test disconnection
+    iot.putuskan_koneksi()
+    pastikan(bukan iot.terhubung, "IoT seharusnya tidak terhubung setelah putuskan_koneksi() dipanggil")
+
+    tampilkan("Uji IntiIoT kelas berhasil!")
+}
+
+// Test IoT Components
+fungsi uji_komponen_iot() {
+    tampilkan("Menguji komponen IoT...")
+
+    // Test Perangkat
+    buat perangkat = Perangkat("DEV_001", "sensor_node")
+    pastikan(perangkat.id == "DEV_001", "Perangkat seharusnya memiliki ID 'DEV_001'")
+    pastikan(perangkat.tipe == "sensor_node", "Perangkat seharusnya bertipe 'sensor_node'")
+
+    // Test Sensor
+    buat sensor = Sensor("SENS_001", "suhu", "°C")
+    pastikan(sensor.id == "SENS_001", "Sensor seharusnya memiliki ID 'SENS_001'")
+    pastikan(sensor.tipe == "suhu", "Sensor seharusnya bertipe 'suhu'")
+    pastikan(sensor.unit == "°C", "Sensor seharusnya memiliki unit '°C'")
+
+    // Test Aktuator
+    buat aktuator = Aktuator("ACT_001", "relay")
+    pastikan(aktuator.id == "ACT_001", "Aktuator seharusnya memiliki ID 'ACT_001'")
+    pastikan(aktuator.tipe == "relay", "Aktuator seharusnya bertipe 'relay'")
+
+    // Test Jaringan
+    buat jaringan = Jaringan("wifi", "192.168.1.1")
+    pastikan(jaringan.tipe == "wifi", "Jaringan seharusnya bertipe 'wifi'")
+    pastikan(jaringan.alamat == "192.168.1.1", "Jaringan seharusnya memiliki alamat '192.168.1.1'")
+
+    tampilkan("Uji komponen IoT berhasil!")
+}
+
+// Test Utility Modules
+fungsi uji_modul_utilitas() {
+    tampilkan("Menguji modul utilitas...")
+
+    // Test PemrosesData
+    buat pemroses = PemrosesData("filter")
+    pastikan(pemroses.tipe == "filter", "Pemroses seharusnya bertipe 'filter'")
+
+    // Test Komunikasi
+    buat komunikasi = Komunikasi("mqtt")
+    pastikan(komunikasi.tipe == "mqtt", "Komunikasi seharusnya bertipe 'mqtt'")
+
+    // Test Keamanan
+    buat keamanan = Keamanan("tls")
+    pastikan(keamanan.tipe == "tls", "Keamanan seharusnya bertipe 'tls'")
+
+    tampilkan("Uji modul utilitas berhasil!")
+}
+
+// Test Device Management
+fungsi uji_manajemen_perangkat() {
+    tampilkan("Menguji manajemen perangkat...")
+
+    // Create device
+    buat perangkat = Perangkat("TEST_DEVICE", "sensor")
+
+    // Test device activation
+    perangkat.aktifkan()
+    pastikan(perangkat.status == "aktif", "Perangkat seharusnya aktif setelah diaktifkan")
+
+    // Test sensor addition
+    buat sensor = Sensor("TEST_SENSOR", "suhu", "°C")
+    perangkat.tambah_sensor(sensor)
+    pastikan(perangkat.sensor.panjang == 1, "Seharusnya ada 1 sensor dalam perangkat")
+
+    // Test actuator addition
+    buat aktuator = Aktuator("TEST_ACTUATOR", "relay")
+    perangkat.tambah_aktuator(aktuator)
+    pastikan(perangkat.aktuator.panjang == 1, "Seharusnya ada 1 aktuator dalam perangkat")
+
+    // Test sensor reading
+    buat data_sensor = perangkat.baca_sensor()
+    pastikan(data_sensor instanceof Array, "Data sensor seharusnya merupakan array")
+
+    // Test actuator control
+    buat hasil_kontrol = perangkat.kendalikan_aktuator("TEST_ACTUATOR", { tindakan: "hidupkan" })
+    pastikan(hasil_kontrol, "Seharusnya dapat mengontrol aktuator")
+
+    tampilkan("Uji manajemen perangkat berhasil!")
+}
+
+// Test Data Processing
+fungsi uji_pemrosesan_data() {
+    tampilkan("Menguji pemrosesan data...")
+
+    // Create data processor
+    buat pemroses = PemrosesData("filter")
+    pemroses.atur_parameter({ tipe_filter: "rata_rata", ukuran_jendela: 3 })
+
+    // Test data processing
+    buat data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    buat data_diproses = pemroses.proses(data)
+    pastikan(data_diproses instanceof Array, "Data diproses seharusnya merupakan array")
+    pastikan(data_diproses.panjang == data.panjang, "Panjang data seharusnya sama")
+
+    tampilkan("Uji pemrosesan data berhasil!")
+}
+
+// Test Communication
+fungsi uji_komunikasi() {
+    tampilkan("Menguji komunikasi...")
+
+    // Create communication module
+    buat komunikasi = Komunikasi("mqtt")
+
+    // Test connection
+    buat hasil_hubung = komunikasi.hubungkan("mqtt.test.com")
+    pastikan(hasil_hubung, "Seharusnya dapat terhubung ke broker")
+
+    // Test subscription
+    buat hasil_langganan = komunikasi.berlangganan("test/topic", fungsi() {})
+    pastikan(hasil_langganan, "Seharusnya dapat berlangganan ke topik")
+
+    // Test publishing
+    buat hasil_terbit = komunikasi.terbitkan("test/topic", { pesan: "Halo" })
+    pastikan(hasil_terbit, "Seharusnya dapat menerbitkan pesan")
+
+    tampilkan("Uji komunikasi berhasil!")
+}
+
+// Test Security
+fungsi uji_keamanan() {
+    tampilkan("Menguji keamanan...")
+
+    // Create security module
+    buat keamanan = Keamanan("tls")
+
+    // Test configuration
+    buat hasil_konfig = keamanan.konfigurasi({ level: "tinggi" })
+    pastikan(hasil_konfig, "Seharusnya dapat mengkonfigurasi keamanan")
+
+    // Test data securing
+    buat data = { rahasia: "data_rahasia" }
+    buat data_diamankan = keamanan.amankan(data)
+    pastikan(data_diamankan bukan_tidak_ada, "Seharusnya dapat mengamankan data")
+
+    // Test data validation
+    buat validasi = keamanan.validasi(data_diamankan)
+    pastikan(validasi.valid, "Data diamankan seharusnya valid")
+
+    tampilkan("Uji keamanan berhasil!")
+}
+
+// Helper function for assertions
+fungsi pastikan(kondisi, pesan) {
+    jika bukan kondisi {
+        tampilkan("UJI GAGAL: " + pesan)
+        lempar "Uji gagal: " + pesan
+    }
+}
+
+// Run all tests
+fungsi jalankan_semua_uji() {
+    tampilkan("=== Menjalankan Semua Uji IoT/Edge ===\n")
+
+    coba {
+        uji_iot_kelas_utama()
+        uji_intiiot_kelas()
+        uji_komponen_iot()
+        uji_modul_utilitas()
+        uji_manajemen_perangkat()
+        uji_pemrosesan_data()
+        uji_komunikasi()
+        uji_keamanan()
+
+        tampilkan("\n=== Semua Uji Berhasil! ===")
+    } tangkap(error) {
+        tampilkan("\n=== Uji Gagal ===")
+        tampilkan("Kesalahan: " + error)
+    }
+}
+
+// Execute tests
+jalankan_semua_uji()

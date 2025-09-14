@@ -1,0 +1,92 @@
+// KODEON Neural Networks - Tests
+// Unit tests for the neural networks framework
+
+// Import testing framework and neural networks framework
+impor "testing" sebagai uji
+impor "neural" sebagai neural
+
+// Test creating a neural network
+fungsi uji_buat_jaringan():
+    buat jaringan = neural.buat_jaringan()
+    uji.tidak_null(jaringan)
+    uji.adalah_tipe(jaringan, "objek")
+
+// Test dense layer creation
+fungsi uji_lapisan_padat():
+    buat lapisan = neural.padat.LapisanPadat(10, 5, neural.relu.AktivasiReLU())
+    uji.tidak_null(lapisan)
+    uji.adalah_tipe(lapisan, "objek")
+
+    buat info = lapisan.dapatkan_info()
+    uji.sama_dengan(info.jumlah_input, 10)
+    uji.sama_dengan(info.jumlah_output, 5)
+
+// Test activation functions
+fungsi uji_fungsi_aktivasi():
+    // Test ReLU activation
+    buat relu = neural.relu.AktivasiReLU()
+    uji.tidak_null(relu)
+    uji.sama_dengan(relu.hitung(5), 5)
+    uji.sama_dengan(relu.hitung(-3), 0)
+
+    // Test Sigmoid activation
+    buat sigmoid = neural.sigmoid.AktivasiSigmoid()
+    uji.tidak_null(sigmoid)
+    uji.lebih_besar_dari(sigmoid.hitung(0), 0)
+    uji.kurang_dari(sigmoid.hitung(0), 1)
+
+// Test loss functions
+fungsi uji_fungsi_loss():
+    // Test MSE loss
+    buat mse = neural.mse.LossMSE()
+    uji.tidak_null(mse)
+
+    buat prediksi = [1.0, 2.0, 3.0]
+    buat target = [1.0, 2.0, 3.0]
+    buat loss = mse.hitung(prediksi, target)
+    uji.sama_dengan(loss, 0.0)
+
+// Test optimizers
+fungsi uji_optimizer():
+    // Test SGD optimizer
+    buat sgd = neural.sgd.OptimizerSGD(0.01)
+    uji.tidak_null(sgd)
+    uji.sama_dengan(sgd.learning_rate, 0.01)
+
+    // Test Adam optimizer
+    buat adam = neural.adam.OptimizerAdam(0.001)
+    uji.tidak_null(adam)
+    uji.sama_dengan(adam.learning_rate, 0.001)
+
+// Test sequential model
+fungsi uji_model_sequential():
+    buat model = neural.sequential.ModelSequential()
+    uji.tidak_null(model)
+    uji.sama_dengan(model.lapisan.panjang, 0)
+
+// Test utility functions
+fungsi uji_utilitas():
+    // Test one-hot encoding
+    buat encoded = neural.utilitas.one_hot_encode(2, 5)
+    uji.tidak_null(encoded)
+    uji.sama_dengan(encoded.panjang, 5)
+    uji.sama_dengan(encoded[2], 1.0)
+
+    // Test data splitting
+    buat data = [[1, 2], [3, 4], [5, 6], [7, 8]]
+    buat label = [0, 1, 0, 1]
+    buat terbagi = neural.utilitas.bagi_data(data, label, 0.5)
+    uji.tidak_null(terbagi)
+    uji.sama_dengan(terbagi.data_latih.panjang, 2)
+    uji.sama_dengan(terbagi.data_test.panjang, 2)
+
+// Run all tests
+uji.jalankan([
+    uji_buat_jaringan,
+    uji_lapisan_padat,
+    uji_fungsi_aktivasi,
+    uji_fungsi_loss,
+    uji_optimizer,
+    uji_model_sequential,
+    uji_utilitas
+])

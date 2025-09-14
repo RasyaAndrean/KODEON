@@ -1,0 +1,109 @@
+// KODEON Quantum Computing - Quantum Simulator
+// Simulates quantum computations using classical computing resources
+
+kelas SimulatorKuantum:
+    fungsi inisialisasi(jumlah_qubit):
+        ini.jumlah_qubit = jumlah_qubit
+        ini.keadaan = ini.inisialisasi_keadaan_dasar()
+        ini.keadaan_sebelumnya = tidak_ada
+        ini.hasil_pengukuran = []
+
+    // Initialize the quantum state to |00...0>
+    fungsi inisialisasi_keadaan_dasar():
+        buat dimensi = 2 ^ ini.jumlah_qubit
+        buat keadaan = []
+
+        // Initialize to |00...0> state (first element is 1, rest are 0)
+        untuk buat i = 0 sampai i < dimensi:
+            jika i == 0:
+                keadaan.tambah(1.0 + 0.0i)  // |0> state
+            lain:
+                keadaan.tambah(0.0 + 0.0i)  // |1> state
+
+        kembalikan keadaan
+
+    // Apply a quantum gate to the state
+    fungsi terapkan_gerbang(gerbang_matriks, qubit_target, qubit_kontrol):
+        ini.keadaan_sebelumnya = [...ini.keadaan]  // Save previous state
+
+        // In a real implementation, this would apply the gate matrix to the quantum state
+        // For simulation purposes, we'll just update the state vector
+        jika qubit_kontrol bukan_tidak_ada:
+            tampilkan("Menerapkan gerbang terkontrol pada qubit " + qubit_target + " dengan kontrol " + qubit_kontrol)
+        lain:
+            tampilkan("Menerapkan gerbang pada qubit " + qubit_target)
+
+        // Simulate state change (in a real implementation, this would be matrix multiplication)
+        ini.keadaan = ini.simulasikan_perubahan_keadaan(gerbang_matriks, qubit_target)
+
+    // Simulate state change (simplified for demonstration)
+    fungsi simulasikan_perubahan_keadaan(gerbang_matriks, qubit_target):
+        // This is a simplified simulation - in reality, this would involve tensor products
+        // and matrix multiplication on the full state vector
+        buat keadaan_baru = [...ini.keadaan]
+
+        // Simple state manipulation for demonstration
+        untuk buat i = 0 sampai i < keadaan_baru.panjang:
+            // Apply some transformation based on the gate
+            jika i % 2 == 0:
+                keadaan_baru[i] = keadaan_baru[i] * (0.707 + 0.0i)  // Apply some transformation
+            lain:
+                keadaan_baru[i] = keadaan_baru[i] * (0.0 + 0.707i)
+
+        kembalikan keadaan_baru
+
+    // Run a quantum circuit
+    fungsi jalankan_sirkuit(sirkuit):
+        tampilkan("Menjalankan sirkuit kuantum dengan " + sirkuit.gerbang.panjang + " gerbang")
+
+        // Apply each gate in the circuit
+        untuk setiap gerbang_dalam_sirkuit dalam sirkuit.gerbang:
+            ini.terapkan_gerbang(
+                gerbang_dalam_sirkuit.matriks,
+                gerbang_dalam_sirkuit.qubit_target,
+                gerbang_dalam_sirkuit.qubit_kontrol
+            )
+
+        kembalikan ini.keadaan
+
+    // Measure all qubits
+    fungsi ukur_semua():
+        // In a real quantum system, measurement collapses the wavefunction
+        // For simulation, we'll probabilistically determine the result
+        buat hasil = []
+        buat probabilitas = ini.hitung_probabilitas()
+
+        untuk buat i = 0 sampai i < ini.jumlah_qubit:
+            // Simulate measurement (simplified)
+            buat acak_val = acak(0, 1000) / 1000.0
+            buat nilai_qubit = jika acak_val < 0.5 maka 0 lain 1
+            hasil.tambah(nilai_qubit)
+
+        ini.hasil_pengukuran = hasil
+        kembalikan hasil
+
+    // Calculate probabilities of each basis state
+    fungsi hitung_probabilitas():
+        buat probabilitas = []
+
+        untuk setiap amplitudo dalam ini.keadaan:
+            buat prob = amplitudo.nyata * amplitudo.nyata + amplitudo.imajiner * amplitudo.imajiner
+            probabilitas.tambah(prob)
+
+        kembalikan probabilitas
+
+    // Get the current quantum state
+    fungsi dapatkan_keadaan():
+        kembalikan {
+            keadaan: ini.keadaan,
+            probabilitas: ini.hitung_probabilitas(),
+            hasil_pengukuran: ini.hasil_pengukuran
+        }
+
+    // Reset the quantum system to |00...0>
+    fungsi reset():
+        ini.keadaan = ini.inisialisasi_keadaan_dasar()
+        ini.keadaan_sebelumnya = tidak_ada
+        ini.hasil_pengukuran = []
+
+ekspor SimulatorKuantum

@@ -1,0 +1,237 @@
+// KODEON Implementation Details - Documentation Generator Utility
+// Utility for generating implementation documentation from structured data
+
+kelas GeneratorDokumentasi {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.format_keluaran = ini.opsi.format_keluaran || "markdown"
+        ini.template_dokumen = ini.opsi.template_dokumen || ini.buat_template_default()
+        ini.dokumen_dihasilkan = []
+        ini.aktif = salah
+    }
+
+    // Create default document templates
+    fungsi buat_template_default() {
+        kembalikan {
+            "ringkasan_implementasi": `
+# {{nama_komponen}} - Ringkasan Implementasi
+
+## Deskripsi
+{{deskripsi}}
+
+## Versi
+{{versi}}
+
+## Arsitektur
+{{arsitektur}}
+
+## Teknologi yang Digunakan
+{{teknologi}}
+
+## Fitur Utama
+{{fitur_utama}}
+
+## Dependensi
+{{dependensi}}
+
+## Status Implementasi
+{{status}}
+
+*Dibuat pada: {{tanggal_pembuatan}}*
+`,
+
+            "detail_teknis": `
+# {{nama_komponen}} - Detail Teknis
+
+## Spesifikasi Arsitektur
+{{spesifikasi_arsitektur}}
+
+## Diagram Komponen
+{{diagram_komponen}}
+
+## API Reference
+{{referensi_api}}
+
+## Konfigurasi
+{{konfigurasi}}
+
+## Pengujian
+{{pengujian}}
+
+## Deployment
+{{deployment}}
+
+*Dibuat pada: {{tanggal_pembuatan}}*
+`,
+
+            "laporan_kemajuan": `
+# {{nama_komponen}} - Laporan Kemajuan
+
+## Tanggal Laporan
+{{tanggal_laporan}}
+
+## Progres Implementasi
+{{progres}}%
+
+## Milestone Tercapai
+{{milestone}}
+
+## Masalah yang Dihadapi
+{{masalah}}
+
+## Rencana Selanjutnya
+{{rencana}}
+
+*Dibuat pada: {{tanggal_pembuatan}}*
+`
+        }
+    }
+
+    // Initialize documentation generator
+    fungsi inisialisasi_generator() {
+        ini.aktif = benar
+        tampilkan("Generator dokumentasi diinisialisasi")
+        kembalikan benar
+    }
+
+    // Generate documentation from template
+    fungsi hasilkan_dokumentasi(tipe_dokumen, data) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Generator dokumentasi belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat template = ini.template_dokumen[tipe_dokumen]
+        jika bukan template {
+            tampilkan("Kesalahan: Template tidak ditemukan: " + tipe_dokumen)
+            kembalikan tidak_ada
+        }
+
+        // Process template with data
+        buat konten = ini.proses_template(template, data)
+
+        buat dokumen = {
+            id: ini.dokumen_dihasilkan.panjang + 1,
+            tipe: tipe_dokumen,
+            nama: data.nama_komponen + "_" + tipe_dokumen + "_" + Date.now(),
+            konten: konten,
+            format: ini.format_keluaran,
+            data_sumber: data,
+            waktu_pembuatan: sekarang()
+        }
+
+        ini.dokumen_dihasilkan.tambah(dokumen)
+        tampilkan("Dokumentasi dihasilkan: " + dokumen.nama)
+
+        kembalikan dokumen
+    }
+
+    // Process template with data
+    fungsi proses_template(template, data) {
+        buat konten = template
+
+        // Replace template variables
+        untuk setiap kunci dalam data {
+            buat nilai = data[kunci]
+            jika typeof nilai === "object" {
+                nilai = JSON.stringify(nilai, tidak_ada, 2)
+            }
+            konten = konten.ganti(new RegExp("\\{\\{" + kunci + "\\}\\}", "g"), nilai)
+        }
+
+        // Handle missing values
+        konten = konten.ganti(/\{\{[^}]+\}\}/g, "_[tidak tersedia]_")
+
+        kembalikan konten
+    }
+
+    // Save document to file
+    fungsi simpan_dokumen(dokumen, nama_file) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Generator dokumentasi belum diinisialisasi")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would save to actual files
+        tampilkan("Dokumen disimpan ke: " + nama_file)
+        tampilkan("Konten dokumen:")
+        tampilkan(dokumen.konten)
+
+        kembalikan benar
+    }
+
+    // Get generated documents
+    fungsi dapatkan_dokumen_dihasilkan() {
+        kembalikan [...ini.dokumen_dihasilkan]
+    }
+
+    // Get document by name
+    fungsi dapatkan_dokumen_berdasarkan_nama(nama) {
+        kembalikan ini.dokumen_dihasilkan.cari(fungsi(dokumen) {
+            kembalikan dokumen.nama === nama
+        })
+    }
+
+    // Get documents by type
+    fungsi dapatkan_dokumen_berdasarkan_tipe(tipe) {
+        kembalikan ini.dokumen_dihasilkan.filter(fungsi(dokumen) {
+            kembalikan dokumen.tipe === tipe
+        })
+    }
+
+    // Add custom template
+    fungsi tambah_template(nama, template) {
+        ini.template_dokumen[nama] = template
+        tampilkan("Template ditambahkan: " + nama)
+        kembalikan benar
+    }
+
+    // Remove template
+    fungsi hapus_template(nama) {
+        jika ini.template_dokumen[nama] {
+            hapus ini.template_dokumen[nama]
+            tampilkan("Template dihapus: " + nama)
+            kembalikan benar
+        }
+
+        tampilkan("Template tidak ditemukan: " + nama)
+        kembalikan salah
+    }
+
+    // Set output format
+    fungsi atur_format_keluaran(format) {
+        buat format_valid = ["markdown", "html", "pdf", "docx"]
+        jika format_valid.termasuk(format) {
+            ini.format_keluaran = format
+            tampilkan("Format keluaran diatur ke: " + format)
+            kembalikan benar
+        } lain {
+            tampilkan("Kesalahan: Format tidak valid. Gunakan: " + format_valid.gabung(", "))
+            kembalikan salah
+        }
+    }
+
+    // Get generator status
+    fungsi dapatkan_status() {
+        kembalikan {
+            aktif: ini.aktif,
+            format_keluaran: ini.format_keluaran,
+            total_template: Object.keys(ini.template_dokumen).panjang,
+            total_dokumen_dihasilkan: ini.dokumen_dihasilkan.panjang
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Periodically log generation status
+        jika Math.acak() > 0.9 {
+            tampilkan("Status generator: " + ini.dokumen_dihasilkan.panjang + " dokumen dihasilkan")
+        }
+    }
+}
+
+ekspor GeneratorDokumentasi

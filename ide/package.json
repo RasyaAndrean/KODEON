@@ -2,7 +2,7 @@
   "name": "kodeon-ide",
   "version": "0.1.0",
   "description": "Integrated Development Environment for the KODEON programming language",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",

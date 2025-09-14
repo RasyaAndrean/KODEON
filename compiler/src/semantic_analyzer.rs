@@ -128,56 +128,122 @@ impl SymbolTable {
     }
 }
 
-/// Enhanced semantic analysis error with position information
+/// Enhanced semantic analysis error with detailed information
 #[derive(Debug)]
 pub enum SemanticError {
     UndeclaredVariable {
         name: String,
         position: Position,
+        context: String,     // Additional context about the error
+        suggestion: String,  // Suggested fix
+        example: String,     // Example of correct usage
     },
     DuplicateDeclaration {
         name: String,
         first_position: Position,
         duplicate_position: Position,
+        context: String,
+        suggestion: String,
+        example: String,
     },
     TypeMismatch {
         expected: String,
         found: String,
         position: Position,
+        context: String,
+        suggestion: String,
+        example: String,
     },
     InvalidOperation {
         message: String,
         position: Position,
+        context: String,
+        suggestion: String,
+        example: String,
     },
     UninitializedVariable {
         name: String,
         position: Position,
+        context: String,
+        suggestion: String,
+        example: String,
     },
 }
 
 impl std::fmt::Display for SemanticError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            SemanticError::UndeclaredVariable { name, position } => {
-                write!(f, "Semantic error at line {}, column {}: Undeclared variable '{}'",
-                       position.line, position.column, name)
+            SemanticError::UndeclaredVariable { name, position, context, suggestion, example } => {
+                writeln!(f, "❌ Semantic error at line {}, column {}: Variable '{}' is not declared",
+                       position.line, position.column, name)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
-            SemanticError::DuplicateDeclaration { name, first_position, duplicate_position } => {
-                write!(f, "Semantic error at line {}, column {}: Duplicate declaration of '{}' (first declared at line {}, column {})",
-                       duplicate_position.line, duplicate_position.column, name,
-                       first_position.line, first_position.column)
+            SemanticError::DuplicateDeclaration { name, first_position, duplicate_position, context, suggestion, example } => {
+                writeln!(f, "❌ Semantic error at line {}, column {}: Duplicate declaration of '{}'",
+                       duplicate_position.line, duplicate_position.column, name)?;
+                writeln!(f, "   First declared at line {}, column {}",
+                       first_position.line, first_position.column)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
-            SemanticError::TypeMismatch { expected, found, position } => {
-                write!(f, "Semantic error at line {}, column {}: Type mismatch - expected '{}', found '{}'",
-                       position.line, position.column, expected, found)
+            SemanticError::TypeMismatch { expected, found, position, context, suggestion, example } => {
+                writeln!(f, "❌ Semantic error at line {}, column {}: Type mismatch - expected '{}', found '{}'",
+                       position.line, position.column, expected, found)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
-            SemanticError::InvalidOperation { message, position } => {
-                write!(f, "Semantic error at line {}, column {}: {}",
-                       position.line, position.column, message)
+            SemanticError::InvalidOperation { message, position, context, suggestion, example } => {
+                writeln!(f, "❌ Semantic error at line {}, column {}: {}",
+                       position.line, position.column, message)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
-            SemanticError::UninitializedVariable { name, position } => {
-                write!(f, "Semantic error at line {}, column {}: Variable '{}' used before initialization",
-                       position.line, position.column, name)
+            SemanticError::UninitializedVariable { name, position, context, suggestion, example } => {
+                writeln!(f, "❌ Semantic error at line {}, column {}: Variable '{}' used before initialization",
+                       position.line, position.column, name)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
         }
     }

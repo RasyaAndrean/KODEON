@@ -1,0 +1,99 @@
+// KODEON Package Manager - Basic Usage Example
+// Demonstrates how to use the package manager in KODEON applications
+
+// Import the Package Manager
+impor PackageManager
+
+// Create Package Manager instance
+buat pm = PackageManager()
+
+// Initialize package manager environment
+pm.inisialisasi_lingkungan({
+    registry: "https://registry.kodeon.dev",
+    cache: "./.kodeon_cache",
+    lingkungan: "development"
+})
+
+// Create and add package components
+impor komponen.{Paket, Registry, Resolver, Installer}
+
+// Create a package
+buat httpClient = Paket("http-client", "1.2.3", "HTTP client library for KODEON")
+httpClient.tambah_dependensi("logging-framework", "^1.0.0")
+httpClient.atur_metadata({
+    penulis: ["KODEON Team"],
+    lisensi: "MIT",
+    repository: "https://github.com/kodeon/http-client",
+    keywords: ["http", "client", "network"]
+})
+
+pm.tambah_paket(httpClient)
+
+// Create registry
+buat registry = Registry("https://registry.kodeon.dev", "KODEON Registry")
+registry.hubungkan()
+pm.tambah_registry(registry)
+
+// Create resolver
+impor komponen.Resolver
+buat resolver = Resolver()
+resolver.tambah_dependensi("http-client", "1.2.3")
+pm.tambah_resolver(resolver)
+
+// Create installer
+impor komponen.Installer
+buat installer = Installer()
+pm.tambah_installer(installer)
+
+// Install a package
+pm.pasang_paket("http-client", "1.2.3")
+
+// List installed packages
+buat daftar = pm.daftar_paket()
+tampilkan("Paket yang terpasang:")
+untuk setiap paket dalam daftar {
+    tampilkan("- " + paket.nama + " versi " + paket.versi)
+}
+
+// Search for packages
+tampilkan("Mencari paket dengan kueri 'http':")
+buat hasil = pm.cari_paket("http")
+untuk setiap item dalam hasil {
+    tampilkan("- " + item.nama + " versi " + item.versi + ": " + item.deskripsi)
+}
+
+// Get package information
+tampilkan("Informasi paket 'http-client':")
+buat info = pm.info_paket("http-client")
+jika info bukan_tidak_ada {
+    tampilkan("Nama: " + info.nama)
+    tampilkan("Versi: " + info.versi)
+    tampilkan("Deskripsi: " + info.deskripsi)
+    tampilkan("Penulis: " + info.penulis.join(", "))
+    tampilkan("Lisensi: " + info.lisensi)
+}
+
+// Check for updates
+tampilkan("Memeriksa pembaruan:")
+buat pembaruan = pm.periksa_pembaruan()
+jika pembaruan.panjang > 0 {
+    untuk setiap item dalam pembaruan {
+        tampilkan("- " + item.nama + " dari " + item.versi_sekarang + " ke " + item.versi_baru)
+    }
+} lain {
+    tampilkan("Tidak ada pembaruan tersedia")
+}
+
+// Update a package
+pm.perbarui_paket("http-client", "1.3.0")
+
+// Verify package integrity
+pm.verifikasi_paket("http-client")
+
+// Remove a package
+pm.hapus_paket("http-client")
+
+// Shutdown package manager environment
+pm.matikan_lingkungan()
+
+tampilkan("Contoh penggunaan package manager selesai!")

@@ -1,0 +1,190 @@
+// KODEON Security Framework - Audit Component
+// Security event logging and monitoring
+
+kelas Audit {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.log = []
+        ini.tingkat_log = konfigurasi.tingkat_log || "info"
+        ini.retensi = konfigurasi.retensi || 90 // days
+    }
+
+    // Log security event
+    fungsi catat_kejadian(jenis, pesan, detail) {
+        buat kejadian = {
+            id: ini.log.panjang + 1,
+            jenis: jenis,
+            pesan: pesan,
+            detail: detail || {},
+            timestamp: sekarang(),
+            tingkat: ini.tentukan_tingkat(jenis)
+        }
+
+        ini.log.tambah(kejadian)
+
+        // Log to console if level is appropriate
+        jika ini.seharusnya_catat(kejadian.tingkat) {
+            tampilkan("[" + kejadian.tingkat.toUpperCase() + "] " + jenis + ": " + pesan)
+        }
+
+        // In a real implementation, this would also write to a secure log file
+        kembalikan kejadian
+    }
+
+    // Determine log level based on event type
+    fungsi tentukan_tingkat(jenis) {
+        jika jenis.mengandung("gagal") atau jenis.mengandung("error") {
+            kembalikan "error"
+        } lain jika jenis.mengandung("peringatan") {
+            kembalikan "warning"
+        } lain jika jenis.mengandung("info") {
+            kembalikan "info"
+        } lain {
+            kembalikan "debug"
+        }
+    }
+
+    // Check if event should be logged based on log level
+    fungsi seharusnya_catat(tingkat) {
+        buat tingkat_prioritas = {"debug": 1, "info": 2, "warning": 3, "error": 4}
+        kembalikan tingkat_prioritas[tingkat] >= tingkat_prioritas[ini.tingkat_log]
+    }
+
+    // Get security events
+    fungsi dapatkan_kejadian(filter) {
+        jika bukan filter {
+            kembalikan ini.log
+        }
+
+        kembalikan ini.log.filter(fungsi(kejadian) {
+            untuk setiap kunci dalam filter {
+                jika kejadian[kunci] != filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Get security events by time range
+    fungsi dapatkan_kejadian_berdasarkan_waktu(mulai, akhir) {
+        kembalikan ini.log.filter(fungsi(kejadian) {
+            kembalikan kejadian.timestamp >= mulai dan kejadian.timestamp <= akhir
+        })
+    }
+
+    // Get security events by user
+    fungsi dapatkan_kejadian_pengguna(email) {
+        kembalikan ini.log.filter(fungsi(kejadian) {
+            kembalikan kejadian.detail.pengguna == email
+        })
+    }
+
+    // Generate security report
+    fungsi hasilkan_laporan(tipe, mulai, akhir) {
+        buat kejadian = ini.dapatkan_kejadian_berdasarkan_waktu(mulai, akhir)
+
+        jika tipe == "ringkasan" {
+            kembalikan ini.hasilkan_ringkasan(kejadian)
+        } lain jika tipe == "detail" {
+            kembalikan kejadian
+        } lain {
+            kembalikan ini.hasilkan_ringkasan(kejadian)
+        }
+    }
+
+    // Generate summary report
+    fungsi hasilkan_ringkasan(kejadian) {
+        buat ringkasan = {
+            total_kejadian: kejadian.panjang,
+            berdasarkan_jenis: {},
+            berdasarkan_tingkat: {},
+            berdasarkan_pengguna: {},
+            waktu_pertama: kejadian.panjang > 0 ? kejadian[0].timestamp : tidak_ada,
+            waktu_terakhir: kejadian.panjang > 0 ? kejadian[kejadian.panjang - 1].timestamp : tidak_ada
+        }
+
+        // Count by type
+        untuk setiap kejadian dalam kejadian {
+            jika bukan ringkasan.berdasarkan_jenis[kejadian.jenis] {
+                ringkasan.berdasarkan_jenis[kejadian.jenis] = 0
+            }
+            ringkasan.berdasarkan_jenis[kejadian.jenis]++
+
+            // Count by level
+            jika bukan ringkasan.berdasarkan_tingkat[kejadian.tingkat] {
+                ringkasan.berdasarkan_tingkat[kejadian.tingkat] = 0
+            }
+            ringkasan.berdasarkan_tingkat[kejadian.tingkat]++
+
+            // Count by user
+            jika kejadian.detail.pengguna {
+                jika bukan ringkasan.berdasarkan_pengguna[kejadian.detail.pengguna] {
+                    ringkasan.berdasarkan_pengguna[kejadian.detail.pengguna] = 0
+                }
+                ringkasan.berdasarkan_pengguna[kejadian.detail.pengguna]++
+            }
+        }
+
+        kembalikan ringkasan
+    }
+
+    // Export audit log
+    fungsi ekspor_log(format, mulai, akhir) {
+        format = format || "json"
+        buat kejadian = ini.dapatkan_kejadian_berdasarkan_waktu(mulai, akhir)
+
+        jika format == "json" {
+            kembalikan JSON.stringify(kejadian, tidak_ada, 2)
+        } lain jika format == "csv" {
+            // In a real implementation, this would convert to CSV
+            kembalikan "CSV format not implemented yet"
+        } lain {
+            kembalikan kejadian
+        }
+    }
+
+    // Clear old logs based on retention policy
+    fungsi bersihkan_log_lama() {
+        buat batas_waktu = sekarang() - (ini.retensi * 24 * 60 * 60 * 1000) // Convert days to milliseconds
+        buat log_baru = ini.log.filter(fungsi(kejadian) {
+            kembalikan kejadian.timestamp > batas_waktu
+        })
+
+        buat dihapus = ini.log.panjang - log_baru.panjang
+        ini.log = log_baru
+        tampilkan("Dihapus " + dihapus + " log lama")
+        kembalikan dihapus
+    }
+
+    // Get audit configuration
+    fungsi dapatkan_konfigurasi() {
+        kembalikan {
+            tingkat_log: ini.tingkat_log,
+            retensi: ini.retensi,
+            total_log: ini.log.panjang
+        }
+    }
+
+    // Set log level
+    fungsi atur_tingkat_log(tingkat) {
+        ini.tingkat_log = tingkat
+        tampilkan("Tingkat log diatur ke: " + tingkat)
+    }
+
+    // Set retention period
+    fungsi atur_retensi(hari) {
+        ini.retensi = hari
+        tampilkan("Retensi log diatur ke: " + hari + " hari")
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Periodically clean up old logs
+        // In a real implementation, this would run on a schedule
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Audit diperbarui")
+    }
+}
+
+ekspor Audit

@@ -1,0 +1,176 @@
+// KODEON BCI Integration - EEG Signal Component
+// EEG signal representation and management
+
+kelas SinyalEEG {
+    fungsi inisialisasi(kanal, frekuensi_sampling) {
+        ini.kanal = kanal || 16
+        ini.frekuensi_sampling = frekuensi_sampling || 256
+        ini.data = []
+        ini.timestamp = sekarang()
+        ini.durasi = 0
+    }
+
+    // Set signal data
+    fungsi atur_data(data) {
+        ini.data = data
+        ini.durasi = data.panjang > 0 ? data[0].panjang / ini.frekuensi_sampling : 0
+        ini.timestamp = sekarang()
+    }
+
+    // Get signal data for specific channel
+    fungsi dapatkan_kanal(kanal_index) {
+        jika kanal_index >= 0 dan kanal_index < ini.data.panjang {
+            kembalikan ini.data[kanal_index]
+        }
+        kembalikan tidak_ada
+    }
+
+    // Get signal data for all channels
+    fungsi dapatkan_semua_kanal() {
+        kembalikan ini.data
+    }
+
+    // Get signal at specific time point
+    fungsi dapatkan_waktu(waktu_detik) {
+        buat indeks = Math.floor(waktu_detik * ini.frekuensi_sampling)
+        buat hasil = []
+
+        untuk setiap kanal_data dalam ini.data {
+            jika indeks >= 0 dan indeks < kanal_data.panjang {
+                hasil.tambah(kanal_data[indeks])
+            } lain {
+                hasil.tambah(0)
+            }
+        }
+
+        kembalikan hasil
+    }
+
+    // Filter signal (simple low-pass filter)
+    fungsi saring(frekuensi_cutoff) {
+        buat sinyal_difilter = []
+
+        untuk setiap kanal_data dalam ini.data {
+            buat kanal_difilter = ini.terapkan_filter_rendah(kanal_data, frekuensi_cutoff)
+            sinyal_difilter.tambah(kanal_difilter)
+        }
+
+        buat sinyal_baru = SinyalEEG(ini.kanal, ini.frekuensi_sampling)
+        sinyal_baru.atur_data(sinyal_difilter)
+        kembalikan sinyal_baru
+    }
+
+    // Apply low-pass filter (simplified)
+    fungsi terapkan_filter_rendah(data, frekuensi_cutoff) {
+        buat alpha = frekuensi_cutoff / ini.frekuensi_sampling
+        jika alpha > 1 {
+            alpha = 1
+        }
+
+        buat hasil = []
+        buat nilai_sebelumnya = 0
+
+        untuk setiap nilai dalam data {
+            buat nilai_difilter = alpha * nilai + (1 - alpha) * nilai_sebelumnya
+            hasil.tambah(nilai_difilter)
+            nilai_sebelumnya = nilai_difilter
+        }
+
+        kembalikan hasil
+    }
+
+    // Extract features (e.g., power in specific frequency bands)
+    fungsi ekstrak_fitur() {
+        buat fitur = {
+            alpha_power: [],
+            beta_power: [],
+            theta_power: [],
+            delta_power: []
+        }
+
+        untuk buat c = 0 sampai c < ini.data.panjang:
+            buat kanal_data = ini.data[c]
+            buat alpha = ini.hitung_daya(kanal_data, 8, 12)
+            buat beta = ini.hitung_daya(kanal_data, 13, 30)
+            buat theta = ini.hitung_daya(kanal_data, 4, 7)
+            buat delta = ini.hitung_daya(kanal_data, 0.5, 3)
+
+            fitur.alpha_power.tambah(alpha)
+            fitur.beta_power.tambah(beta)
+            fitur.theta_power.tambah(theta)
+            fitur.delta_power.tambah(delta)
+
+        kembalikan fitur
+    }
+
+    // Calculate power in frequency band (simplified)
+    fungsi hitung_daya(data, frekuensi_rendah, frekuensi_tinggi) {
+        // This is a simplified calculation
+        // In a real implementation, this would use FFT
+        buat total = 0
+        untuk setiap nilai dalam data {
+            total = total + nilai * nilai
+        }
+        kembalikan total / data.panjang
+    }
+
+    // Normalize signal
+    fungsi normalisasi() {
+        buat sinyal_dinormalisasi = []
+
+        untuk setiap kanal_data dalam ini.data {
+            buat min = Math.min(...kanal_data)
+            buat max = Math.max(...kanal_data)
+            buat rentang = max - min
+
+            buat kanal_dinormalisasi = []
+            untuk setiap nilai dalam kanal_data {
+                buat nilai_normal = rentang != 0 ? (nilai - min) / rentang : 0
+                kanal_dinormalisasi.tambah(nilai_normal)
+            }
+
+            sinyal_dinormalisasi.tambah(kanal_dinormalisasi)
+        }
+
+        buat sinyal_baru = SinyalEEG(ini.kanal, ini.frekuensi_sampling)
+        sinyal_baru.atur_data(sinyal_dinormalisasi)
+        kembalikan sinyal_baru
+    }
+
+    // Segment signal into windows
+    fungsi segmentasi(ukuran_jendela, langkah) {
+        buat segmen = []
+        buat ukuran_sampel = Math.floor(ukuran_jendela * ini.frekuensi_sampling)
+        buat langkah_sampel = Math.floor(langkah * ini.frekuensi_sampling)
+
+        jika ukuran_sampel <= 0 atau langkah_sampel <= 0 {
+            kembalikan segmen
+        }
+
+        untuk buat i = 0 sampai i < ini.data[0].panjang - ukuran_sampel + 1 langkah langkah_sampel:
+            buat segmen_data = []
+            untuk setiap kanal_data dalam ini.data {
+                buat data_jendela = kanal_data.slice(i, i + ukuran_sampel)
+                segmen_data.tambah(data_jendela)
+            }
+
+            buat segmen_sinyal = SinyalEEG(ini.kanal, ini.frekuensi_sampling)
+            segmen_sinyal.atur_data(segmen_data)
+            segmen.tambah(segmen_sinyal)
+
+        kembalikan segmen
+    }
+
+    // Get signal information
+    fungsi dapatkan_info() {
+        kembalikan {
+            kanal: ini.kanal,
+            frekuensi_sampling: ini.frekuensi_sampling,
+            durasi: ini.durasi,
+            timestamp: ini.timestamp,
+            jumlah_sampel: ini.data.panjang > 0 ? ini.data[0].panjang : 0
+        }
+    }
+}
+
+ekspor SinyalEEG

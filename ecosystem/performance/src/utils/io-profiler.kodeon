@@ -1,0 +1,265 @@
+// KODEON Performance Optimization - I/O Profiler Utility
+// I/O performance monitoring
+
+kelas IOProfiler {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.aktif = salah
+        ini.sesi = []
+        ini.operasi = []
+        ini.latensi = []
+    }
+
+    // Start I/O profiling session
+    fungsi mulai_sesi(nama) {
+        jika ini.aktif {
+            tampilkan("Profil I/O sudah aktif")
+            kembalikan salah
+        }
+
+        buat sesi = {
+            id: ini.sesi.panjang + 1,
+            nama: nama || "Sesi-" + (ini.sesi.panjang + 1),
+            mulai: sekarang(),
+            operasi: [],
+            latensi: [],
+            throughput: []
+        }
+
+        ini.sesi.tambah(sesi)
+        ini.aktif = benar
+        tampilkan("Sesi profil I/O dimulai: " + sesi.nama)
+        kembalikan benar
+    }
+
+    // Stop I/O profiling session
+    fungsi hentikan_sesi() {
+        jika bukan ini.aktif {
+            tampilkan("Tidak ada sesi profil I/O aktif")
+            kembalikan salah
+        }
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.berhenti = sekarang()
+        sesi_aktif.durasi = sesi_aktif.berhenti - sesi_aktif.mulai
+        ini.aktif = salah
+        tampilkan("Sesi profil I/O dihentikan: " + sesi_aktif.nama + " (Durasi: " + sesi_aktif.durasi + "ms)")
+        kembalikan benar
+    }
+
+    // Record I/O operation
+    fungsi catat_operasi(tipe, ukuran, durasi, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Profil I/O tidak aktif, tidak dapat mencatat operasi")
+            kembalikan salah
+        }
+
+        buat operasi = {
+            timestamp: sekarang(),
+            tipe: tipe, // "read", "write", "seek", etc.
+            ukuran: ukuran, // in bytes
+            durasi: durasi, // in milliseconds
+            informasi: informasi || {}
+        }
+
+        ini.operasi.tambah(operasi)
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.operasi.tambah(operasi)
+
+        // Calculate throughput (bytes per second)
+        buat throughput = (ukuran / durasi) * 1000 // bytes per second
+
+        buat throughput_entry = {
+            timestamp: sekarang(),
+            throughput: throughput,
+            operasi_id: operasi.timestamp
+        }
+
+        sesi_aktif.throughput.tambah(throughput_entry)
+
+        kembalikan operasi
+    }
+
+    // Record latency
+    fungsi catat_latensi(latensi, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Profil I/O tidak aktif, tidak dapat mencatat latensi")
+            kembalikan salah
+        }
+
+        buat latensi_entry = {
+            timestamp: sekarang(),
+            latensi: latensi, // in milliseconds
+            informasi: informasi || {}
+        }
+
+        ini.latensi.tambah(latensi_entry)
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.latensi.tambah(latensi_entry)
+
+        kembalikan latensi_entry
+    }
+
+    // Get I/O operation report
+    fungsi dapatkan_laporan_operasi() {
+        buat laporan = {
+            total_operasi: ini.operasi.panjang,
+            total_ukuran: 0,
+            durasi_total: 0,
+            rata_rata_durasi: 0,
+            rata_rata_ukuran: 0,
+            tipe_operasi: {}
+        }
+
+        jika ini.operasi.panjang == 0 {
+            kembalikan laporan
+        }
+
+        buat total_ukuran = 0
+        buat durasi_total = 0
+
+        untuk setiap operasi dalam ini.operasi {
+            total_ukuran += operasi.ukuran
+            durasi_total += operasi.durasi
+
+            // Group by operation type
+            jika bukan laporan.tipe_operasi[operasi.tipe] {
+                laporan.tipe_operasi[operasi.tipe] = {
+                    jumlah: 0,
+                    ukuran: 0,
+                    durasi: 0
+                }
+            }
+
+            laporan.tipe_operasi[operasi.tipe].jumlah++
+            laporan.tipe_operasi[operasi.tipe].ukuran += operasi.ukuran
+            laporan.tipe_operasi[operasi.tipe].durasi += operasi.durasi
+        }
+
+        laporan.total_ukuran = total_ukuran
+        laporan.durasi_total = durasi_total
+        laporan.rata_rata_durasi = durasi_total / ini.operasi.panjang
+        laporan.rata_rata_ukuran = total_ukuran / ini.operasi.panjang
+
+        kembalikan laporan
+    }
+
+    // Get I/O performance statistics
+    fungsi dapatkan_statistik_io() {
+        jika ini.operasi.panjang == 0 {
+            kembalikan {
+                operasi: 0,
+                throughput_rata_rata: 0,
+                latensi_rata_rata: 0,
+                latensi_tertinggi: 0,
+                latensi_terendah: 0
+            }
+        }
+
+        // Calculate average throughput
+        buat total_throughput = 0
+        untuk setiap operasi dalam ini.operasi {
+            total_throughput += (operasi.ukuran / operasi.durasi) * 1000
+        }
+        buat throughput_rata_rata = total_throughput / ini.operasi.panjang
+
+        // Calculate latency statistics
+        buat latensi_rata_rata = 0
+        buat latensi_tertinggi = 0
+        buat latensi_terendah = Infinity
+
+        jika ini.latensi.panjang > 0 {
+            buat total_latensi = 0
+            untuk setiap latensi dalam ini.latensi {
+                total_latensi += latensi.latensi
+
+                jika latensi.latensi > latensi_tertinggi {
+                    latensi_tertinggi = latensi.latensi
+                }
+
+                jika latensi.latensi < latensi_terendah {
+                    latensi_terendah = latensi.latensi
+                }
+            }
+            latensi_rata_rata = total_latensi / ini.latensi.panjang
+        }
+
+        kembalikan {
+            operasi: ini.operasi.panjang,
+            throughput_rata_rata: throughput_rata_rata,
+            latensi_rata_rata: latensi_rata_rata,
+            latensi_tertinggi: latensi_tertinggi,
+            latensi_terendah: latensi_terendah == Infinity ? 0 : latensi_terendah
+        }
+    }
+
+    // Get slowest I/O operations
+    fungsi dapatkan_operasi_terlambat(limit) {
+        limit = limit || 10
+
+        // Sort operations by duration (slowest first)
+        buat operasi_terurut = [...ini.operasi]
+        operasi_terurut.urutkan(fungsi(a, b) {
+            kembalikan b.durasi - a.durasi
+        })
+
+        kembalikan operasi_terurut.slice(0, limit)
+    }
+
+    // Get session data
+    fungsi dapatkan_sesi(id) {
+        jika id bukan_tidak_ada {
+            jika id <= ini.sesi.panjang {
+                kembalikan ini.sesi[id - 1]
+            }
+            kembalikan tidak_ada
+        }
+
+        // Return latest session
+        jika ini.sesi.panjang > 0 {
+            kembalikan ini.sesi[ini.sesi.panjang - 1]
+        }
+        kembalikan tidak_ada
+    }
+
+    // Export I/O profiling data
+    fungsi ekspor_data(format) {
+        format = format || "json"
+        buat data = {
+            konfigurasi: ini.konfigurasi,
+            sesi: ini.sesi,
+            operasi: ini.operasi,
+            latensi: ini.latensi
+        }
+
+        jika format == "json" {
+            kembalikan JSON.stringify(data)
+        } lain jika format == "csv" {
+            // In a real implementation, this would convert to CSV
+            kembalikan "CSV format not implemented yet"
+        } lain {
+            kembalikan data
+        }
+    }
+
+    // Clear profiling data
+    fungsi bersihkan_data() {
+        ini.sesi = []
+        ini.operasi = []
+        ini.latensi = []
+        tampilkan("Data profil I/O dibersihkan")
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // jika ini.aktif {
+        //     tampilkan("I/O profiler diperbarui")
+        // }
+    }
+}
+
+ekspor IOProfiler

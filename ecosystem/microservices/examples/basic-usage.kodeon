@@ -1,0 +1,367 @@
+// KODEON Microservices Integration - Basic Usage Example
+// Demonstrates how to use the Microservices framework
+
+// Import the Microservices framework
+impor Microservices
+
+// Example 1: Basic Microservices Setup
+fungsi contoh_microservices_dasar() {
+    tampilkan("=== Contoh Penggunaan Microservices Dasar ===")
+
+    // Create Microservices instance
+    buat ms = Microservices("microservices")
+
+    // Initialize microservices environment
+    ms.inisialisasi_lingkungan({
+        lingkungan: "development",
+        registry: "local"
+    })
+
+    // Create services
+    buat userService = Layanan("user-service", "1.0.0", "/api/users")
+    userService.aktifkan()
+    ms.tambah_layanan(userService)
+
+    buat orderService = Layanan("order-service", "1.0.0", "/api/orders")
+    orderService.aktifkan()
+    ms.tambah_layanan(orderService)
+
+    // Create APIs
+    buat userAPI = API("user-api", "v1", "/api/users")
+    userAPI.tambah_endpoint("GET", "/", fungsi(req) {
+        kembalikan {
+            status: 200,
+            data: { pesan: "Daftar pengguna", timestamp: sekarang() }
+        }
+    })
+
+    userAPI.tambah_endpoint("POST", "/", fungsi(req) {
+        kembalikan {
+            status: 201,
+            data: { pesan: "Pengguna dibuat", id: Math.floor(Math.random() * 1000) }
+        }
+    })
+
+    ms.tambah_api(userAPI)
+
+    // Create service registry
+    buat registry = Registry("main-registry")
+    registry.daftarkan_layanan(userService, "localhost", 3001)
+    registry.daftarkan_layanan(orderService, "localhost", 3002)
+    ms.tambah_registry(registry)
+
+    // Create API gateway
+    buat gateway = Gateway("main-gateway", "localhost", 8080)
+    gateway.tambah_route("/api/users", userService)
+    gateway.tambah_route("/api/orders", orderService)
+    ms.tambah_gateway(gateway)
+
+    // Add load balancer
+    buat loadBalancer = ms.tambah_penyeimbang_beban("round_robin")
+    gateway.atur_load_balancer(loadBalancer)
+
+    // Add service discovery
+    buat serviceDiscovery = ms.tambah_penemuan_layanan("registry")
+    serviceDiscovery.atur_registry(registry)
+
+    // Add security
+    buat security = ms.tambah_keamanan("jwt")
+    security.konfigurasi({ kunci_rahasia: "secret_key_123" })
+
+    // Add monitoring
+    buat monitoring = ms.tambah_monitoring("metrics")
+    monitoring.tambah_alert("response_time", ">", 1000, "Waktu respons terlalu tinggi")
+
+    // Simulate requests
+    untuk buat i = 0 sampai i < 5:
+        buat permintaan = {
+            method: "GET",
+            path: "/api/users",
+            headers: {}
+        }
+
+        buat respons = ms.rutekan_permintaan(permintaan, "user-service")
+        tampilkan("Respons: " + JSON.stringify(respons))
+
+        // Record metrics
+        monitoring.catat_metrik("response_time", Math.random() * 2000, { service: "user-service" })
+
+    // Get service metrics
+    buat metrikUserService = userService.dapatkan_metrik()
+    tampilkan("Metrik user-service: " + JSON.stringify(metrikUserService))
+
+    // Generate health report
+    buat laporanKesehatan = monitoring.hasilkan_laporan_kesehatan()
+    tampilkan("Laporan kesehatan: " + JSON.stringify(laporanKesehatan))
+
+    // Shutdown environment
+    ms.matikan_lingkungan()
+
+    tampilkan("Microservices setup selesai\n")
+}
+
+// Example 2: Service Communication
+fungsi contoh_komunikasi_layanan() {
+    tampilkan("=== Contoh Komunikasi Layanan ===")
+
+    // Create services with dependencies
+    buat userService = Layanan("user-service", "1.1.0", "/api/users")
+    buat orderService = Layanan("order-service", "1.0.0", "/api/orders")
+    buat paymentService = Layanan("payment-service", "1.0.0", "/api/payments")
+
+    // Set up dependencies
+    orderService.tambah_dependensi(userService)
+    orderService.tambah_dependensi(paymentService)
+
+    // Simulate service interaction
+    userService.aktifkan()
+    orderService.aktifkan()
+    paymentService.aktifkan()
+
+    // User service handles user requests
+    userService.proses_permintaan = fungsi(permintaan) {
+        kembalikan {
+            status: 200,
+            data: { userId: 123, nama: "John Doe", email: "john@example.com" }
+        }
+    }
+
+    // Order service handles order requests and calls user service
+    orderService.proses_permintaan = fungsi(permintaan) {
+        // Simulate calling user service
+        buat userInfo = userService.tangani_permintaan({ method: "GET", path: "/users/123" })
+
+        kembalikan {
+            status: 200,
+            data: {
+                orderId: 456,
+                userId: userInfo.data.userId,
+                produk: "Produk A",
+                jumlah: 2
+            }
+        }
+    }
+
+    // Payment service handles payment requests
+    paymentService.proses_permintaan = fungsi(permintaan) {
+        kembalikan {
+            status: 200,
+            data: { paymentId: 789, status: "berhasil", jumlah: 100000 }
+        }
+    }
+
+    // Simulate order creation which involves multiple services
+    buat permintaanOrder = {
+        method: "POST",
+        path: "/orders",
+        data: { userId: 123, produk: "Produk A", jumlah: 2 }
+    }
+
+    buat responsOrder = orderService.tangani_permintaan(permintaanOrder)
+    tampilkan("Respons order: " + JSON.stringify(responsOrder))
+
+    // Check service health
+    tampilkan("Kesehatan user-service: " + userService.periksa_kesehatan())
+    tampilkan("Kesehatan order-service: " + orderService.periksa_kesehatan())
+    tampilkan("Kesehatan payment-service: " + paymentService.periksa_kesehatan())
+
+    // Get service information
+    tampilkan("Info user-service: " + JSON.stringify(userService.dapatkan_info()))
+    tampilkan("Info order-service: " + JSON.stringify(orderService.dapatkan_info()))
+    tampilkan("Info payment-service: " + JSON.stringify(paymentService.dapatkan_info()))
+
+    tampilkan("Komunikasi layanan selesai\n")
+}
+
+// Example 3: Advanced Gateway Configuration
+fungsi contoh_gateway_lanjutan() {
+    tampilkan("=== Contoh Gateway Lanjutan ===")
+
+    // Create services
+    buat authService = Layanan("auth-service", "1.0.0", "/api/auth")
+    buat productService = Layanan("product-service", "1.0.0", "/api/products")
+    buat cartService = Layanan("cart-service", "1.0.0", "/api/cart")
+
+    authService.aktifkan()
+    productService.aktifkan()
+    cartService.aktifkan()
+
+    // Create gateway with middleware
+    buat gateway = Gateway("advanced-gateway", "localhost", 9000)
+
+    // Add global middleware for logging
+    gateway.tambah_middleware(fungsi(req) {
+        tampilkan("Permintaan diterima: " + req.method + " " + req.path)
+        kembalikan { status: 200 }
+    })
+
+    // Add routes
+    gateway.tambah_route("/api/auth", authService)
+    gateway.tambah_route("/api/products", productService)
+    gateway.tambah_route("/api/cart", cartService)
+
+    // Add route-specific middleware for authentication
+    jika gateway.routes["/api/cart"] bukan_tidak_ada {
+        gateway.routes["/api/cart"].middleware.tambah(fungsi(req) {
+            jika req.headers.authorization == tidak_ada {
+                kembalikan { status: 401, data: { pesan: "Token autentikasi diperlukan" } }
+            }
+            kembalikan { status: 200 }
+        })
+    }
+
+    // Set up load balancer
+    buat loadBalancer = PenyeimbangBeban("least_connections")
+    gateway.atur_load_balancer(loadBalancer)
+
+    // Simulate requests
+    buat permintaan1 = {
+        method: "GET",
+        path: "/api/products",
+        headers: {}
+    }
+
+    buat respons1 = gateway.tangani_permintaan(permintaan1)
+    tampilkan("Respons produk: " + JSON.stringify(respons1))
+
+    // Request requiring authentication
+    buat permintaan2 = {
+        method: "GET",
+        path: "/api/cart",
+        headers: {
+            authorization: "Bearer token123"
+        }
+    }
+
+    buat respons2 = gateway.tangani_permintaan(permintaan2)
+    tampilkan("Respons cart: " + JSON.stringify(respons2))
+
+    // Get gateway information
+    buat infoGateway = gateway.dapatkan_info()
+    tampilkan("Info gateway: " + JSON.stringify(infoGateway))
+
+    tampilkan("Gateway lanjutan selesai\n")
+}
+
+// Example 4: Service Registry and Discovery
+fungsi contoh_registry_penemuan() {
+    tampilkan("=== Contoh Registry dan Penemuan ===")
+
+    // Create service registry
+    buat registry = Registry("discovery-registry")
+
+    // Create services
+    buat notificationService = Layanan("notification-service", "1.0.0", "/api/notifications")
+    buat emailService = Layanan("email-service", "1.0.0", "/api/email")
+    buat smsService = Layanan("sms-service", "1.0.0", "/api/sms")
+
+    notificationService.aktifkan()
+    emailService.aktifkan()
+    smsService.aktifkan()
+
+    // Register services
+    registry.daftarkan_layanan(notificationService, "192.168.1.10", 3001)
+    registry.daftarkan_layanan(emailService, "192.168.1.11", 3002)
+    registry.daftarkan_layanan(smsService, "192.168.1.12", 3003)
+
+    // Send heartbeats
+    buat instanceIds = []
+    instanceIds.tambah(registry.daftarkan_layanan(notificationService, "192.168.1.10", 3001))
+    instanceIds.tambah(registry.daftarkan_layanan(emailService, "192.168.1.11", 3002))
+    instanceIds.tambah(registry.daftarkan_layanan(smsService, "192.168.1.12", 3003))
+
+    // Simulate heartbeats
+    untuk setiap instanceId dalam instanceIds {
+        registry.kirim_heartbeat(instanceId)
+    }
+
+    // Discover services
+    buat semuaLayanan = registry.dapatkan_semua_layanan()
+    tampilkan("Semua layanan: " + JSON.stringify(semuaLayanan))
+
+    buat layananNotifikasi = registry.temukan_layanan("notification-service")
+    tampilkan("Layanan notifikasi: " + JSON.stringify(layananNotifikasi))
+
+    // Create service discovery
+    buat discovery = PenemuanLayanan("registry")
+    discovery.atur_registry(registry)
+
+    // Discover using service discovery
+    buat layananEmail = discovery.temukan("email-service")
+    tampilkan("Layanan email ditemukan: " + JSON.stringify(layananEmail))
+
+    // Get registry metrics
+    buat metrikRegistry = registry.dapatkan_metrik()
+    tampilkan("Metrik registry: " + JSON.stringify(metrikRegistry))
+
+    tampilkan("Registry dan penemuan selesai\n")
+}
+
+// Example 5: Security and Monitoring
+fungsi contoh_keamanan_monitoring() {
+    tampilkan("=== Contoh Keamanan dan Monitoring ===")
+
+    // Create security module
+    buat security = Keamanan("jwt")
+    security.konfigurasi({ kunci_rahasia: "super_secret_key" })
+
+    // Generate token
+    buat token = security.hasilkan_token_jwt({
+        userId: 123,
+        username: "johndoe",
+        role: "user"
+    }, 3600) // 1 hour expiration
+
+    tampilkan("Token dihasilkan: " + token)
+
+    // Secure request
+    buat permintaanAman = {
+        method: "GET",
+        path: "/api/secure",
+        headers: {
+            authorization: "Bearer " + token
+        }
+    }
+
+    buat permintaanDiamankan = security.amankan(permintaanAman)
+    tampilkan("Permintaan diamankan: " + JSON.stringify(permintaanDiamankan))
+
+    // Validate request
+    buat validasi = security.validasi(permintaanAman)
+    tampilkan("Validasi: " + JSON.stringify(validasi))
+
+    // Create monitoring module
+    buat monitoring = Monitoring("metrics")
+
+    // Add metrics
+    untuk buat i = 0 sampai i < 10:
+        monitoring.catat_metrik("request_latency", Math.random() * 1000, { endpoint: "/api/users" })
+        monitoring.catat_metrik("error_rate", Math.random() * 0.1, { service: "user-service" })
+
+    // Add alerts
+    monitoring.tambah_alert("request_latency", ">", 500, "Latensi permintaan tinggi")
+    monitoring.tambah_alert("error_rate", ">", 0.05, "Tingkat kesalahan tinggi")
+
+    // Get statistics
+    buat statistikLatensi = monitoring.hitung_statistik("request_latency")
+    tampilkan("Statistik latensi: " + JSON.stringify(statistikLatensi))
+
+    // Generate health report
+    buat laporanKesehatan = monitoring.hasilkan_laporan_kesehatan()
+    tampilkan("Laporan kesehatan: " + JSON.stringify(laporanKesehatan))
+
+    // Export Prometheus metrics
+    buat prometheusMetrics = monitoring.ekspor_prometheus()
+    tampilkan("Metrik Prometheus:\n" + prometheusMetrics)
+
+    tampilkan("Keamanan dan monitoring selesai\n")
+}
+
+// Run examples
+contoh_microservices_dasar()
+contoh_komunikasi_layanan()
+contoh_gateway_lanjutan()
+contoh_registry_penemuan()
+contoh_keamanan_monitoring()
+
+tampilkan("Semua contoh telah dijalankan!")

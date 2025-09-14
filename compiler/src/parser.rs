@@ -165,6 +165,78 @@ pub enum ASTNode {
     },
     AwaitExpr(Box<PositionedASTNode>), // async/await
     YieldExpr(Box<PositionedASTNode>), // generators
+
+    // Quantum Computing Statements and Expressions
+    QubitDeclaration {
+        identifier: String,
+        initial_state: Option<Box<PositionedASTNode>>, // Optional initial state
+    },
+    GateApplication {
+        gate_name: String,
+        qubit_indices: Vec<PositionedASTNode>, // Qubit indices or identifiers
+        parameters: Option<Vec<PositionedASTNode>>, // Optional gate parameters
+    },
+    CircuitDefinition {
+        name: String,
+        qubit_count: Box<PositionedASTNode>,
+        body: Vec<Statement>, // Gate applications and other circuit operations
+    },
+    MeasureStatement {
+        qubits: Vec<PositionedASTNode>, // Qubits to measure
+        classical_bits: Option<Vec<String>>, // Optional classical bit names
+    },
+    SuperpositionExpr {
+        qubit: Box<PositionedASTNode>, // Qubit to put in superposition
+    },
+    EntanglementExpr {
+        qubit1: Box<PositionedASTNode>, // First qubit
+        qubit2: Box<PositionedASTNode>, // Second qubit
+    },
+    SimulateExpr {
+        circuit: Box<PositionedASTNode>, // Circuit to simulate
+        shots: Option<Box<PositionedASTNode>>, // Optional number of simulation shots
+    },
+
+    // Neural Network Statements and Expressions
+    NetworkDefinition {
+        name: String,
+        body: Vec<Statement>, // Network layers and operations
+    },
+    LayerDefinition {
+        layer_type: String,
+        parameters: Vec<PositionedASTNode>, // Layer parameters
+    },
+    TensorDeclaration {
+        identifier: String,
+        shape: Option<Box<PositionedASTNode>>, // Optional tensor shape
+    },
+    ModelDeclaration {
+        identifier: String,
+        network: Box<PositionedASTNode>, // Network to use for the model
+    },
+    TrainStatement {
+        model: Box<PositionedASTNode>,
+        data: Box<PositionedASTNode>, // Training data
+        labels: Box<PositionedASTNode>, // Training labels
+        epochs: Option<Box<PositionedASTNode>>, // Optional number of epochs
+        batch_size: Option<Box<PositionedASTNode>>, // Optional batch size
+    },
+    PredictExpression {
+        model: Box<PositionedASTNode>,
+        data: Box<PositionedASTNode>, // Data to predict on
+    },
+    OptimizeStatement {
+        model: Box<PositionedASTNode>,
+        optimizer: Box<PositionedASTNode>, // Optimizer to use
+        loss_function: Box<PositionedASTNode>, // Loss function to use
+    },
+    LossFunctionDefinition {
+        function_type: String,
+        parameters: Vec<PositionedASTNode>, // Loss function parameters
+    },
+    GradientExpression {
+        expression: Box<PositionedASTNode>, // Expression to compute gradient of
+    },
 }
 
 /// Enhanced statement with position information
@@ -174,38 +246,77 @@ pub struct Statement {
     pub position: Position,
 }
 
-/// Parser error with position information for better error reporting
+/// Parser error with enhanced information for better error reporting
 #[derive(Debug)]
 pub enum ParseError {
     UnexpectedToken {
         expected: String,
         found: String,
         position: Position,
+        context: String,  // Additional context about the error
+        suggestion: String, // Suggested fix
+        example: String,   // Example of correct usage
     },
     UnexpectedEOF {
         expected: String,
         position: Position,
+        context: String,
+        suggestion: String,
+        example: String,
     },
     InvalidSyntax {
         message: String,
         position: Position,
+        context: String,
+        suggestion: String,
+        example: String,
     },
 }
 
 impl std::fmt::Display for ParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            ParseError::UnexpectedToken { expected, found, position } => {
-                write!(f, "Parse error at line {}, column {}: Expected {}, found '{}'",
-                       position.line, position.column, expected, found)
+            ParseError::UnexpectedToken { expected, found, position, context, suggestion, example } => {
+                writeln!(f, "❌ Parse error at line {}, column {}: Expected {}, found '{}'",
+                       position.line, position.column, expected, found)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
-            ParseError::UnexpectedEOF { expected, position } => {
-                write!(f, "Parse error at line {}, column {}: Unexpected end of file, expected {}",
-                       position.line, position.column, expected)
+            ParseError::UnexpectedEOF { expected, position, context, suggestion, example } => {
+                writeln!(f, "❌ Parse error at line {}, column {}: Unexpected end of file, expected {}",
+                       position.line, position.column, expected)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
-            ParseError::InvalidSyntax { message, position } => {
-                write!(f, "Parse error at line {}, column {}: {}",
-                       position.line, position.column, message)
+            ParseError::InvalidSyntax { message, position, context, suggestion, example } => {
+                writeln!(f, "❌ Parse error at line {}, column {}: {}",
+                       position.line, position.column, message)?;
+                if !context.is_empty() {
+                    writeln!(f, "   💡 Context: {}", context)?;
+                }
+                if !suggestion.is_empty() {
+                    writeln!(f, "   💡 Tip: {}", suggestion)?;
+                }
+                if !example.is_empty() {
+                    writeln!(f, "   📘 Example:\n{}", example)?;
+                }
+                Ok(())
             }
         }
     }
@@ -334,6 +445,22 @@ impl<'a> Parser<'a> {
             Token::SiarkanKondisi | Token::BroadcastCondition => self.parse_broadcast_condition_statement(),
             Token::Impor | Token::Import => self.parse_import_statement(),
             Token::Ketika | Token::When => self.parse_when_statement(),
+            Token::Kubit | Token::Qubit => self.parse_qubit_declaration(),
+            Token::Gerbang | Token::Gate => self.parse_gate_application(),
+            Token::Sirkuit | Token::Circuit => self.parse_circuit_definition(),
+            Token::Ukur | Token::Measure => self.parse_measure_statement(),
+            Token::Superposisi | Token::Superposition => self.parse_superposition_expression(),
+            Token::Keterkaitan | Token::Entanglement => self.parse_entanglement_expression(),
+            Token::Simulasi | Token::Simulate => self.parse_simulate_expression(),
+            Token::Jaringan | Token::Network => self.parse_network_definition(),
+            Token::Lapisan | Token::Layer => self.parse_layer_definition(),
+            Token::Tensor | Token::TensorEng => self.parse_tensor_declaration(),
+            Token::Model | Token::ModelEng => self.parse_model_declaration(),
+            Token::Latih | Token::Train => self.parse_train_statement(),
+            Token::Prediksi | Token::Predict => self.parse_predict_expression(),
+            Token::Optimisasi | Token::Optimize => self.parse_optimize_statement(),
+            Token::FungsiHilang | Token::LossFunction => self.parse_loss_function_definition(),
+            Token::Gradien | Token::Gradient => self.parse_gradient_expression(),
             Token::Variabel | Token::Variable | Token::Biarkan | Token::Let | Token::Mut => {
                 self.parse_declaration_statement()
             }
@@ -842,6 +969,685 @@ impl<'a> Parser<'a> {
             position,
         })
     }
+
+    /// Parse a qubit declaration
+    fn parse_qubit_declaration(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume kubit/qubit
+
+        // Expect identifier for qubit name
+        let identifier_token = self.lexer.next_token()?;
+        let identifier = match identifier_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", identifier_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Check for optional initial state assignment
+        let mut initial_state = None;
+        if let Ok(peek_token) = self.lexer.peek_token() {
+            if *peek_token == Token::Assign {
+                self.lexer.next_token()?; // consume =
+
+                // Parse initial state expression
+                initial_state = Some(Box::new(self.parse_expression(0)?));
+            }
+        }
+
+        Ok(Statement::QubitDeclaration {
+            identifier,
+            initial_state,
+            position,
+        })
+    }
+
+    /// Parse a gate application
+    fn parse_gate_application(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume gerbang/gate
+
+        // Expect string literal or identifier for gate name
+        let gate_name_token = self.lexer.next_token()?;
+        let gate_name = match gate_name_token {
+            Token::String(s) => s,
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "string literal or identifier".to_string(),
+                    found: format!("{:?}", gate_name_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Parse qubit indices/identifiers
+        let mut qubit_indices = Vec::new();
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse qubit indices/identifiers
+        loop {
+            let token = self.lexer.peek_token()?;
+            if *token == Token::RightParen {
+                break;
+            }
+
+            qubit_indices.push(self.parse_expression(0)?);
+
+            // Check for comma separator
+            let next_token = self.lexer.peek_token()?;
+            if *next_token == Token::Comma {
+                self.lexer.next_token()?; // consume comma
+            } else {
+                break;
+            }
+        }
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        // Check for optional parameters
+        let mut parameters = None;
+        if let Ok(peek_token) = self.lexer.peek_token() {
+            if *peek_token == Token::LeftParen {
+                self.lexer.next_token()?; // consume (
+
+                let mut params = Vec::new();
+                loop {
+                    let token = self.lexer.peek_token()?;
+                    if *token == Token::RightParen {
+                        break;
+                    }
+
+                    params.push(self.parse_expression(0)?);
+
+                    // Check for comma separator
+                    let next_token = self.lexer.peek_token()?;
+                    if *next_token == Token::Comma {
+                        self.lexer.next_token()?; // consume comma
+                    } else {
+                        break;
+                    }
+                }
+
+                // Expect right parenthesis
+                self.expect_token(Token::RightParen)?;
+                parameters = Some(params);
+            }
+        }
+
+        Ok(Statement::GateApplication {
+            gate_name,
+            qubit_indices,
+            parameters,
+            position,
+        })
+    }
+
+    /// Parse a circuit definition
+    fn parse_circuit_definition(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume sirkuit/circuit
+
+        // Expect identifier for circuit name
+        let name_token = self.lexer.next_token()?;
+        let name = match name_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", name_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse qubit count
+        let qubit_count = self.parse_expression(0)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        // Expect colon
+        self.expect_token(Token::Colon)?;
+
+        // Parse body
+        let mut body = Vec::new();
+        while self.lexer.peek_token()? != &Token::RightBrace && self.lexer.peek_token()? != &Token::Eof {
+            body.push(self.parse_statement()?);
+        }
+
+        // Expect right brace
+        self.expect_token(Token::RightBrace)?;
+
+        Ok(Statement::CircuitDefinition {
+            name,
+            qubit_count: Box::new(qubit_count),
+            body,
+            position,
+        })
+    }
+
+    /// Parse a measure statement
+    fn parse_measure_statement(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume ukur/measure
+
+        // Parse qubits to measure
+        let mut qubits = Vec::new();
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse qubit expressions
+        loop {
+            let token = self.lexer.peek_token()?;
+            if *token == Token::RightParen {
+                break;
+            }
+
+            qubits.push(self.parse_expression(0)?);
+
+            // Check for comma separator
+            let next_token = self.lexer.peek_token()?;
+            if *next_token == Token::Comma {
+                self.lexer.next_token()?; // consume comma
+            } else {
+                break;
+            }
+        }
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        // Check for optional classical bit assignment
+        let mut classical_bits = None;
+        if let Ok(peek_token) = self.lexer.peek_token() {
+            if *peek_token == Token::Assign {
+                self.lexer.next_token()?; // consume =
+
+                // Parse classical bit names
+                let mut bits = Vec::new();
+
+                // Expect left bracket
+                self.expect_token(Token::LeftBracket)?;
+
+                loop {
+                    let token = self.lexer.peek_token()?;
+                    if *token == Token::RightBracket {
+                        break;
+                    }
+
+                    // Expect identifier for classical bit name
+                    let bit_token = self.lexer.next_token()?;
+                    match bit_token {
+                        Token::Identifier(name) => bits.push(name),
+                        _ => {
+                            return Err(ParseError::UnexpectedToken {
+                                expected: "identifier".to_string(),
+                                found: format!("{:?}", bit_token),
+                                position: self.lexer.current_position(),
+                            });
+                        }
+                    }
+
+                    // Check for comma separator
+                    let next_token = self.lexer.peek_token()?;
+                    if *next_token == Token::Comma {
+                        self.lexer.next_token()?; // consume comma
+                    } else {
+                        break;
+                    }
+                }
+
+                // Expect right bracket
+                self.expect_token(Token::RightBracket)?;
+                classical_bits = Some(bits);
+            }
+        }
+
+        Ok(Statement::MeasureStatement {
+            qubits,
+            classical_bits,
+            position,
+        })
+    }
+
+    /// Parse a superposition expression
+    fn parse_superposition_expression(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume superposisi/superposition
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse qubit expression
+        let qubit = self.parse_expression(0)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::SuperpositionExpr {
+            qubit: Box::new(qubit),
+            position,
+        })
+    }
+
+    /// Parse an entanglement expression
+    fn parse_entanglement_expression(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume keterkaitan/entanglement
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse first qubit expression
+        let qubit1 = self.parse_expression(0)?;
+
+        // Expect comma
+        self.expect_token(Token::Comma)?;
+
+        // Parse second qubit expression
+        let qubit2 = self.parse_expression(0)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::EntanglementExpr {
+            qubit1: Box::new(qubit1),
+            qubit2: Box::new(qubit2),
+            position,
+        })
+    }
+
+    /// Parse a simulate expression
+    fn parse_simulate_expression(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume simulasi/simulate
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse circuit expression
+        let circuit = self.parse_expression(0)?;
+
+        // Check for optional shots parameter
+        let mut shots = None;
+        if let Ok(peek_token) = self.lexer.peek_token() {
+            if *peek_token == Token::Comma {
+                self.lexer.next_token()?; // consume comma
+
+                // Parse shots expression
+                shots = Some(Box::new(self.parse_expression(0)?));
+            }
+        }
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::SimulateExpr {
+            circuit: Box::new(circuit),
+            shots,
+            position,
+        })
+    }
+
+    /// Parse a network definition
+    fn parse_network_definition(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume jaringan/network
+
+        // Expect identifier for network name
+        let name_token = self.lexer.next_token()?;
+        let name = match name_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", name_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Expect assignment
+        self.expect_token(Token::Assign)?;
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(Statement::NetworkDefinition {
+            name,
+            body: vec![], // Empty body for now
+            position,
+        })
+    }
+
+    /// Parse a layer definition
+    fn parse_layer_definition(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume lapisan/layer
+
+        // Expect dot to access layer type
+        self.expect_token(Token::Dot)?;
+
+        // Expect identifier for layer type
+        let layer_type_token = self.lexer.next_token()?;
+        let layer_type = match layer_type_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", layer_type_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse parameters
+        let mut parameters = Vec::new();
+        loop {
+            let token = self.lexer.peek_token()?;
+            if *token == Token::RightParen {
+                break;
+            }
+
+            parameters.push(self.parse_expression(0)?);
+
+            // Check for comma separator
+            let next_token = self.lexer.peek_token()?;
+            if *next_token == Token::Comma {
+                self.lexer.next_token()?; // consume comma
+            } else {
+                break;
+            }
+        }
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::LayerDefinition {
+            layer_type,
+            parameters,
+            position,
+        })
+    }
+
+    /// Parse a tensor declaration
+    fn parse_tensor_declaration(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume tensor
+
+        // Expect identifier for tensor name
+        let identifier_token = self.lexer.next_token()?;
+        let identifier = match identifier_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", identifier_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Check for optional shape assignment
+        let mut shape = None;
+        if let Ok(peek_token) = self.lexer.peek_token() {
+            if *peek_token == Token::Assign {
+                self.lexer.next_token()?; // consume =
+
+                // Parse shape expression
+                shape = Some(Box::new(self.parse_expression(0)?));
+            }
+        }
+
+        Ok(Statement::TensorDeclaration {
+            identifier,
+            shape,
+            position,
+        })
+    }
+
+    /// Parse a model declaration
+    fn parse_model_declaration(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume model
+
+        // Expect identifier for model name
+        let identifier_token = self.lexer.next_token()?;
+        let identifier = match identifier_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", identifier_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Expect assignment
+        self.expect_token(Token::Assign)?;
+
+        // Parse network expression
+        let network = self.parse_expression(0)?;
+
+        Ok(Statement::ModelDeclaration {
+            identifier,
+            network: Box::new(network),
+            position,
+        })
+    }
+
+    /// Parse a train statement
+    fn parse_train_statement(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume latih/train
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse model expression
+        let model = self.parse_expression(0)?;
+
+        // Expect comma
+        self.expect_token(Token::Comma)?;
+
+        // Parse data expression
+        let data = self.parse_expression(0)?;
+
+        // Expect comma
+        self.expect_token(Token::Comma)?;
+
+        // Parse labels expression
+        let labels = self.parse_expression(0)?;
+
+        // Check for optional parameters
+        let mut epochs = None;
+        let mut batch_size = None;
+
+        // Check for comma separator
+        if let Ok(peek_token) = self.lexer.peek_token() {
+            if *peek_token == Token::Comma {
+                self.lexer.next_token()?; // consume comma
+
+                // Parse epochs parameter
+                epochs = Some(Box::new(self.parse_expression(0)?));
+
+                // Check for comma separator
+                if let Ok(peek_token) = self.lexer.peek_token() {
+                    if *peek_token == Token::Comma {
+                        self.lexer.next_token()?; // consume comma
+
+                        // Parse batch_size parameter
+                        batch_size = Some(Box::new(self.parse_expression(0)?));
+                    }
+                }
+            }
+        }
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(Statement::TrainStatement {
+            model: Box::new(model),
+            data: Box::new(data),
+            labels: Box::new(labels),
+            epochs,
+            batch_size,
+            position,
+        })
+    }
+
+    /// Parse a predict expression
+    fn parse_predict_expression(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume prediksi/predict
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse model expression
+        let model = self.parse_expression(0)?;
+
+        // Expect comma
+        self.expect_token(Token::Comma)?;
+
+        // Parse data expression
+        let data = self.parse_expression(0)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::PredictExpression {
+            model: Box::new(model),
+            data: Box::new(data),
+            position,
+        })
+    }
+
+    /// Parse an optimize statement
+    fn parse_optimize_statement(&mut self) -> Result<Statement, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume optimisasi/optimize
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse model expression
+        let model = self.parse_expression(0)?;
+
+        // Expect comma
+        self.expect_token(Token::Comma)?;
+
+        // Parse optimizer expression
+        let optimizer = self.parse_expression(0)?;
+
+        // Expect comma
+        self.expect_token(Token::Comma)?;
+
+        // Parse loss function expression
+        let loss_function = self.parse_expression(0)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(Statement::OptimizeStatement {
+            model: Box::new(model),
+            optimizer: Box::new(optimizer),
+            loss_function: Box::new(loss_function),
+            position,
+        })
+    }
+
+    /// Parse a loss function definition
+    fn parse_loss_function_definition(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume fungsi_hilang/loss_function
+
+        // Expect dot to access function type
+        self.expect_token(Token::Dot)?;
+
+        // Expect identifier for function type
+        let function_type_token = self.lexer.next_token()?;
+        let function_type = match function_type_token {
+            Token::Identifier(name) => name,
+            _ => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    found: format!("{:?}", function_type_token),
+                    position: self.lexer.current_position(),
+                });
+            }
+        };
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse parameters
+        let mut parameters = Vec::new();
+        loop {
+            let token = self.lexer.peek_token()?;
+            if *token == Token::RightParen {
+                break;
+            }
+
+            parameters.push(self.parse_expression(0)?);
+
+            // Check for comma separator
+            let next_token = self.lexer.peek_token()?;
+            if *next_token == Token::Comma {
+                self.lexer.next_token()?; // consume comma
+            } else {
+                break;
+            }
+        }
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::LossFunctionDefinition {
+            function_type,
+            parameters,
+            position,
+        })
+    }
+
+    /// Parse a gradient expression
+    fn parse_gradient_expression(&mut self) -> Result<ASTNode, ParseError> {
+        let position = self.lexer.current_position();
+        self.lexer.next_token()?; // consume gradien/gradient
+
+        // Expect left parenthesis
+        self.expect_token(Token::LeftParen)?;
+
+        // Parse expression
+        let expression = self.parse_expression(0)?;
+
+        // Expect right parenthesis
+        self.expect_token(Token::RightParen)?;
+
+        Ok(ASTNode::GradientExpression {
+            expression: Box::new(expression),
+            position,
+        })
+    }
 }
 
 #[cfg(test)]
@@ -871,6 +1677,16 @@ mod tests {
     #[test]
     fn test_if_statement() {
         let input = "jika x > 0 maka:\n    tampilkan \"positif\"";
+        let mut parser = Parser::new(input).unwrap();
+        let ast = parser.parse_program().unwrap();
+
+        // Basic test to ensure parsing doesn't crash
+        assert!(matches!(ast, ASTNode::Program(_)));
+    }
+
+    #[test]
+    fn test_neural_network_declaration() {
+        let input = "jaringan myNetwork = ()";
         let mut parser = Parser::new(input).unwrap();
         let ast = parser.parse_program().unwrap();
 

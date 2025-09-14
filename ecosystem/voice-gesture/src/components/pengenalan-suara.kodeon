@@ -1,0 +1,133 @@
+// KODEON Voice/Gesture - Voice Recognition Component
+// Component for voice command recognition and processing
+
+kelas PengenalanSuara {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.bahasa = ini.opsi.bahasa || "indonesia"
+        ini.sensitivitas = ini.opsi.sensitivitas || 0.8
+        ini.perangkat = ini.opsi.perangkat || "default"
+        ini.aktif = salah
+        ini.model_pengenalan = tidak_ada
+        ini.perintah_terdaftar = []
+    }
+
+    // Initialize voice recognition
+    fungsi inisialisasi_pengenalan(konfigurasi) {
+        coba {
+            // In a real implementation, this would initialize actual voice recognition
+            ini.model_pengenalan = "model_pengenalan_suara_v1"
+            ini.aktif = benar
+            tampilkan("Pengenalan suara diinisialisasi dengan bahasa: " + ini.bahasa)
+            kembalikan benar
+        } tangkap(error) {
+            tampilkan("Gagal menginisialisasi pengenalan suara: " + error)
+            kembalikan salah
+        }
+    }
+
+    // Start voice recognition
+    fungsi mulai() {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengenalan suara belum diinisialisasi")
+            kembalikan salah
+        }
+
+        tampilkan("Pengenalan suara dimulai")
+        kembalikan benar
+    }
+
+    // Stop voice recognition
+    fungsi hentikan() {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengenalan suara belum diinisialisasi")
+            kembalikan salah
+        }
+
+        tampilkan("Pengenalan suara dihentikan")
+        kembalikan benar
+    }
+
+    // Register voice command
+    fungsi daftar_perintah(perintah, fungsi_callback) {
+        buat entri_perintah = {
+            teks: perintah,
+            fungsi: fungsi_callback,
+            id: ini.perintah_terdaftar.panjang + 1
+        }
+
+        ini.perintah_terdaftar.tambah(entri_perintah)
+        tampilkan("Perintah suara terdaftar: " + perintah)
+        kembalikan entri_perintah.id
+    }
+
+    // Process voice input
+    fungsi proses_input_suara(input_teks) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengenalan suara tidak aktif")
+            kembalikan salah
+        }
+
+        // Find matching command
+        buat perintah_cocok = ini.perintah_terdaftar.cari(fungsi(perintah) {
+            kembalikan input_teks.termasuk(perintah.teks)
+        })
+
+        jika perintah_cocok bukan_tidak_ada {
+            tampilkan("Perintah suara dikenali: " + perintah_cocok.teks)
+            coba {
+                kembalikan perintah_cocok.fungsi(input_teks)
+            } tangkap(error) {
+                tampilkan("Kesalahan saat menjalankan perintah suara: " + error)
+                kembalikan salah
+            }
+        } lain {
+            tampilkan("Perintah suara tidak dikenali: " + input_teks)
+            kembalikan salah
+        }
+    }
+
+    // Set language
+    fungsi atur_bahasa(bahasa) {
+        ini.bahasa = bahasa
+        tampilkan("Bahasa pengenalan suara diatur ke: " + bahasa)
+        kembalikan benar
+    }
+
+    // Set sensitivity
+    fungsi atur_sensitivitas(nilai) {
+        jika nilai >= 0 dan nilai <= 1 {
+            ini.sensitivitas = nilai
+            tampilkan("Sensitivitas pengenalan suara diatur ke: " + nilai)
+            kembalikan benar
+        } lain {
+            tampilkan("Kesalahan: Nilai sensitivitas harus antara 0 dan 1")
+            kembalikan salah
+        }
+    }
+
+    // Get status
+    fungsi dapatkan_status() {
+        kembalikan {
+            aktif: ini.aktif,
+            bahasa: ini.bahasa,
+            sensitivitas: ini.sensitivitas,
+            perangkat: ini.perangkat,
+            total_perintah: ini.perintah_terdaftar.panjang
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Simulate voice recognition processing
+        jika Math.acak() > 0.9 {
+            tampilkan("Memproses input suara...")
+        }
+    }
+}
+
+ekspor PengenalanSuara

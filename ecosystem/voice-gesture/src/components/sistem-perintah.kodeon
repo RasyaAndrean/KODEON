@@ -1,0 +1,158 @@
+// KODEON Voice/Gesture - Command System Component
+// Component for managing and processing voice/gesture commands
+
+kelas SistemPerintah {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.perintah_terdaftar = []
+        ini.riwayat_perintah = []
+        ini.mode = ini.opsi.mode || "normal"
+        ini.maks_riwayat = ini.opsi.maks_riwayat || 100
+        ini.aktif = salah
+    }
+
+    // Initialize command system
+    fungsi inisialisasi_sistem() {
+        ini.aktif = benar
+        tampilkan("Sistem perintah diinisialisasi")
+        kembalikan benar
+    }
+
+    // Register command
+    fungsi daftar_perintah(nama, deskripsi, fungsi_eksekusi, jenis) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Sistem perintah belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat perintah = {
+            id: ini.perintah_terdaftar.panjang + 1,
+            nama: nama,
+            deskripsi: deskripsi,
+            fungsi: fungsi_eksekusi,
+            jenis: jenis || "umum", // "suara", "gestur", or "umum"
+            waktu_dibuat: sekarang()
+        }
+
+        ini.perintah_terdaftar.tambah(perintah)
+        tampilkan("Perintah terdaftar: " + nama + " (" + jenis + ")")
+        kembalikan perintah.id
+    }
+
+    // Execute command
+    fungsi eksekusi_perintah(nama_perintah, parameter) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Sistem perintah belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat perintah = ini.perintah_terdaftar.cari(fungsi(p) {
+            kembalikan p.nama === nama_perintah
+        })
+
+        jika bukan perintah {
+            tampilkan("Perintah tidak ditemukan: " + nama_perintah)
+            kembalikan salah
+        }
+
+        // Add to command history
+        buat entri_riwayat = {
+            id: ini.riwayat_perintah.panjang + 1,
+            perintah: nama_perintah,
+            parameter: parameter,
+            waktu_eksekusi: sekarang(),
+            berhasil: benar
+        }
+
+        coba {
+            buat hasil = perintah.fungsi(parameter)
+            entri_riwayat.hasil = hasil
+            tampilkan("Perintah dieksekusi: " + nama_perintah)
+        } tangkap(error) {
+            entri_riwayat.berhasil = salah
+            entri_riwayat.error = error
+            tampilkan("Kesalahan saat mengeksekusi perintah: " + nama_perintah + " - " + error)
+        }
+
+        ini.riwayat_perintah.tambah(entri_riwayat)
+
+        // Limit history size
+        jika ini.riwayat_perintah.panjang > ini.maks_riwayat {
+            ini.riwayat_perintah.shift()
+        }
+
+        kembalikan entri_riwayat
+    }
+
+    // Get command by name
+    fungsi dapatkan_perintah(nama) {
+        kembalikan ini.perintah_terdaftar.cari(fungsi(perintah) {
+            kembalikan perintah.nama === nama
+        })
+    }
+
+    // Get commands by type
+    fungsi dapatkan_perintah_berdasarkan_jenis(jenis) {
+        kembalikan ini.perintah_terdaftar.filter(fungsi(perintah) {
+            kembalikan perintah.jenis === jenis
+        })
+    }
+
+    // Get command history
+    fungsi dapatkan_riwayat(limit) {
+        buat riwayat = [...ini.riwayat_perintah].reverse()
+        jika limit {
+            kembalikan riwayat.slice(0, limit)
+        }
+        kembalikan riwayat
+    }
+
+    // Get command statistics
+    fungsi dapatkan_statistik() {
+        buat total_berhasil = ini.riwayat_perintah.filter(fungsi(entry) {
+            kembalikan entry.berhasil
+        }).panjang
+
+        buat total_gagal = ini.riwayat_perintah.panjang - total_berhasil
+
+        kembalikan {
+            total_perintah: ini.perintah_terdaftar.panjang,
+            total_eksekusi: ini.riwayat_perintah.panjang,
+            total_berhasil: total_berhasil,
+            total_gagal: total_gagal,
+            perintah_suara: ini.dapatkan_perintah_berdasarkan_jenis("suara").panjang,
+            perintah_gestur: ini.dapatkan_perintah_berdasarkan_jenis("gestur").panjang,
+            perintah_umum: ini.dapatkan_perintah_berdasarkan_jenis("umum").panjang
+        }
+    }
+
+    // Remove command
+    fungsi hapus_perintah(nama_perintah) {
+        buat indeks = ini.perintah_terdaftar.findIndex(fungsi(perintah) {
+            kembalikan perintah.nama === nama_perintah
+        })
+
+        jika indeks !== -1 {
+            ini.perintah_terdaftar.splice(indeks, 1)
+            tampilkan("Perintah dihapus: " + nama_perintah)
+            kembalikan benar
+        } lain {
+            tampilkan("Perintah tidak ditemukan: " + nama_perintah)
+            kembalikan salah
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Periodically clean up old history
+        jika ini.riwayat_perintah.panjang > ini.maks_riwayat * 1.5 {
+            ini.riwayat_perintah = ini.riwayat_perintah.slice(-ini.maks_riwayat)
+        }
+    }
+}
+
+ekspor SistemPerintah

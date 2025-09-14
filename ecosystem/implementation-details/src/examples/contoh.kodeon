@@ -1,0 +1,10 @@
+// KODEON Implementation Details - Example Exports
+// Centralized export file for all implementation details examples
+
+// Examples
+ekspor { default sebagai ContohDasar } dari './contoh-dasar.kodeon'
+ekspor { default sebagai ContohLanjutan } dari './contoh-lanjutan.kodeon'
+
+// Export all examples
+ekspor * dari './contoh-dasar.kodeon'
+ekspor * dari './contoh-lanjutan.kodeon'

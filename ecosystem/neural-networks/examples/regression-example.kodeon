@@ -1,0 +1,95 @@
+// KODEON Neural Networks - Regression Example
+// Demonstrates regression using a neural network
+
+// Import the neural networks framework
+impor "neural" sebagai neural
+
+fungsi contoh_regresi():
+    tampilkan("=== Contoh Regresi dengan Jaringan Saraf ===")
+    tampilkan("Memprediksi nilai kontinu menggunakan jaringan saraf")
+    tampilkan("")
+
+    // Create a sequential model for regression
+    buat model = neural.sequential.ModelSequential()
+
+    // Add layers for regression
+    tampilkan("1. Membuat arsitektur model regresi:")
+    model.tambah(neural.padat.LapisanPadat(10, 64, neural.relu.AktivasiReLU()))
+    model.tambah(neural.dropout.LapisanDropout(0.1))
+    model.tambah(neural.padat.LapisanPadat(64, 32, neural.relu.AktivasiReLU()))
+    model.tambah(neural.dropout.LapisanDropout(0.1))
+    model.tambah(neural.padat.LapisanPadat(32, 1, tidak_ada))  // No activation for regression
+
+    // Show model summary
+    model.ringkasan()
+    tampilkan("")
+
+    // Compile the model with MSE loss for regression
+    tampilkan("2. Mengompilasi model untuk regresi:")
+    model.kompilasi(
+        neural.sgd.OptimizerSGD(0.01),
+        neural.mse.LossMSE()
+    )
+    tampilkan("")
+
+    // Generate synthetic regression data
+    tampilkan("3. Menghasilkan data regresi sintetis:")
+    buat data_latih = []
+    buat label_latih = []
+
+    // Generate data: y = 2*x1 + 3*x2 + 1 + noise
+    untuk buat i = 0 sampai i < 500:
+        buat x1 = (acak(0, 1000) / 1000.0) * 2 - 1  // Random between -1 and 1
+        buat x2 = (acak(0, 1000) / 1000.0) * 2 - 1  // Random between -1 and 1
+        buat noise = (acak(0, 1000) / 1000.0) * 0.1 - 0.05  // Small noise
+        buat y = 2 * x1 + 3 * x2 + 1 + noise
+
+        data_latih.tambah([x1, x2, x1*x1, x2*x2, x1*x2, log(abs(x1)+1), log(abs(x2)+1), sin(x1), sin(x2), cos(x1)])
+        label_latih.tambah([y])
+
+    tampilkan("   Data latih: " + data_latih.panjang + " sampel")
+    tampilkan("   Dimensi fitur: " + data_latih[0].panjang)
+    tampilkan("")
+
+    // Train the model
+    tampilkan("4. Melatih model regresi:")
+    buat riwayat = model.latih(data_latih, label_latih, 100, 32)
+    tampilkan("")
+
+    // Visualize training history
+    tampilkan("5. Visualisasi riwayat pelatihan:")
+    buat visualisasi = neural.visualisasi.buat_visualisasi()
+    visualisasi.visualisasi_riwayat(riwayat)
+    tampilkan("")
+
+    // Test the model with new data
+    tampilkan("6. Menguji model dengan data baru:")
+    buat data_test = [
+        [1.0, 1.0, 1.0, 1.0, 1.0, log(2), log(2), sin(1.0), sin(1.0), cos(1.0)],
+        [-1.0, -1.0, 1.0, 1.0, 1.0, log(2), log(2), sin(-1.0), sin(-1.0), cos(-1.0)],
+        [0.5, -0.5, 0.25, 0.25, -0.25, log(1.5), log(1.5), sin(0.5), sin(-0.5), cos(0.5)]
+    ]
+
+    buat label_test = [
+        [2*1.0 + 3*1.0 + 1],      // Expected: 6
+        [2*(-1.0) + 3*(-1.0) + 1], // Expected: -4
+        [2*0.5 + 3*(-0.5) + 1]     // Expected: 0.5
+    ]
+
+    untuk buat i = 0 sampai i < data_test.panjang:
+        buat prediksi = model.prediksi(data_test[i])
+        buat nilai_sebenarnya = label_test[i][0]
+        buat nilai_prediksi = prediksi[0]
+        buat error = abs(nilai_sebenarnya - nilai_prediksi)
+        tampilkan("   Test " + (i+1) + ":")
+        tampilkan("     Nilai sebenarnya: " + nilai_sebenarnya.bulat(3))
+        tampilkan("     Nilai prediksi: " + nilai_prediksi.bulat(3))
+        tampilkan("     Error: " + error.bulat(3))
+
+    tampilkan("")
+    tampilkan("Contoh regresi selesai!")
+
+fungsi utama():
+    contoh_regresi()
+
+utama()

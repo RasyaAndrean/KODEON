@@ -1,0 +1,69 @@
+// KODEON Neural Networks - Main Entry Point
+// This file exports all the main components of the neural networks framework
+
+// Core components
+impor "core/network" sebagai jaringan
+impor "core/trainer" sebagai pelatih
+
+// Layer components
+impor "layers/layer" sebagai lapisan
+impor "layers/dense" sebagai padat
+impor "layers/convolutional" sebagai konvolusi
+impor "layers/pooling" sebagai penggabungan
+impor "layers/dropout" sebagai dropout
+
+// Model components
+impor "models/sequential" sebagai sequential
+impor "models/functional" sebagai fungsional
+
+// Optimizer components
+impor "optimizers/optimizer" sebagai optimizer
+impor "optimizers/sgd" sebagai sgd
+impor "optimizers/adam" sebagai adam
+
+// Loss components
+impor "losses/loss" sebagai loss
+impor "losses/mse" sebagai mse
+impor "losses/categorical_crossentropy" sebagai kategorikal_crossentropi
+
+// Activation components
+impor "activations/activation" sebagai aktivasi
+impor "activations/relu" sebagai relu
+impor "activations/sigmoid" sebagai sigmoid
+impor "activations/softmax" sebagai softmax
+
+// Utilities
+impor "utils/helpers" sebagai utilitas
+impor "utils/data" sebagai data
+
+// Visualization
+impor "visualization/visualizer" sebagai visualisasi
+
+// Export main network creator
+fungsi buat_jaringan():
+    kembalikan jaringan.buat_jaringan()
+
+// Export all components
+ekspor buat_jaringan
+ekspor jaringan
+ekspor pelatih
+ekspor lapisan
+ekspor padat
+ekspor konvolusi
+ekspor penggabungan
+ekspor dropout
+ekspor sequential
+ekspor fungsional
+ekspor optimizer
+ekspor sgd
+ekspor adam
+ekspor loss
+ekspor mse
+ekspor kategorikal_crossentropi
+ekspor aktivasi
+ekspor relu
+ekspor sigmoid
+ekspor softmax
+ekspor utilitas
+ekspor data
+ekspor visualisasi

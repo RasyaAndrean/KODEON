@@ -1,55 +1,90 @@
-# KODEON Mobile Development
+# KODEON Mobile IDE
 
-This directory contains planning and implementation details for KODEON mobile development capabilities.
-
-## Contents
-
-- [MOBILE_DEVELOPMENT_IMPLEMENTATION_PLAN.md](MOBILE_DEVELOPMENT_IMPLEMENTATION_PLAN.md) - Implementation plan for mobile development features
-
-## Overview
-
-The KODEON mobile development initiative aims to enable developers to create mobile applications using the KODEON programming language. This includes:
-
-- Native mobile app compilation
-- Cross-platform mobile development
-- Mobile-specific APIs and libraries
-- Integration with mobile development tools
-- Performance optimization for mobile devices
-
-## Implementation Plan
-
-See [MOBILE_DEVELOPMENT_IMPLEMENTATION_PLAN.md](MOBILE_DEVELOPMENT_IMPLEMENTATION_PLAN.md) for detailed implementation steps and roadmap.
-
-## Target Platforms
-
-- iOS
-- Android
-- Cross-platform frameworks (React Native, Flutter compatibility)
+The KODEON Mobile IDE is a cross-platform mobile application that allows developers to write, compile, and run KODEON code directly on their mobile devices.
 
 ## Features
 
-- Native UI components
-- Device API access (camera, GPS, sensors)
-- Push notifications
-- Offline storage
-- Performance monitoring
-- App store integration
+-   **Code Editor**: Full-featured code editor with syntax highlighting
+-   **Project Management**: Create, manage, and organize KODEON projects
+-   **Compiler Integration**: Compile and run KODEON code using the remote compiler
+-   **AI Assistant**: Get code suggestions, refactoring advice, and explanations
+-   **Cloud Sync**: Synchronize projects across devices
+-   **Touch Gestures**: Optimized for touch interaction
+-   **Voice Input**: Dictate code using voice recognition
 
-## Development Approach
+## Directory Structure
 
-The mobile development implementation will follow these phases:
+```
+mobile/
+├── src/                 # Main source code
+├── components/          # React Native components
+├── services/            # Business logic and API integrations
+├── utils/               # Utility functions
+├── assets/              # Images, fonts, and other assets
+├── config/              # Configuration files
+├── platforms/           # Platform-specific code
+│   ├── android/         # Android-specific files
+│   └── ios/             # iOS-specific files
+├── docs/                # Documentation
+├── __tests__/           # Test files
+└── ...
+```
 
-1. **Foundation** - Basic mobile app compilation
-2. **Core Features** - Essential mobile APIs
-3. **Advanced Features** - Performance optimization and advanced APIs
-4. **Ecosystem** - Tools and libraries for mobile development
+## Installation
+
+1. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+2. For iOS, install CocoaPods dependencies:
+
+    ```bash
+    cd platforms/ios && pod install
+    ```
+
+3. Start the development server:
+
+    ```bash
+    npm start
+    ```
+
+4. Run on Android:
+
+    ```bash
+    npm run android
+    ```
+
+5. Run on iOS:
+    ```bash
+    npm run ios
+    ```
+
+## Architecture
+
+The mobile IDE follows a modular architecture with clear separation of concerns:
+
+-   **Components**: UI elements and screens
+-   **Services**: Business logic and external API integrations
+-   **Utils**: Helper functions and utilities
+-   **Config**: Configuration files
+
+## Services
+
+-   **FileManager**: Handles local file operations and project management
+-   **CompilerService**: Integrates with the KODEON remote compiler
+-   **AIAssistant**: Provides AI-powered code assistance
+-   **CloudSync**: Manages cloud synchronization of projects
 
 ## Contributing
 
-To contribute to mobile development efforts:
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a pull request
 
-1. Review the implementation plan
-2. Join the mobile development working group
-3. Contribute to the design discussions
-4. Implement specific features
-5. Test on various mobile platforms
+## License
+
+This project is licensed under the MIT License.

@@ -1,0 +1,54 @@
+// KODEON Quantum Computing - Pauli Gates
+// Implementation of Pauli X, Y, and Z gates
+
+// Pauli X Gate (Quantum NOT gate)
+kelas GerbangX:
+    fungsi inisialisasi():
+        induk.inisialisasi("X", [[0, 1], [1, 0]], 1)
+
+    // Apply the X gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // X|0⟩ = |1⟩ and X|1⟩ = |0⟩
+        kembalikan [keadaan[1], keadaan[0]]
+
+ekspor GerbangX
+
+// Pauli Y Gate
+kelas GerbangY:
+    fungsi inisialisasi():
+        induk.inisialisasi("Y", [[0, -i], [i, 0]], 1)  // i is the imaginary unit
+
+    // Apply the Y gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // Y|0⟩ = i|1⟩ and Y|1⟩ = -i|0⟩
+        kembalikan [keadaan[1] * (-i), keadaan[0] * i]
+
+ekspor GerbangY
+
+// Pauli Z Gate
+kelas GerbangZ:
+    fungsi inisialisasi():
+        induk.inisialisasi("Z", [[1, 0], [0, -1]], 1)
+
+    // Apply the Z gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // Z|0⟩ = |0⟩ and Z|1⟩ = -|1⟩
+        kembalikan [keadaan[0], keadaan[1] * (-1)]
+
+ekspor GerbangZ
+
+// Identity Gate
+kelas GerbangI:
+    fungsi inisialisasi():
+        induk.inisialisasi("I", [[1, 0], [0, 1]], 1)
+
+    // Apply the identity gate
+    fungsi terapkan(keadaan):
+        induk.terapkan(keadaan)
+        // I|ψ⟩ = |ψ⟩
+        kembalikan keadaan
+
+ekspor GerbangI

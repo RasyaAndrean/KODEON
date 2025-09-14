@@ -1,0 +1,441 @@
+// KODEON Implementation Details - Test File
+// Unit tests for implementation details functionality
+
+// Import required modules
+impor ImplementationDetails dari '../implementation-details.kodeon'
+impor IntiImplementationDetails dari '../core/inti-implementation-details.kodeon'
+impor { SistemDokumentasi, SistemPelacakan, SistemVerifikasi } dari '../components/komponen.kodeon'
+
+// Test suite for ImplementationDetails class
+fungsi uji_ImplementationDetails() {
+  tampilkan("=== Mengujai ImplementationDetails ===")
+
+  // Test 1: Initialization
+  tampilkan("Test 1: Inisialisasi ImplementationDetails")
+  buat implementationDetails = ImplementationDetails()
+  tampilkan("✓ ImplementationDetails instance dibuat")
+
+  // Test 2: Framework initialization
+  tampilkan("Test 2: Inisialisasi framework")
+  buat hasilInisialisasi = implementationDetails.inisialisasi_implementation_details({
+    bahasa: "indonesia",
+    pengguna: "test_user"
+  })
+
+  jika hasilInisialisasi {
+    tampilkan("✓ Framework berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi framework")
+    kembalikan salah
+  }
+
+  // Test 3: Component registration
+  tampilkan("Test 3: Pendaftaran komponen")
+  buat hasilDaftar = implementationDetails.inti.daftar_komponen("test-component", {
+    versi: "1.0.0",
+    deskripsi: "Test component"
+  })
+
+  jika hasilDaftar {
+    tampilkan("✓ Komponen berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan komponen")
+    kembalikan salah
+  }
+
+  // Test 4: Adding documentation system
+  tampilkan("Test 4: Menambahkan sistem dokumentasi")
+  buat sistemDokumentasi = SistemDokumentasi()
+  buat hasilTambahDok = implementationDetails.tambah_sistem_dokumentasi(sistemDokumentasi)
+
+  jika hasilTambahDok {
+    tampilkan("✓ Sistem dokumentasi berhasil ditambahkan")
+  } lain {
+    tampilkan("✗ Gagal menambahkan sistem dokumentasi")
+    kembalikan salah
+  }
+
+  // Test 5: Adding tracking system
+  tampilkan("Test 5: Menambahkan sistem pelacakan")
+  buat sistemPelacakan = SistemPelacakan()
+  buat hasilTambahTrack = implementationDetails.tambah_sistem_pelacakan(sistemPelacakan)
+
+  jika hasilTambahTrack {
+    tampilkan("✓ Sistem pelacakan berhasil ditambahkan")
+  } lain {
+    tampilkan("✗ Gagal menambahkan sistem pelacakan")
+    kembalikan salah
+  }
+
+  // Test 6: Update loop
+  tampilkan("Test 6: Loop pembaruan")
+  coba {
+    implementationDetails.perbarui()
+    tampilkan("✓ Loop pembaruan berjalan tanpa error")
+  } tangkap(error) {
+    tampilkan("✗ Error pada loop pembaruan: " + error)
+    kembalikan salah
+  }
+
+  // Test 7: Shutdown
+  tampilkan("Test 7: Mematikan framework")
+  implementationDetails.hentikan()
+  tampilkan("✓ Framework berhasil dimatikan")
+
+  tampilkan("Semua test ImplementationDetails berhasil!")
+  kembalikan benar
+}
+
+// Test suite for IntiImplementationDetails class
+fungsi uji_IntiImplementationDetails() {
+  tampilkan("=== Mengujai IntiImplementationDetails ===")
+
+  // Test 1: Initialization
+  tampilkan("Test 1: Inisialisasi IntiImplementationDetails")
+  buat inti = IntiImplementationDetails()
+  tampilkan("✓ IntiImplementationDetails instance dibuat")
+
+  // Test 2: Core initialization
+  tampilkan("Test 2: Inisialisasi inti")
+  inti.inisialisasi({
+    bahasa: "english",
+    pengguna: "test_user"
+  })
+
+  buat profil = inti.dapatkan_profil()
+  jika profil dan profil.pengguna === "test_user" {
+    tampilkan("✓ Inti berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi inti")
+    kembalikan salah
+  }
+
+  // Test 3: Component registration
+  tampilkan("Test 3: Pendaftaran komponen")
+  buat komponen = inti.daftar_komponen("test-component", {
+    versi: "1.0.0",
+    deskripsi: "Test component"
+  })
+
+  jika komponen {
+    tampilkan("✓ Komponen berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan komponen")
+    kembalikan salah
+  }
+
+  // Test 4: Getting implementation details
+  tampilkan("Test 4: Mendapatkan detail implementasi")
+  buat detail = inti.dapatkan_detail_implementasi("test-component")
+  jika detail dan detail.versi === "1.0.0" {
+    tampilkan("✓ Detail implementasi berhasil diperoleh")
+  } lain {
+    tampilkan("✗ Gagal mendapatkan detail implementasi")
+    kembalikan salah
+  }
+
+  // Test 5: Profile retrieval
+  tampilkan("Test 5: Pengambilan profil")
+  buat profil2 = inti.dapatkan_profil()
+  jika profil2 dan profil2.bahasa === "english" {
+    tampilkan("✓ Profil berhasil diambil")
+  } lain {
+    tampilkan("✗ Gagal mengambil profil")
+    kembalikan salah
+  }
+
+  // Test 6: Shutdown
+  tampilkan("Test 6: Mematikan inti")
+  inti.hentikan()
+  tampilkan("✓ Inti berhasil dimatikan")
+
+  tampilkan("Semua test IntiImplementationDetails berhasil!")
+  kembalikan benar
+}
+
+// Test suite for components
+fungsi uji_Komponen() {
+  tampilkan("=== Mengujai Komponen ===")
+
+  // Test SistemDokumentasi
+  tampilkan("Test 1: SistemDokumentasi")
+  buat sistemDokumentasi = SistemDokumentasi({ format_dokumen: "markdown" })
+  buat initDok = sistemDokumentasi.inisialisasi_sistem()
+  jika initDok {
+    tampilkan("✓ SistemDokumentasi berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi SistemDokumentasi")
+    kembalikan salah
+  }
+
+  // Test SistemPelacakan
+  tampilkan("Test 2: SistemPelacakan")
+  buat sistemPelacakan = SistemPelacakan()
+  buat initTrack = sistemPelacakan.inisialisasi_sistem()
+  jika initTrack {
+    tampilkan("✓ SistemPelacakan berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi SistemPelacakan")
+    kembalikan salah
+  }
+
+  // Test SistemVerifikasi
+  tampilkan("Test 3: SistemVerifikasi")
+  buat sistemVerifikasi = SistemVerifikasi()
+  buat initVerif = sistemVerifikasi.inisialisasi_sistem()
+  jika initVerif {
+    tampilkan("✓ SistemVerifikasi berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi SistemVerifikasi")
+    kembalikan salah
+  }
+
+  tampilkan("Semua test komponen berhasil!")
+  kembalikan benar
+}
+
+// Main test function
+fungsi jalankan_semua_test() {
+  tampilkan("Memulai test Implementation Details...")
+  tampilkan("")
+
+  buat hasil1 = uji_ImplementationDetails()
+  tampilkan("")
+
+  buat hasil2 = uji_IntiImplementationDetails()
+  tampilkan("")
+
+  buat hasil3 = uji_Komponen()
+  tampilkan("")
+
+  jika hasil1 dan hasil2 dan hasil3 {
+    tampilkan("🎉 Semua test berhasil!")
+    kembalikan benar
+  } lain {
+    tampilkan("❌ Beberapa test gagal!")
+    kembalikan salah
+  }
+}
+
+// Run tests
+jalankan_semua_test()// KODEON Implementation Details - Test File
+// Unit tests for implementation details functionality
+
+// Import required modules
+impor ImplementationDetails dari '../implementation-details.kodeon'
+impor IntiImplementationDetails dari '../core/inti-implementation-details.kodeon'
+impor { SistemDokumentasi, SistemPelacakan, SistemVerifikasi } dari '../components/komponen.kodeon'
+
+// Test suite for ImplementationDetails class
+fungsi uji_ImplementationDetails() {
+  tampilkan("=== Mengujai ImplementationDetails ===")
+
+  // Test 1: Initialization
+  tampilkan("Test 1: Inisialisasi ImplementationDetails")
+  buat implementationDetails = ImplementationDetails()
+  tampilkan("✓ ImplementationDetails instance dibuat")
+
+  // Test 2: Framework initialization
+  tampilkan("Test 2: Inisialisasi framework")
+  buat hasilInisialisasi = implementationDetails.inisialisasi_implementation_details({
+    bahasa: "indonesia",
+    pengguna: "test_user"
+  })
+
+  jika hasilInisialisasi {
+    tampilkan("✓ Framework berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi framework")
+    kembalikan salah
+  }
+
+  // Test 3: Component registration
+  tampilkan("Test 3: Pendaftaran komponen")
+  buat hasilDaftar = implementationDetails.inti.daftar_komponen("test-component", {
+    versi: "1.0.0",
+    deskripsi: "Test component"
+  })
+
+  jika hasilDaftar {
+    tampilkan("✓ Komponen berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan komponen")
+    kembalikan salah
+  }
+
+  // Test 4: Adding documentation system
+  tampilkan("Test 4: Menambahkan sistem dokumentasi")
+  buat sistemDokumentasi = SistemDokumentasi()
+  buat hasilTambahDok = implementationDetails.tambah_sistem_dokumentasi(sistemDokumentasi)
+
+  jika hasilTambahDok {
+    tampilkan("✓ Sistem dokumentasi berhasil ditambahkan")
+  } lain {
+    tampilkan("✗ Gagal menambahkan sistem dokumentasi")
+    kembalikan salah
+  }
+
+  // Test 5: Adding tracking system
+  tampilkan("Test 5: Menambahkan sistem pelacakan")
+  buat sistemPelacakan = SistemPelacakan()
+  buat hasilTambahTrack = implementationDetails.tambah_sistem_pelacakan(sistemPelacakan)
+
+  jika hasilTambahTrack {
+    tampilkan("✓ Sistem pelacakan berhasil ditambahkan")
+  } lain {
+    tampilkan("✗ Gagal menambahkan sistem pelacakan")
+    kembalikan salah
+  }
+
+  // Test 6: Update loop
+  tampilkan("Test 6: Loop pembaruan")
+  coba {
+    implementationDetails.perbarui()
+    tampilkan("✓ Loop pembaruan berjalan tanpa error")
+  } tangkap(error) {
+    tampilkan("✗ Error pada loop pembaruan: " + error)
+    kembalikan salah
+  }
+
+  // Test 7: Shutdown
+  tampilkan("Test 7: Mematikan framework")
+  implementationDetails.hentikan()
+  tampilkan("✓ Framework berhasil dimatikan")
+
+  tampilkan("Semua test ImplementationDetails berhasil!")
+  kembalikan benar
+}
+
+// Test suite for IntiImplementationDetails class
+fungsi uji_IntiImplementationDetails() {
+  tampilkan("=== Mengujai IntiImplementationDetails ===")
+
+  // Test 1: Initialization
+  tampilkan("Test 1: Inisialisasi IntiImplementationDetails")
+  buat inti = IntiImplementationDetails()
+  tampilkan("✓ IntiImplementationDetails instance dibuat")
+
+  // Test 2: Core initialization
+  tampilkan("Test 2: Inisialisasi inti")
+  inti.inisialisasi({
+    bahasa: "english",
+    pengguna: "test_user"
+  })
+
+  buat profil = inti.dapatkan_profil()
+  jika profil dan profil.pengguna === "test_user" {
+    tampilkan("✓ Inti berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi inti")
+    kembalikan salah
+  }
+
+  // Test 3: Component registration
+  tampilkan("Test 3: Pendaftaran komponen")
+  buat komponen = inti.daftar_komponen("test-component", {
+    versi: "1.0.0",
+    deskripsi: "Test component"
+  })
+
+  jika komponen {
+    tampilkan("✓ Komponen berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan komponen")
+    kembalikan salah
+  }
+
+  // Test 4: Getting implementation details
+  tampilkan("Test 4: Mendapatkan detail implementasi")
+  buat detail = inti.dapatkan_detail_implementasi("test-component")
+  jika detail dan detail.versi === "1.0.0" {
+    tampilkan("✓ Detail implementasi berhasil diperoleh")
+  } lain {
+    tampilkan("✗ Gagal mendapatkan detail implementasi")
+    kembalikan salah
+  }
+
+  // Test 5: Profile retrieval
+  tampilkan("Test 5: Pengambilan profil")
+  buat profil2 = inti.dapatkan_profil()
+  jika profil2 dan profil2.bahasa === "english" {
+    tampilkan("✓ Profil berhasil diambil")
+  } lain {
+    tampilkan("✗ Gagal mengambil profil")
+    kembalikan salah
+  }
+
+  // Test 6: Shutdown
+  tampilkan("Test 6: Mematikan inti")
+  inti.hentikan()
+  tampilkan("✓ Inti berhasil dimatikan")
+
+  tampilkan("Semua test IntiImplementationDetails berhasil!")
+  kembalikan benar
+}
+
+// Test suite for components
+fungsi uji_Komponen() {
+  tampilkan("=== Mengujai Komponen ===")
+
+  // Test SistemDokumentasi
+  tampilkan("Test 1: SistemDokumentasi")
+  buat sistemDokumentasi = SistemDokumentasi({ format_dokumen: "markdown" })
+  buat initDok = sistemDokumentasi.inisialisasi_sistem()
+  jika initDok {
+    tampilkan("✓ SistemDokumentasi berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi SistemDokumentasi")
+    kembalikan salah
+  }
+
+  // Test SistemPelacakan
+  tampilkan("Test 2: SistemPelacakan")
+  buat sistemPelacakan = SistemPelacakan()
+  buat initTrack = sistemPelacakan.inisialisasi_sistem()
+  jika initTrack {
+    tampilkan("✓ SistemPelacakan berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi SistemPelacakan")
+    kembalikan salah
+  }
+
+  // Test SistemVerifikasi
+  tampilkan("Test 3: SistemVerifikasi")
+  buat sistemVerifikasi = SistemVerifikasi()
+  buat initVerif = sistemVerifikasi.inisialisasi_sistem()
+  jika initVerif {
+    tampilkan("✓ SistemVerifikasi berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi SistemVerifikasi")
+    kembalikan salah
+  }
+
+  tampilkan("Semua test komponen berhasil!")
+  kembalikan benar
+}
+
+// Main test function
+fungsi jalankan_semua_test() {
+  tampilkan("Memulai test Implementation Details...")
+  tampilkan("")
+
+  buat hasil1 = uji_ImplementationDetails()
+  tampilkan("")
+
+  buat hasil2 = uji_IntiImplementationDetails()
+  tampilkan("")
+
+  buat hasil3 = uji_Komponen()
+  tampilkan("")
+
+  jika hasil1 dan hasil2 dan hasil3 {
+    tampilkan("🎉 Semua test berhasil!")
+    kembalikan benar
+  } lain {
+    tampilkan("❌ Beberapa test gagal!")
+    kembalikan salah
+  }
+}
+
+// Run tests
+jalankan_semua_test()

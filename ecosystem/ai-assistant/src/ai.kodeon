@@ -1,0 +1,25 @@
+// KODEON AI Assistant - Main Entry Point
+// This file exports all the main components of the AI assistant
+
+// Core components
+impor "core/assistant" sebagai asisten
+
+// NLP components
+impor "nlp/processor" sebagai nlp
+
+// Code analysis components
+impor "code/analyzer" sebagai kode
+
+// Utilities
+impor "utils/helpers" sebagai utilitas
+
+// Export main assistant creator
+fungsi buat_asisten():
+    kembalikan asisten.buat_asisten()
+
+// Export all components
+ekspor buat_asisten
+ekspor asisten
+ekspor nlp
+ekspor kode
+ekspor utilitas

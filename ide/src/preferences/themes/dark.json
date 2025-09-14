@@ -1,0 +1,26 @@
+{
+  "name": "Dark",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#1e1e1e",
+    "editor.foreground": "#d4d4d4",
+    "editor.lineHighlightBackground": "#2a2d2e",
+    "editor.selectionBackground": "#264f78",
+    "panel.background": "#252526",
+    "panel.border": "#444444",
+    "button.background": "#0e639c",
+    "button.foreground": "#ffffff",
+    "toolbar.background": "#333333",
+    "toolbar.border": "#444444",
+    "statusBar.background": "#007acc",
+    "statusBar.foreground": "#ffffff"
+  },
+  "tokenColors": {
+    "keyword": "#569cd6",
+    "comment": "#6a9955",
+    "string": "#ce9178",
+    "number": "#b5cea8",
+    "operator": "#d4d4d4",
+    "identifier": "#d4d4d4"
+  }
+}

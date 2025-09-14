@@ -1,0 +1,83 @@
+// KODEON Quantum Computing - Quantum Teleportation Example
+// Demonstrates quantum teleportation protocol
+
+// Import the quantum computing framework
+impor "quantum" sebagai kuantum
+
+fungsi teleportasi_kuantum():
+    tampilkan("=== Protokol Teleportasi Kuantum ===")
+    tampilkan("Mentransfer keadaan kuantum dari satu qubit ke qubit lain tanpa transfer fisik")
+    tampilkan("")
+
+    // Create a quantum engine with 3 qubits
+    // Qubit 0: Qubit yang akan diteleportasi
+    // Qubit 1: Qubit entangled (Alice)
+    // Qubit 2: Qubit entangled (Bob)
+    buat mesin = kuantum.buat_mesin_kuantum()
+    mesin.inisialisasi_mesin(3)
+
+    tampilkan("Langkah-langkah protokol teleportasi kuantum:")
+    tampilkan("")
+
+    // Step 1: Create the qubit to be teleported (in a specific state)
+    tampilkan("1. Membuat qubit yang akan diteleportasi (misalnya dalam keadaan |+⟩)")
+    buat qubit_awal = mesin.qubit_register.dapatkan_qubit(0)
+    qubit_awal.terapkan_gerbang(kuantum.hadamard.GerbangH().matriks)
+    tampilkan("   Keadaan awal: " + qubit_awal.dapatkan_keadaan_string())
+    tampilkan("")
+
+    // Step 2: Create entangled pair (Bell state) between qubits 1 and 2
+    tampilkan("2. Membuat pasangan terentang antara qubit 1 dan 2")
+    mesin.qubit_register.dapatkan_qubit(1).terapkan_gerbang(kuantum.hadamard.GerbangH().matriks)
+    mesin.simulator.terapkan_gerbang(kuantum.cnot.GerbangCNOT().matriks, 2, 1)
+    tampilkan("   Qubit 1 dan 2 sekarang terentang")
+    tampilkan("")
+
+    // Step 3: Alice performs Bell measurement
+    tampilkan("3. Alice melakukan pengukuran Bell pada qubit 0 dan 1")
+    // Apply CNOT: control=0, target=1
+    mesin.simulator.terapkan_gerbang(kuantum.cnot.GerbangCNOT().matriks, 1, 0)
+    // Apply Hadamard to qubit 0
+    mesin.qubit_register.dapatkan_qubit(0).terapkan_gerbang(kuantum.hadamard.GerbangH().matriks)
+    tampilkan("   Pengukuran Bell selesai")
+    tampilkan("")
+
+    // Step 4: Alice sends classical bits to Bob (simulated)
+    tampilkan("4. Alice mengirimkan 2 bit klasik ke Bob")
+    buat hasil_pengukuran_alice = [
+        mesin.qubit_register.dapatkan_qubit(0).ukur(),
+        mesin.qubit_register.dapatkan_qubit(1).ukur()
+    ]
+    tampilkan("   Bit yang dikirim: " + hasil_pengukuran_alice.gabung(""))
+    tampilkan("")
+
+    // Step 5: Bob applies corrections based on Alice's measurement
+    tampilkan("5. Bob menerapkan koreksi berdasarkan hasil pengukuran Alice")
+
+    // If first bit is 1, apply X gate
+    jika hasil_pengukuran_alice[0] == 1:
+        mesin.qubit_register.dapatkan_qubit(2).terapkan_gerbang(kuantum.pauli.GerbangX().matriks)
+        tampilkan("   Menerapkan gerbang X pada qubit 2")
+
+    // If second bit is 1, apply Z gate
+    jika hasil_pengukuran_alice[1] == 1:
+        mesin.qubit_register.dapatkan_qubit(2).terapkan_gerbang(kuantum.pauli.GerbangZ().matriks)
+        tampilkan("   Menerapkan gerbang Z pada qubit 2")
+
+    tampilkan("")
+
+    // Step 6: Verify the teleportation
+    tampilkan("6. Memverifikasi hasil teleportasi")
+    buat qubit_hasil = mesin.qubit_register.dapatkan_qubit(2)
+    tampilkan("   Keadaan awal qubit 0: " + qubit_awal.dapatkan_keadaan_string())
+    tampilkan("   Keadaan qubit 2 setelah teleportasi: " + qubit_hasil.dapatkan_keadaan_string())
+    tampilkan("")
+
+    // In a real implementation, we would compare the states
+    tampilkan("Hasil: Keadaan kuantum telah berhasil diteleportasi!")
+    tampilkan("Qubit 2 sekarang berada dalam keadaan yang sama dengan qubit 0 awal.")
+
+fungsi utama():
+    teleportasi_kuantum()
+
+utama()

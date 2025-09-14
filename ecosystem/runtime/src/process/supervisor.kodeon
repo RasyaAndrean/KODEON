@@ -1,0 +1,231 @@
+// KODEON Runtime - Process Supervisor
+// Process supervision functionality
+
+kelas Supervisor {
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        ini.proses_diamati = []
+        ini.kebijakan_restart = "selalu"
+        ini.maks_restart = 5
+        ini.delay_restart = 1000 // ms
+    }
+
+    // Supervise process
+    fungsi awasi(proses, opsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Supervisor tidak diinisialisasi")
+            kembalikan salah
+        }
+
+        opsi = opsi || {}
+
+        buat entri_pengawasan = {
+            id: ini.proses_diamati.panjang + 1,
+            proses: proses,
+            opsi: opsi,
+            status: "berjalan",
+            restart_count: 0,
+            terakhir_restart: tidak_ada,
+            dibuat: sekarang()
+        }
+
+        ini.proses_diamati.tambah(entri_pengawasan)
+        tampilkan("Mengawasi proses: " + (proses.nama || proses.id))
+        kembalikan entri_pengawasan
+    }
+
+    // Check process health
+    fungsi periksa_kesehatan(entri_pengawasan) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika bukan entri_pengawasan {
+            kembalikan salah
+        }
+
+        buat proses = entri_pengawasan.proses
+
+        // In a real implementation, this would check actual process health
+        // For now, we'll simulate health checks
+
+        buat sehat = Math.acak() > 0.05 // 95% health rate
+
+        jika bukan sehat {
+            tampilkan("Proses tidak sehat terdeteksi: " + (proses.nama || proses.id))
+            entri_pengawasan.status = "tidak_sehat"
+
+            // Apply restart policy
+            jika ini.haruskah_restart(entri_pengawasan) {
+                ini.restart_proses(entri_pengawasan)
+            }
+        } lain {
+            entri_pengawasan.status = "berjalan"
+        }
+
+        kembalikan sehat
+    }
+
+    // Check if process should be restarted
+    fungsi haruskah_restart(entri_pengawasan) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika entri_pengawasan.restart_count >= ini.maks_restart {
+            kembalikan salah
+        }
+
+        jika ini.kebijakan_restart == "selalu" {
+            kembalikan benar
+        }
+
+        jika ini.kebijakan_restart == "kegagalan" dan entri_pengawasan.status == "tidak_sehat" {
+            kembalikan benar
+        }
+
+        kembalikan salah
+    }
+
+    // Restart process
+    fungsi restart_proses(entri_pengawasan) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika entri_pengawasan.restart_count >= ini.maks_restart {
+            tampilkan("Batas maksimum restart tercapai untuk proses: " +
+                     (entri_pengawasan.proses.nama || entri_pengawasan.proses.id))
+            entri_pengawasan.status = "gagal"
+            kembalikan salah
+        }
+
+        entri_pengawasan.restart_count++
+        entri_pengawasan.terakhir_restart = sekarang()
+
+        tampilkan("Merestart proses: " + (entri_pengawasan.proses.nama || entri_pengawasan.proses.id) +
+                 " (restart ke-" + entri_pengawasan.restart_count + ")")
+
+        // In a real implementation, this would actually restart the process
+        // For now, we'll just simulate
+        setTimeout(fungsi() {
+            entri_pengawasan.status = "berjalan"
+            tampilkan("Proses berhasil direstart: " + (entri_pengawasan.proses.nama || entri_pengawasan.proses.id))
+        }, ini.delay_restart)
+
+        kembalikan benar
+    }
+
+    // Stop supervising process
+    fungsi hentikan_pengawasan(entri_pengawasan) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika bukan entri_pengawasan {
+            kembalikan salah
+        }
+
+        ini.proses_diamati = ini.proses_diamati.saring(fungsi(p) {
+            kembalikan p.id bukan entri_pengawasan.id
+        })
+
+        tampilkan("Menghentikan pengawasan proses: " +
+                 (entri_pengawasan.proses.nama || entri_pengawasan.proses.id))
+        kembalikan benar
+    }
+
+    // Get supervised processes
+    fungsi dapatkan_proses_diamati() {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.proses_diamati
+    }
+
+    // Get process by ID
+    fungsi dapatkan_proses(entri_id) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.proses_diamati.cari(fungsi(p) { kembalikan p.id == entri_id })
+    }
+
+    // Set restart policy
+    fungsi atur_kebijakan_restart(kebijakan, maks_restart, delay) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        buat kebijakan_valid = ["selalu", "kegagalan", "tidak_pernah"]
+        jika kebijakan_valid.includes(kebijakan) {
+            ini.kebijakan_restart = kebijakan
+        }
+
+        jika maks_restart bukan_tidak_ada {
+            ini.maks_restart = maks_restart
+        }
+
+        jika delay bukan_tidak_ada {
+            ini.delay_restart = delay
+        }
+
+        tampilkan("Kebijakan restart diperbarui: " + ini.kebijakan_restart)
+        kembalikan benar
+    }
+
+    // Get restart policy
+    fungsi dapatkan_kebijakan_restart() {
+        kembalikan {
+            kebijakan: ini.kebijakan_restart,
+            maks_restart: ini.maks_restart,
+            delay_restart: ini.delay_restart
+        }
+    }
+
+    // Force restart process
+    fungsi paksa_restart(entri_pengawasan) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika bukan entri_pengawasan {
+            kembalikan salah
+        }
+
+        tampilkan("Memaksa restart proses: " +
+                 (entri_pengawasan.proses.nama || entri_pengawasan.proses.id))
+
+        entri_pengawasan.restart_count++
+        entri_pengawasan.terakhir_restart = sekarang()
+        entri_pengawasan.status = "merestart"
+
+        // In a real implementation, this would actually restart the process
+        // For now, we'll just simulate
+        setTimeout(fungsi() {
+            entri_pengawasan.status = "berjalan"
+            tampilkan("Proses berhasil direstart (paksa): " +
+                     (entri_pengawasan.proses.nama || entri_pengawasan.proses.id))
+        }, ini.delay_restart)
+
+        kembalikan benar
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Periodically check health of supervised processes
+        untuk setiap entri dalam ini.proses_diamati {
+            jika Math.acak() > 0.8 {
+                ini.periksa_kesehatan(entri)
+            }
+        }
+    }
+}
+
+ekspor Supervisor

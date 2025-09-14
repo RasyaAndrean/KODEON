@@ -1,128 +1,96 @@
-//! Test cases for enhanced error handling in the KODEON compiler
+//! Test for enhanced error handling in the KODEON compiler
 
-#[cfg(test)]
-mod tests {
-    use crate::lexer::{Lexer, Position};
-    use crate::parser::Parser;
-    use crate::semantic_analyzer::SemanticAnalyzer;
+use kodeon_compiler::{Lexer, Parser, SemanticAnalyzer};
 
-    #[test]
-    fn test_position_tracking() {
-        let source = "let x = 42\nlet y = x + z";
-        let mut lexer = Lexer::new(source);
+#[test]
+fn test_enhanced_parse_error() {
+    // Test case with syntax error
+    let source = r#"
+    fungsi utama() {
+        x = 5
+        y = 10
+    "#;
 
-        // Test that lexer tracks positions correctly
-        let tokens = lexer.tokenize().expect("Lexing should succeed");
+    let mut parser = Parser::new(source).expect("Failed to create parser");
 
-        // Check that we have tokens with proper positions
-        assert!(!tokens.is_empty());
+    // This should produce an enhanced error message
+    let result = parser.parse_program();
 
-        // First token should be at line 1, column 1
-        let first_token = &tokens[0];
-        assert_eq!(first_token.position.line, 1);
-        assert_eq!(first_token.position.column, 1);
+    assert!(result.is_err());
 
-        // Test advancement through the source
-        let mut pos = Position::start();
-        pos.advance_str("let x = 42");
-        pos.advance('\n');
-        assert_eq!(pos.line, 2);
-        assert_eq!(pos.column, 1);
+    let error = result.unwrap_err();
+    let error_string = format!("{}", error);
+
+    // Check that the error message contains enhanced information
+    assert!(error_string.contains("Parse error"));
+    assert!(error_string.contains("line 4"));
+    assert!(error_string.contains("column 5"));
+
+    // Check for enhanced elements
+    assert!(error_string.contains("💡"));
+    println!("Enhanced error message:\n{}", error_string);
+}
+
+#[test]
+fn test_enhanced_semantic_error() {
+    // Test case with semantic error (undeclared variable)
+    let source = r#"
+    fungsi utama() {
+        hasil = jumlah + 5
     }
+    "#;
 
-    #[test]
-    fn test_undeclared_variable_error() {
-        let source = "print(undefined_var)";
-        let mut parser = Parser::new(source).expect("Parser creation should succeed");
-        let ast = parser.parse();
+    let mut parser = Parser::new(source).expect("Failed to create parser");
+    let ast = parser.parse_program().expect("Failed to parse");
 
-        // Even if parsing succeeds, semantic analysis should catch the error
-        match ast {
-            Ok(program) => {
-                let mut analyzer = SemanticAnalyzer::new();
-                let result = analyzer.analyze(&program);
+    let mut semantic_analyzer = SemanticAnalyzer::new();
+    let result = semantic_analyzer.analyze(&ast);
 
-                // We expect a semantic error for the undeclared variable
-                assert!(result.is_err());
+    assert!(result.is_err());
 
-                // Check that the error message contains the variable name
-                let error = result.unwrap_err();
-                assert!(format!("{}", error).contains("undefined_var"));
-            }
-            Err(e) => {
-                // If parsing fails, that's also acceptable for this test
-                println!("Parse error (acceptable): {}", e);
-            }
-        }
+    let error = result.unwrap_err();
+    let error_string = format!("{}", error);
+
+    // Check that the error message contains enhanced information
+    assert!(error_string.contains("Semantic error"));
+    assert!(error_string.contains("line 3"));
+    assert!(error_string.contains("column 17"));
+    assert!(error_string.contains("jumlah"));
+
+    // Check for enhanced elements
+    assert!(error_string.contains("💡"));
+    assert!(error_string.contains("📘"));
+    println!("Enhanced error message:\n{}", error_string);
+}
+
+#[test]
+fn test_type_mismatch_error() {
+    // Test case with type mismatch error
+    let source = r#"
+    fungsi utama() {
+        var x = 5
+        var y = "hello"
+        var z = x + y
     }
+    "#;
 
-    #[test]
-    fn test_duplicate_declaration_error() {
-        let source = "let x = 42\nlet x = 43"; // Duplicate declaration
-        let mut parser = Parser::new(source).expect("Parser creation should succeed");
-        let ast = parser.parse();
+    let mut parser = Parser::new(source).expect("Failed to create parser");
+    let ast = parser.parse_program().expect("Failed to parse");
 
-        match ast {
-            Ok(program) => {
-                let mut analyzer = SemanticAnalyzer::new();
-                let result = analyzer.analyze(&program);
+    let mut semantic_analyzer = SemanticAnalyzer::new();
+    let result = semantic_analyzer.analyze(&ast);
 
-                // We expect a semantic error for the duplicate declaration
-                assert!(result.is_err());
+    assert!(result.is_err());
 
-                // Check that the error message indicates a duplicate
-                let error = result.unwrap_err();
-                assert!(format!("{}", error).contains("Duplicate"));
-            }
-            Err(e) => {
-                // If parsing fails, that's also acceptable for this test
-                println!("Parse error (acceptable): {}", e);
-            }
-        }
-    }
+    let error = result.unwrap_err();
+    let error_string = format!("{}", error);
 
-    #[test]
-    fn test_type_mismatch_error() {
-        // This would be a more complex test in a real implementation
-        // For now, we'll just test that our error types are properly defined
-        let error = crate::semantic_analyzer::SemanticError::TypeMismatch {
-            expected: "int".to_string(),
-            found: "string".to_string(),
-            position: Position::start(),
-        };
+    // Check that the error message contains enhanced information
+    assert!(error_string.contains("Type mismatch"));
+    assert!(error_string.contains("line 5"));
 
-        let error_string = format!("{}", error);
-        assert!(error_string.contains("Type mismatch"));
-        assert!(error_string.contains("expected 'int'"));
-        assert!(error_string.contains("found 'string'"));
-    }
-
-    #[test]
-    fn test_parse_error_formatting() {
-        let error = crate::parser::ParseError::UnexpectedToken {
-            expected: "identifier".to_string(),
-            found: "123".to_string(),
-            position: Position::new(5, 10, 42),
-        };
-
-        let error_string = format!("{}", error);
-        assert!(error_string.contains("line 5"));
-        assert!(error_string.contains("column 10"));
-        assert!(error_string.contains("Expected identifier"));
-        assert!(error_string.contains("found '123'"));
-    }
-
-    #[test]
-    fn test_semantic_error_formatting() {
-        let error = crate::semantic_analyzer::SemanticError::UndeclaredVariable {
-            name: "my_var".to_string(),
-            position: Position::new(3, 7, 25),
-        };
-
-        let error_string = format!("{}", error);
-        assert!(error_string.contains("line 3"));
-        assert!(error_string.contains("column 7"));
-        assert!(error_string.contains("Undeclared variable"));
-        assert!(error_string.contains("'my_var'"));
-    }
+    // Check for enhanced elements
+    assert!(error_string.contains("💡"));
+    assert!(error_string.contains("📘"));
+    println!("Enhanced error message:\n{}", error_string);
 }

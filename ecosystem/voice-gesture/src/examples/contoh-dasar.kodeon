@@ -1,0 +1,51 @@
+// KODEON Voice/Gesture - Basic Example
+// Basic example of using voice and gesture recognition
+
+kelas ContohDasar {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.nama = ini.opsi.nama || "Contoh Dasar"
+        ini.deskripsi = "Contoh dasar penggunaan voice/gesture"
+    }
+
+    // Run basic example
+    fungsi jalankan() {
+        tampilkan("=== Contoh Dasar Voice/Gesture ===")
+        tampilkan("Nama: " + ini.nama)
+        tampilkan("Deskripsi: " + ini.deskripsi)
+        tampilkan("")
+
+        // Simulate basic voice command
+        tampilkan("1. Mendaftarkan perintah suara dasar:")
+        tampilkan("   - 'halo' -> Menampilkan sapaan")
+        tampilkan("   - 'keluar' -> Menghentikan aplikasi")
+        tampilkan("")
+
+        // Simulate basic gesture command
+        tampilkan("2. Mendaftarkan perintah gestur dasar:")
+        tampilkan("   - 'tangan_terbuka' -> Memulai sesuatu")
+        tampilkan("   - 'kepalkan_tangan' -> Menghentikan sesuatu")
+        tampilkan("")
+
+        // Simulate device connection
+        tampilkan("3. Menghubungkan perangkat:")
+        tampilkan("   - Kamera USB untuk gesture recognition")
+        tampilkan("   - Microphone default untuk voice recognition")
+        tampilkan("")
+
+        tampilkan("Contoh dasar selesai dijalankan.")
+        kembalikan benar
+    }
+
+    // Get example info
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            deskripsi: ini.deskripsi,
+            tingkat_kesulitan: "dasar",
+            waktu_estimasi: "5 menit"
+        }
+    }
+}
+
+ekspor ContohDasar

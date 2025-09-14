@@ -1,353 +1,146 @@
-# KODEON IoT & Edge Computing Integration
+# KODEON IoT/Edge Integration
 
-KODEON's IoT and edge computing integration enables developers to create intelligent edge applications and IoT solutions using the intuitive KODEON syntax.
+Natural language programming framework for Internet of Things (IoT) and Edge Computing applications in KODEON.
+
+## Overview
+
+The IoT/Edge Integration component provides a comprehensive framework for creating Internet of Things and Edge Computing applications using KODEON's natural language syntax. It supports both Indonesian and English programming constructs, making it accessible to a wider audience.
 
 ## Features
 
-### IoT Device Programming
-Create IoT applications with simple KODEON syntax:
+-   **Dual Language Support**: Write IoT/Edge applications in both Indonesian (Bahasa Indonesia) and English
+-   **Cross-Platform**: Works with various IoT devices and edge computing platforms
+-   **Device Management**: Comprehensive device representation and management
+-   **Sensor Integration**: Support for multiple sensor types with calibration
+-   **Actuator Control**: Control of various actuators with flexible commands
+-   **Network Management**: Support for multiple network protocols (WiFi, Ethernet, Bluetooth, etc.)
+-   **Data Processing**: Advanced data processing and filtering capabilities
+-   **Communication Protocols**: Support for MQTT, HTTP, CoAP, and WebSocket
+-   **Security**: Built-in security features including TLS, OAuth, and JWT
+-   **Component-Based Architecture**: Modular design for easy extension and customization
+
+## Installation
+
+```bash
+# IoT/Edge integration is part of the KODEON ecosystem
+# No additional installation required
+```
+
+## Quick Start
+
+### Basic IoT Setup
 
 ```kodeon
-// Edge AI processing
-buat iot_device "smart_camera":
-    sensor kamera dengan resolusi 4k
-    ai_processor untuk face_recognition
-    kirim alert jika detect stranger
-    simpan video ke cloud storage
-    
-deploy ke raspberry_pi dengan optimization
+// Import the IoT framework
+impor IoT
+
+// Create IoT instance
+buat iot = IoT("iot")
+
+// Connect to IoT network
+iot.hubungkan("jaringan_wifi_utama")
+
+// Create a device
+buat perangkat = Perangkat("DEV_001", "sensor_node")
+perangkat.aktifkan()
+iot.tambah_perangkat(perangkat)
+
+// Add sensors to device
+buat sensor_suhu = Sensor("SENS_001", "suhu", "°C")
+perangkat.tambah_sensor(sensor_suhu)
+
+// Read sensor data
+buat data_sensor = perangkat.baca_sensor()
+
+// Send data to network
+iot.kirim_data(data_sensor, "server_cloud")
 ```
 
-### Edge Computing Capabilities
-Built-in support for edge processing:
-- Local AI inference
-- Data preprocessing
-- Real-time decision making
-- Bandwidth optimization
+### Edge Computing Node
 
-### Device Management
-Comprehensive device management:
-- Remote configuration
-- Firmware updates
-- Monitoring and diagnostics
-- Security management
-
-### Protocol Support
-Support for common IoT protocols:
-- MQTT
-- CoAP
-- HTTP/HTTPS
-- Bluetooth
-- Zigbee
-
-## Syntax Examples
-
-### Smart Home Device
 ```kodeon
-// Smart thermostat
-buat iot_device "smart_thermostat":
-    sensor suhu di pin D1
-    sensor kelembaban di pin D2
-    actuator relay_heater di pin D3
-    actuator relay_ac di pin D4
-    
-    // Configuration
-    suhu_target = 22.5
-    histeresis = 0.5
-    
-    // Main control loop
-    setiap 5 detik:
-        suhu_sekarang = baca(suhu)
-        kelembaban_sekarang = baca(kelembaban)
-        
-        jika suhu_sekarang < (suhu_target - histeresis):
-            aktifkan(relay_heater)
-            matikan(relay_ac)
-        
-        jika suhu_sekarang > (suhu_target + histeresis):
-            aktifkan(relay_ac)
-            matikan(relay_heater)
-        
-        jika abs(suhu_sekarang - suhu_target) <= histeresis:
-            matikan(relay_heater)
-            matikan(relay_ac)
-        
-        // Send data to cloud
-        kirim_data_ke_cloud({
-            "temperature": suhu_sekarang,
-            "humidity": kelembaban_sekarang,
-            "heater_status": status(relay_heater),
-            "ac_status": status(relay_ac),
-            "timestamp": sekarang()
-        })
-    
-    // Handle remote commands
-    saat terima_perintah "set_temperature":
-        data = baca_payload()
-        suhu_target = data.suhu
-        simpan_konfigurasi("suhu_target", suhu_target)
-    
-    // Handle firmware updates
-    saat terima_firmware_update:
-        firmware = baca_payload()
-        validasi_firmware(firmware)
-        install_firmware(firmware)
-        restart_device()
+// Create IoT instance for edge computing
+buat edge = IoT("edge")
 
-// Deploy to device
-deploy ke esp32 dengan:
-    wifi_ssid = "rumah_intelijen"
-    wifi_password = baca_dari_secret("wifi_password")
-    mqtt_broker = "mqtt.example.com"
-    device_id = "thermostat_living_room"
+// Connect to network
+edge.hubungkan("jaringan_ethernet_lokal")
+
+// Create edge node device
+buat edge_node = Perangkat("EDGE_001", "edge_node")
+edge_node.aktifkan()
+edge.tambah_perangkat(edge_node)
+
+// Add communication module
+buat komunikasi = edge.tambah_komunikasi("mqtt")
+komunikasi.hubungkan("mqtt.broker.local", { username: "edge_user", password: "edge_pass" })
+
+// Subscribe to sensor data topic
+komunikasi.berlangganan("sensor/data", fungsi(pesan, topik) {
+    // Process received data
+    buat data_diproses = edge.proses_data([pesan.nilai])
+
+    // Publish processed data
+    komunikasi.terbitkan("edge/processed", {
+        sumber: pesan.id_perangkat,
+        data_diproses: data_diproses[0]
+    })
+})
 ```
 
-### Industrial IoT Gateway
-```kodeon
-// Industrial monitoring gateway
-buat iot_gateway "factory_monitoring":
-    // Connect to various sensors
-    sensor suhu_pabrik di modbus(1, 0x1001)
-    sensor tekanan_mesin di modbus(1, 0x1002)
-    sensor getaran_mesin di modbus(1, 0x1003)
-    sensor konsumsi_energi di modbus(1, 0x1004)
-    
-    // Connect to actuators
-    actuator emergency_stop di modbus(2, 0x2001)
-    
-    // Edge AI processing
-    ai_model anomaly_detector = muat_model("anomaly_detection.tflite")
-    
-    // Data aggregation
-    data_buffer = buat_buffer(1000)  // Buffer for 1000 readings
-    
-    setiap 1 detik:
-        // Read all sensors
-        data = {
-            "timestamp": sekarang(),
-            "temperature": baca(suhu_pabrik),
-            "pressure": baca(tekanan_mesin),
-            "vibration": baca(getaran_mesin),
-            "energy": baca(konsumsi_energi)
-        }
-        
-        // Add to buffer
-        tambah_ke_buffer(data_buffer, data)
-        
-        // Run anomaly detection locally
-        anomaly_score = ai_model.predict(data)
-        jika anomaly_score > 0.8:
-            kirim_alert("Anomaly detected", data)
-            jika anomaly_score > 0.95:
-                aktifkan(emergency_stop)
-        
-        // Send aggregated data every minute
-        jika buffer_size(data_buffer) >= 60:
-            data_agregat = agregasi_data(data_buffer)
-            kirim_ke_cloud(data_agregat)
-            kosongkan_buffer(data_buffer)
-    
-    // Handle configuration updates
-    saat terima_perintah "update_thresholds":
-        thresholds = baca_payload()
-        simpan_konfigurasi("thresholds", thresholds)
-    
-    // Handle edge model updates
-    saat terima_perintah "update_model":
-        model_baru = baca_payload()
-        jika validasi_model(model_baru):
-            simpan_model(model_baru, "anomaly_detection.tflite")
-            restart_ai_model()
+## Components
 
-// Deploy to edge server
-deploy ke raspberry_pi dengan:
-    ethernet_interface = "eth0"
-    static_ip = "192.168.1.100"
-    gateway = "192.168.1.1"
-    mqtt_broker = "mqtt.factory.example.com"
-```
+### Core Modules
 
-### Edge AI with Camera
-```kodeon
-// Smart security camera
-buat iot_device "smart_camera":
-    sensor kamera dengan resolusi "1080p" di port CSI
-    ai_processor coral_tpu
-    storage lokal 32GB
-    network wifi
-    
-    // Load AI models
-    model face_detection = muat_model("face_detection_edgetpu.tflite")
-    model face_recognition = muat_model("face_recognition.tflite")
-    model object_detection = muat_model("object_detection_edgetpu.tflite")
-    
-    // Recognized faces database
-    database wajah_dikenal = muat_database("known_faces.db")
-    
-    // Motion detection
-    background_subtractor = buat_background_subtractor()
-    
-    setiap frame:
-        frame_sekarang = ambil_frame_dari_kamera()
-        
-        // Motion detection
-        motion_mask = background_subtractor.apply(frame_sekarang)
-        jika ada_gerakan(motion_mask):
-            // Run face detection
-            faces = model_face_detection.detect(frame_sekarang)
-            
-            jika panjang(faces) > 0:
-                // Recognize faces
-                for face in faces:
-                    face_embedding = model_face_recognition.extract_embedding(face)
-                    identity = cocokan_wajah(face_embedding, database_wajah_dikenal)
-                    
-                    jika identity.kenal:
-                        log_event("known_person_detected", {
-                            "name": identity.nama,
-                            "confidence": identity.kepercayaan,
-                            "timestamp": sekarang()
-                        })
-                    lainnya:
-                        log_event("unknown_person_detected", {
-                            "timestamp": sekarang()
-                        })
-                        kirim_alert("Stranger detected", frame_sekarang)
-            
-            lainnya:
-                // Run object detection
-                objects = model_object_detection.detect(frame_sekarang)
-                untuk objek_berbahaya dalam ["person", "car", "truck"]:
-                    jika objek_berbahaya dalam objects:
-                        kirim_alert("Suspicious object detected: " + objek_berbahaya, frame_sekarang)
-        
-        // Local storage management
-        jika storage_tersisa() < 10%:
-            hapus_video_terlama()
-        
-        // Upload to cloud when connected
-        jika koneksi_internet_ada() dan ada_video_baru():
-            upload_video_ke_cloud(video_terbaru())
+-   `IntiIoT`: Internet of Things core functionality
 
-// Deploy to edge device
-deploy ke coral_dev_board dengan:
-    wifi_ssid = baca_dari_secret("wifi_ssid")
-    wifi_password = baca_dari_secret("wifi_password")
-    cloud_endpoint = "https://api.security.example.com"
-    device_token = baca_dari_secret("device_token")
-```
+### IoT Components
 
-## Implementation Plan
+-   `Perangkat`: Device representation and management
+-   `Sensor`: Sensor representation and management
+-   `Aktuator`: Actuator representation and management
+-   `Jaringan`: Network representation and management
 
-### Phase 1 (Months 1-4)
-- Basic IoT device syntax
-- Sensor and actuator integration
-- Simple communication protocols
-- Device deployment
+### Utilities
 
-### Phase 2 (Months 5-8)
-- Edge computing capabilities
-- AI model integration
-- Advanced device management
-- Security features
-
-### Phase 3 (Months 9-12)
-- Industrial IoT support
-- Protocol integration
-- Fleet management
-- Advanced analytics
-
-## Technical Architecture
-
-```
-┌─────────────────────────────┐
-│    KODEON IoT Syntax        │
-├─────────────────────────────┤
-│  IoT Compiler               │
-├─────────────────────────────┤
-│    Edge Runtime             │
-├─────────────────────────────┤
-│  Device Abstraction Layer   │
-├─────────────────────────────┤
-│    Protocol Adapters        │
-└─────────────────────────────┘
-```
-
-## Integration with KODEON Core
-
-The IoT/Edge module integrates with the KODEON compiler through:
-- Specialized IoT syntax parsing
-- Compilation to device-specific code
-- Runtime integration with IoT frameworks
-- Device management APIs
-
-## IoT Libraries
-
-The IoT/Edge module includes several specialized libraries:
-
-### Sensor Library
-Provides sensor integration:
-- Temperature, humidity, pressure
-- Motion, light, sound
-- Camera, GPS, IMU
-- Industrial sensors
-
-### Actuator Library
-Handles actuator control:
-- Relays, motors, servos
-- LEDs, displays, buzzers
-- Valves, pumps, switches
-- Industrial actuators
-
-### Communication Library
-Implements communication protocols:
-- MQTT, CoAP, HTTP
-- Bluetooth, Zigbee
-- LoRa, Sigfox
-- Ethernet, WiFi
+-   `PemrosesData`: Data processing utilities
+-   `Komunikasi`: Communication protocols
+-   `Keamanan`: Security features
 
 ## API Reference
 
-### Device Creation
+### IoT Class
+
+Main class for creating IoT/Edge applications.
+
 ```kodeon
-buat iot_device "device_name":
-    // Device definition
+kelas IoT {
+    fungsi inisialisasi(tipe)  // Initialize with IoT type
+    fungsi hubungkan(jaringan)  // Connect to IoT network
+    fungsi putuskan_koneksi()  // Disconnect from IoT network
+    fungsi tambah_perangkat(perangkat)  // Add device
+    fungsi tambah_sensor(sensor)  // Add sensor
+    fungsi tambah_aktuator(aktuator)  // Add actuator
+    fungsi tambah_pemroses_data(pemroses)  // Add data processor
+    fungsi tambah_komunikasi(komunikasi)  // Add communication module
+    fungsi tambah_keamanan(keamanan)  // Add security module
+    fungsi proses_data(data)  // Process data
+    fungsi kirim_data(data, tujuan)  // Send data
+    fungsi terima_data()  // Receive data
+    fungsi perbarui()  // Update loop
+}
 ```
 
-### Sensor Integration
-```kodeon
-sensor type di pin/location
-baca(sensor)
-```
+## Examples
 
-### Actuator Control
-```kodeon
-actuator type di pin/location
-aktifkan(actuator)
-matikan(actuator)
-```
+Check the [examples](examples/) directory for complete usage examples:
 
-### Data Communication
-```kodeon
-kirim_data_ke_cloud(data)
-saat terima_perintah "command_name"
-```
-
-## Development Status
-
-This is a planned module for the advanced development roadmap. Implementation will follow the 36-month roadmap:
-
-- **Phase 1** (Months 1-12): IoT/Edge integration
-- **Phase 2** (Months 13-24): Advanced edge features
-- **Phase 3** (Months 25-36): Industrial IoT
+-   [Basic Usage](examples/basic-usage.kodeon): Comprehensive example showing IoT setup
+-   [Advanced Features](examples/advanced.kodeon): Advanced features like edge computing and security
 
 ## Contributing
 
-We welcome contributions to the IoT/Edge module. To contribute:
+Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-1. Fork the repository
-2. Create a branch for your changes
-3. Implement your IoT features
-4. Submit a pull request
+## License
 
-Please follow the [IoT Development Guidelines](docs/iot-development-guidelines.md) when contributing to ensure consistency and correctness.
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.

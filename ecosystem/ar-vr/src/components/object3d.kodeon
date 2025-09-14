@@ -1,0 +1,111 @@
+// KODEON AR/VR Integration - 3D Object Component
+// 3D object representation
+
+kelas Objek3D {
+    fungsi inisialisasi(nama, geometri, material) {
+        ini.nama = nama || "Objek3D"
+        ini.geometri = geometri || tidak_ada
+        ini.material = material || tidak_ada
+        ini.posisi = { x: 0, y: 0, z: 0 }
+        ini.rotasi = { x: 0, y: 0, z: 0 }
+        ini.skala = { x: 1, y: 1, z: 1 }
+        ini.anak = []
+        ini.visible = benar
+    }
+
+    // Set position
+    fungsi atur_posisi(x, y, z) {
+        ini.posisi.x = x
+        ini.posisi.y = y
+        ini.posisi.z = z
+    }
+
+    // Set rotation
+    fungsi atur_rotasi(x, y, z) {
+        ini.rotasi.x = x
+        ini.rotasi.y = y
+        ini.rotasi.z = z
+    }
+
+    // Set scale
+    fungsi atur_skala(x, y, z) {
+        ini.skala.x = x
+        ini.skala.y = y
+        ini.skala.z = z
+    }
+
+    // Add child object
+    fungsi tambah_anak(anak) {
+        ini.anak.tambah(anak)
+    }
+
+    // Remove child object
+    fungsi hapus_anak(anak) {
+        buat indeks = ini.anak.cari_indeks(anak)
+        jika indeks != -1 {
+            ini.anak.hapus_pada(indeks)
+        }
+    }
+
+    // Set visibility
+    fungsi atur_visibilitas(visible) {
+        ini.visible = visible
+    }
+
+    // Render object
+    fungsi render(frame, transformasi) {
+        jika bukan ini.visible {
+            kembalikan
+        }
+
+        // Apply transformations
+        buat transformasi_final = ini.hitung_transformasi(transformasi)
+
+        // Render geometry with material
+        jika ini.geometri bukan_tidak_ada dan ini.material bukan_tidak_ada {
+            ini.geometri.render(frame, ini.material, transformasi_final)
+        }
+
+        // Render children
+        untuk setiap anak dalam ini.anak {
+            anak.render(frame, transformasi_final)
+        }
+    }
+
+    // Calculate final transformation
+    fungsi hitung_transformasi(transformasi_induk) {
+        buat transformasi = {
+            posisi: ini.posisi,
+            rotasi: ini.rotasi,
+            skala: ini.skala
+        }
+
+        // Combine with parent transformation if exists
+        jika transformasi_induk bukan_tidak_ada {
+            transformasi.posisi.x = transformasi.posisi.x + transformasi_induk.posisi.x
+            transformasi.posisi.y = transformasi.posisi.y + transformasi_induk.posisi.y
+            transformasi.posisi.z = transformasi.posisi.z + transformasi_induk.posisi.z
+        }
+
+        kembalikan transformasi
+    }
+
+    // Update object
+    fungsi perbarui() {
+        // Update children
+        untuk setiap anak dalam ini.anak {
+            anak.perbarui()
+        }
+    }
+
+    // Clone object
+    fungsi klon() {
+        buat klon = Objek3D(ini.nama + "_klon", ini.geometri, ini.material)
+        klon.posisi = { ...ini.posisi }
+        klon.rotasi = { ...ini.rotasi }
+        klon.skala = { ...ini.skala }
+        kembalikan klon
+    }
+}
+
+ekspor Objek3D

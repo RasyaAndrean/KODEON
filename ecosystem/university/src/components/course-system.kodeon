@@ -1,0 +1,284 @@
+// KODEON University - Course System
+// Course management functionality
+
+kelas SistemKursus {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.kursus = []
+        ini.kategori = []
+        ini.instruktur = []
+    }
+
+    // Initialize course system
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Sistem kursus diinisialisasi")
+    }
+
+    // Shutdown course system
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.kursus = []
+        ini.kategori = []
+        ini.instruktur = []
+        tampilkan("Sistem kursus dihentikan")
+    }
+
+    // Create course
+    fungsi buat_kursus(judul, deskripsi, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat kursus = {
+            id: ini.kursus.panjang + 1,
+            judul: judul,
+            deskripsi: deskripsi,
+            metadata: metadata || {},
+            status: "draft",
+            dibuat: sekarang(),
+            diperbarui: sekarang(),
+            pelajaran: [],
+            kuis: [],
+            latihan: [],
+            prasyarat: [],
+            durasi_perkiraan: 0,
+            tingkat_kesulitan: "pemula",
+            bahasa: "indonesia"
+        }
+
+        ini.kursus.tambah(kursus)
+        tampilkan("Kursus dibuat: " + judul)
+        kembalikan kursus
+    }
+
+    // Add lesson to course
+    fungsi tambah_pelajaran(kursus_id, pelajaran) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kursus = ini.kursus.cari(fungsi(k) { kembalikan k.id == kursus_id })
+
+        jika bukan kursus {
+            tampilkan("Kursus tidak ditemukan: " + kursus_id)
+            kembalikan salah
+        }
+
+        pelajaran.id = kursus.pelajaran.panjang + 1
+        pelajaran.dibuat = sekarang()
+        kursus.pelajaran.tambah(pelajaran)
+
+        // Update estimated duration
+        kursus.durasi_perkiraan += pelajaran.perkiraan_durasi || 30 // default 30 minutes
+
+        tampilkan("Pelajaran ditambahkan ke kursus: " + kursus.judul)
+        kembalikan benar
+    }
+
+    // Add quiz to course
+    fungsi tambah_kuis(kursus_id, kuis) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kursus = ini.kursus.cari(fungsi(k) { kembalikan k.id == kursus_id })
+
+        jika bukan kursus {
+            tampilkan("Kursus tidak ditemukan: " + kursus_id)
+            kembalikan salah
+        }
+
+        kuis.id = kursus.kuis.panjang + 1
+        kuis.dibuat = sekarang()
+        kursus.kuis.tambah(kuis)
+
+        tampilkan("Kuis ditambahkan ke kursus: " + kursus.judul)
+        kembalikan benar
+    }
+
+    // Add exercise to course
+    fungsi tambah_latihan(kursus_id, latihan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kursus = ini.kursus.cari(fungsi(k) { kembalikan k.id == kursus_id })
+
+        jika bukan kursus {
+            tampilkan("Kursus tidak ditemukan: " + kursus_id)
+            kembalikan salah
+        }
+
+        latihan.id = kursus.latihan.panjang + 1
+        latihan.dibuat = sekarang()
+        kursus.latihan.tambah(latihan)
+
+        tampilkan("Latihan ditambahkan ke kursus: " + kursus.judul)
+        kembalikan benar
+    }
+
+    // Get course
+    fungsi dapatkan_kursus(kursus_id) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.kursus.cari(fungsi(k) { kembalikan k.id == kursus_id })
+    }
+
+    // List all courses
+    fungsi daftar_kursus(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.kursus
+        }
+
+        kembalikan ini.kursus.saring(fungsi(k) {
+            untuk setiap kunci dalam filter {
+                jika k[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Publish course
+    fungsi publikasikan_kursus(kursus_id) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kursus = ini.kursus.cari(fungsi(k) { kembalikan k.id == kursus_id })
+
+        jika bukan kursus {
+            tampilkan("Kursus tidak ditemukan: " + kursus_id)
+            kembalikan salah
+        }
+
+        jika kursus.pelajaran.panjang == 0 {
+            tampilkan("Kursus harus memiliki minimal 1 pelajaran untuk dipublikasikan")
+            kembalikan salah
+        }
+
+        kursus.status = "dipublikasikan"
+        kursus.diperbarui = sekarang()
+        tampilkan("Kursus dipublikasikan: " + kursus.judul)
+        kembalikan benar
+    }
+
+    // Add course category
+    fungsi tambah_kategori(nama, deskripsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kategori = {
+            id: ini.kategori.panjang + 1,
+            nama: nama,
+            deskripsi: deskripsi,
+            dibuat: sekarang()
+        }
+
+        ini.kategori.tambah(kategori)
+        tampilkan("Kategori kursus ditambahkan: " + nama)
+        kembalikan kategori
+    }
+
+    // Add instructor
+    fungsi tambah_instruktur(nama, spesialisasi, bio) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat instruktur = {
+            id: ini.instruktur.panjang + 1,
+            nama: nama,
+            spesialisasi: spesialisasi,
+            bio: bio,
+            dibuat: sekarang(),
+            kursus_diajar: []
+        }
+
+        ini.instruktur.tambah(instruktur)
+        tampilkan("Instruktur ditambahkan: " + nama)
+        kembalikan instruktur
+    }
+
+    // Assign instructor to course
+    fungsi tetapkan_instruktur(kursus_id, instruktur_id) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem kursus belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kursus = ini.kursus.cari(fungsi(k) { kembalikan k.id == kursus_id })
+        buat instruktur = ini.instruktur.cari(fungsi(i) { kembalikan i.id == instruktur_id })
+
+        jika bukan kursus atau bukan instruktur {
+            tampilkan("Kursus atau instruktur tidak ditemukan")
+            kembalikan salah
+        }
+
+        kursus.instruktur = instruktur
+        instruktur.kursus_diajar.tambah(kursus)
+        tampilkan("Instruktur ditetapkan untuk kursus: " + instruktur.nama + " -> " + kursus.judul)
+        kembalikan benar
+    }
+
+    // Get course statistics
+    fungsi dapatkan_statistik() {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        buat total_pelajaran = 0
+        buat total_kuis = 0
+        buat total_latihan = 0
+
+        untuk setiap kursus dalam ini.kursus {
+            total_pelajaran += kursus.pelajaran.panjang
+            total_kuis += kursus.kuis.panjang
+            total_latihan += kursus.latihan.panjang
+        }
+
+        kembalikan {
+            total_kursus: ini.kursus.panjang,
+            total_kategori: ini.kategori.panjang,
+            total_instruktur: ini.instruktur.panjang,
+            total_pelajaran: total_pelajaran,
+            total_kuis: total_kuis,
+            total_latihan: total_latihan,
+            kursus_dipublikasikan: ini.kursus.saring(fungsi(k) {
+                kembalikan k.status == "dipublikasikan"
+            }).panjang
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Update course timestamps periodically
+        untuk setiap kursus dalam ini.kursus {
+            jika Math.acak() > 0.95 {
+                kursus.diperbarui = sekarang()
+            }
+        }
+    }
+}
+
+ekspor SistemKursus

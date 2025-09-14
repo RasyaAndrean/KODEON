@@ -1,0 +1,25 @@
+{
+  "name": "@kodeon/web3-blockchain",
+  "version": "1.0.0",
+  "description": "KODEON Web3/Blockchain Framework - A comprehensive blockchain development library for the KODEON programming language",
+  "main": "src/web3.kodeon",
+  "keywords": [
+    "kodeon",
+    "web3",
+    "blockchain",
+    "ethereum",
+    "smart-contracts"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon-lang/ecosystem/web3-blockchain"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon-lang/ecosystem/web3-blockchain/issues"
+  },
+  "homepage": "https://github.com/kodeon-lang/ecosystem/web3-blockchain#readme"
+}

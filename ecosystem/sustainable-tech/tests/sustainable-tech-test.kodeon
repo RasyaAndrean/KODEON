@@ -1,0 +1,318 @@
+// KODEON Sustainable Technology - Test Suite
+// Basic tests for the Sustainable Technology component
+
+impor "../src/sustainable-tech.kodeon" sebagai sustainable
+impor "../src/core/sustainable-core.kodeon" sebagai IntiSustainable
+impor "../src/components/carbon-tracker.kodeon" sebagai PelacakKarbon
+impor "../src/components/energy-optimizer.kodeon" sebagai OptimizerEnergi
+impor "../src/components/resource-monitor.kodeon" sebagai MonitorSumberDaya
+impor "../src/utils/sustainable-logger.kodeon" sebagai LoggerSustainable
+impor "../src/utils/analyzer.kodeon" sebagai Analyzer
+impor "../src/utils/reporter.kodeon" sebagai Reporter
+impor "../src/energy/cpu-efficiency.kodeon" sebagai EfisiensiCPU
+impor "../src/energy/memory-efficiency.kodeon" sebagai EfisiensiMemori
+impor "../src/energy/network-efficiency.kodeon" sebagai EfisiensiJaringan
+impor "../src/carbon/carbon-calculator.kodeon" sebagai KalkulatorKarbon
+impor "../src/carbon/carbon-offset.kodeon" sebagai KompensasiKarbon
+impor "../src/carbon/carbon-reporting.kodeon" sebagai LaporanKarbon
+
+// Test sustainable core
+fungsi uji_inti_sustainable() {
+    tampilkan("Menguji IntiSustainable...")
+
+    buat inti = IntiSustainable.IntiSustainable()
+    periksa(inti bukan tidak_ada, "IntiSustainable harus dapat dibuat")
+
+    buat hasil_init = inti.inisialisasi({
+        lingkungan: "test",
+        mode: "debug"
+    })
+    periksa(hasil_init == benar, "IntiSustainable harus dapat diinisialisasi")
+
+    buat metrik = inti.dapatkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mendapatkan metrik")
+
+    buat app = inti.mulai_pantau_aplikasi("test_app.kodeon")
+    periksa(app bukan tidak_ada, "Harus dapat memantau aplikasi")
+    periksa(app.id > 0, "Aplikasi harus memiliki ID")
+
+    tampilkan("✅ IntiSustainable berfungsi dengan baik")
+}
+
+// Test carbon tracker
+fungsi uji_pelacak_karbon() {
+    tampilkan("Menguji PelacakKarbon...")
+
+    buat pelacak = PelacakKarbon.PelacakKarbon()
+    periksa(pelacak bukan tidak_ada, "PelacakKarbon harus dapat dibuat")
+
+    pelacak.inisialisasi()
+    periksa(pelacak.terhubung == benar, "PelacakKarbon harus terhubung setelah inisialisasi")
+
+    buat emisi = pelacak.lacak_emisi("test", 10.5)
+    periksa(emisi bukan tidak_ada, "Harus dapat melacak emisi")
+
+    buat metrik = pelacak.dapatkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mendapatkan metrik")
+    periksa(metrik.total_emisi > 0, "Total emisi harus lebih dari 0")
+
+    tampilkan("✅ PelacakKarbon berfungsi dengan baik")
+}
+
+// Test energy optimizer
+fungsi uji_optimizer_energi() {
+    tampilkan("Menguji OptimizerEnergi...")
+
+    buat optimizer = OptimizerEnergi.OptimizerEnergi()
+    periksa(optimizer bukan tidak_ada, "OptimizerEnergi harus dapat dibuat")
+
+    optimizer.inisialisasi()
+    periksa(optimizer.terhubung == benar, "OptimizerEnergi harus terhubung setelah inisialisasi")
+
+    buat data_penggunaan = { cpu: 75, memori: 60, jaringan: 200 }
+    buat analisis = optimizer.analisis_penggunaan_energi(data_penggunaan)
+    periksa(analisis bukan tidak_ada, "Harus dapat menganalisis penggunaan energi")
+
+    buat rekomendasi = optimizer.dapatkan_rekomendasi()
+    periksa(rekomendasi.panjang >= 0, "Harus mendapatkan rekomendasi (bisa kosong)")
+
+    tampilkan("✅ OptimizerEnergi berfungsi dengan baik")
+}
+
+// Test resource monitor
+fungsi uji_monitor_sumber_daya() {
+    tampilkan("Menguji MonitorSumberDaya...")
+
+    buat monitor = MonitorSumberDaya.MonitorSumberDaya()
+    periksa(monitor bukan tidak_ada, "MonitorSumberDaya harus dapat dibuat")
+
+    monitor.inisialisasi()
+    periksa(monitor.terhubung == benar, "MonitorSumberDaya harus terhubung setelah inisialisasi")
+
+    buat snapshot = monitor.kumpulkan_metrik()
+    periksa(snapshot bukan tidak_ada, "Harus dapat mengumpulkan metrik")
+
+    buat metrik = monitor.dapatkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mendapatkan metrik saat ini")
+
+    tampilkan("✅ MonitorSumberDaya berfungsi dengan baik")
+}
+
+// Test sustainable logger
+fungsi uji_logger_sustainable() {
+    tampilkan("Menguji LoggerSustainable...")
+
+    buat logger = LoggerSustainable.LoggerSustainable({ level: "debug" })
+    periksa(logger bukan tidak_ada, "LoggerSustainable harus dapat dibuat")
+
+    buat hasil = logger.info("Test message")
+    periksa(hasil == benar, "Harus dapat mencatat pesan info")
+
+    buat log = logger.dapatkan_log()
+    periksa(log.panjang > 0, "Harus ada entri log")
+
+    logger.catat_emisi_karbon("test", 5.2, "kg CO2")
+    buat log_karbon = logger.dapatkan_log({ "metadata.jenis": "karbon" })
+    periksa(log_karbon.panjang > 0, "Harus ada log karbon")
+
+    tampilkan("✅ LoggerSustainable berfungsi dengan baik")
+}
+
+// Test analyzer
+fungsi uji_analyzer() {
+    tampilkan("Menguji Analyzer...")
+
+    buat analyzer = Analyzer.Analyzer()
+    periksa(analyzer bukan tidak_ada, "Analyzer harus dapat dibuat")
+
+    buat dataset = [10, 20, 30, 40, 50]
+    buat entri = analyzer.tambah_data(dataset)
+    periksa(entri bukan tidak_ada, "Harus dapat menambahkan data")
+
+    buat analisis = analyzer.analisis_data()
+    periksa(analisis bukan tidak_ada, "Harus dapat menganalisis data")
+    periksa(analisis.hasil.mean == 30, "Rata-rata harus 30")
+
+    tampilkan("✅ Analyzer berfungsi dengan baik")
+}
+
+// Test reporter
+fungsi uji_reporter() {
+    tampilkan("Menguji Reporter...")
+
+    buat reporter = Reporter.Reporter()
+    periksa(reporter bukan tidak_ada, "Reporter harus dapat dibuat")
+
+    buat data_contoh = {
+        total_emisi: 25.5,
+        total_kompensasi: 12.8
+    }
+
+    buat laporan = reporter.buat_laporan(data_contoh)
+    periksa(laporan bukan tidak_ada, "Harus dapat membuat laporan")
+    periksa(laporan.id > 0, "Laporan harus memiliki ID")
+
+    buat laporan_dapat_ditemukan = reporter.dapatkan_laporan({ id: laporan.id })
+    periksa(laporan_dapat_ditemukan.panjang > 0, "Harus dapat menemukan laporan yang dibuat")
+
+    tampilkan("✅ Reporter berfungsi dengan baik")
+}
+
+// Test CPU efficiency
+fungsi uji_efisiensi_cpu() {
+    tampilkan("Menguji EfisiensiCPU...")
+
+    buat efisiensi = EfisiensiCPU.EfisiensiCPU()
+    periksa(efisiensi bukan tidak_ada, "EfisiensiCPU harus dapat dibuat")
+
+    efisiensi.inisialisasi()
+    periksa(efisiensi.terhubung == benar, "EfisiensiCPU harus terhubung setelah inisialisasi")
+
+    buat dataset = [50, 60, 70, 80, 90]
+    buat profil = efisiensi.profil_penggunaan_cpu(dataset)
+    periksa(profil bukan tidak_ada, "Harus dapat memprofil penggunaan CPU")
+
+    buat metrik = efisiensi.dapatkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mendapatkan metrik CPU")
+
+    tampilkan("✅ EfisiensiCPU berfungsi dengan baik")
+}
+
+// Test memory efficiency
+fungsi uji_efisiensi_memori() {
+    tampilkan("Menguji EfisiensiMemori...")
+
+    buat efisiensi = EfisiensiMemori.EfisiensiMemori()
+    periksa(efisiensi bukan tidak_ada, "EfisiensiMemori harus dapat dibuat")
+
+    efisiensi.inisialisasi()
+    periksa(efisiensi.terhubung == benar, "EfisiensiMemori harus terhubung setelah inisialisasi")
+
+    buat alokasi_data = { ukuran: 1024, jenis: "array" }
+    buat alokasi = efisiensi.lacak_alokasi_memori(alokasi_data)
+    periksa(alokasi bukan tidak_ada, "Harus dapat melacak alokasi memori")
+
+    buat metrik = efisiensi.dapatkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mendapatkan metrik memori")
+
+    tampilkan("✅ EfisiensiMemori berfungsi dengan baik")
+}
+
+// Test network efficiency
+fungsi uji_efisiensi_jaringan() {
+    tampilkan("Menguji EfisiensiJaringan...")
+
+    buat efisiensi = EfisiensiJaringan.EfisiensiJaringan()
+    periksa(efisiensi bukan tidak_ada, "EfisiensiJaringan harus dapat dibuat")
+
+    efisiensi.inisialisasi()
+    periksa(efisiensi.terhubung == benar, "EfisiensiJaringan harus terhubung setelah inisialisasi")
+
+    buat trafik_data = { ukuran: 512, jenis: "request", tujuan: "api" }
+    buat trafik = efisiensi.lacak_trafik_jaringan(trafik_data)
+    periksa(trafik bukan tidak_ada, "Harus dapat melacak trafik jaringan")
+
+    buat metrik = efisiensi.dapatkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mendapatkan metrik jaringan")
+
+    tampilkan("✅ EfisiensiJaringan berfungsi dengan baik")
+}
+
+// Test carbon calculator
+fungsi uji_kalkulator_karbon() {
+    tampilkan("Menguji KalkulatorKarbon...")
+
+    buat kalkulator = KalkulatorKarbon.KalkulatorKarbon()
+    periksa(kalkulator bukan tidak_ada, "KalkulatorKarbon harus dapat dibuat")
+
+    kalkulator.inisialisasi()
+    periksa(kalkulator.terhubung == benar, "KalkulatorKarbon harus terhubung setelah inisialisasi")
+
+    buat data_penggunaan = { cpu: 50, memori: 128, jaringan: 100 }
+    buat jejak = kalkulator.hitung_jejak_karbon(data_penggunaan, 24)
+    periksa(jejak > 0, "Jejak karbon harus lebih dari 0")
+
+    buat faktor = kalkulator.dapatkan_faktor_emisi()
+    periksa(faktor bukan tidak_ada, "Harus dapat mendapatkan faktor emisi")
+
+    tampilkan("✅ KalkulatorKarbon berfungsi dengan baik")
+}
+
+// Test carbon offset
+fungsi uji_kompensasi_karbon() {
+    tampilkan("Menguji KompensasiKarbon...")
+
+    buat kompensasi = KompensasiKarbon.KompensasiKarbon()
+    periksa(kompensasi bukan tidak_ada, "KompensasiKarbon harus dapat dibuat")
+
+    kompensasi.inisialisasi()
+    periksa(kompensasi.terhubung == benar, "KompensasiKarbon harus terhubung setelah inisialisasi")
+
+    buat offset = kompensasi.tambah_kompensasi("pohon1", 50)
+    periksa(offset bukan tidak_ada, "Harus dapat menambahkan kompensasi")
+    periksa(offset.total_kompensasi > 0, "Total kompensasi harus lebih dari 0")
+
+    buat total = kompensasi.hitung_total_kompensasi()
+    periksa(total > 0, "Total kompensasi harus lebih dari 0")
+
+    tampilkan("✅ KompensasiKarbon berfungsi dengan baik")
+}
+
+// Test carbon reporting
+fungsi uji_laporan_karbon() {
+    tampilkan("Menguji LaporanKarbon...")
+
+    buat laporan = LaporanKarbon.LaporanKarbon()
+    periksa(laporan bukan tidak_ada, "LaporanKarbon harus dapat dibuat")
+
+    laporan.inisialisasi()
+    periksa(laporan.terhubung == benar, "LaporanKarbon harus terhubung setelah inisialisasi")
+
+    buat data_contoh = {
+        total_emisi: 30.5,
+        total_kompensasi: 15.2
+    }
+
+    buat laporan_hasil = laporan.buat_laporan(data_contoh)
+    periksa(laporan_hasil bukan tidak_ada, "Harus dapat membuat laporan")
+    periksa(laporan_hasil.id > 0, "Laporan harus memiliki ID")
+
+    tampilkan("✅ LaporanKarbon berfungsi dengan baik")
+}
+
+// Main test function
+fungsi utama() {
+    tampilkan("=== Test Suite untuk KODEON Sustainable Technology ===")
+
+    coba {
+        uji_inti_sustainable()
+        uji_pelacak_karbon()
+        uji_optimizer_energi()
+        uji_monitor_sumber_daya()
+        uji_logger_sustainable()
+        uji_analyzer()
+        uji_reporter()
+        uji_efisiensi_cpu()
+        uji_efisiensi_memori()
+        uji_efisiensi_jaringan()
+        uji_kalkulator_karbon()
+        uji_kompensasi_karbon()
+        uji_laporan_karbon()
+
+        tampilkan("\n🎉 Semua test berhasil!")
+        kembalikan 0
+    } tangkap(error) {
+        tampilkan("\n❌ Test gagal dengan kesalahan: " + error)
+        kembalikan 1
+    }
+}
+
+// Helper function for assertions
+fungsi periksa(kondisi, pesan) {
+    jika bukan kondisi {
+        lempar "Assertion failed: " + pesan
+    }
+}
+
+// Run tests
+utama()

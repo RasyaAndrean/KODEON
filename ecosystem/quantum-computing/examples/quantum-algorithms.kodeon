@@ -1,0 +1,88 @@
+// KODEON Quantum Computing - Quantum Algorithms Example
+// Demonstrates running various quantum algorithms
+
+// Import the quantum computing framework
+impor "quantum" sebagai kuantum
+
+fungsi demonstrasi_algoritma():
+    tampilkan("=== Demonstrasi Algoritma Kuantum ===")
+    tampilkan("")
+
+    // Create a quantum engine
+    buat mesin = kuantum.buat_mesin_kuantum()
+
+    // Get list of available algorithms
+    buat algoritma = kuantum.algoritma.AlgoritmaKuantum(tidak_ada)
+    buat daftar_algoritma = algoritma.dapatkan_daftar_algoritma()
+
+    tampilkan("Algoritma kuantum yang tersedia:")
+    untuk setiap nama dalam daftar_algoritma:
+        tampilkan("- " + nama)
+    tampilkan("")
+
+    // Demonstrate Deutsch-Jozsa algorithm
+    tampilkan("1. Menjalankan Algoritma Deutsch-Jozsa:")
+    buat hasil_deutsch = mesin.jalankan_algoritma("deutsch-jozsa", {})
+    tampilkan("   Nama: " + hasil_deutsch.nama)
+    tampilkan("   Hasil: " + hasil_deutsch.hasil)
+    tampilkan("   Penjelasan: " + hasil_deutsch.penjelasan)
+    tampilkan("")
+
+    // Demonstrate Grover's algorithm
+    tampilkan("2. Menjalankan Algoritma Grover:")
+    buat parameter_grover = {
+        database_ukuran: 8,
+        item_dicari: 5
+    }
+    buat hasil_grover = mesin.jalankan_algoritma("grover", parameter_grover)
+    tampilkan("   Nama: " + hasil_grover.nama)
+    tampilkan("   Hasil: " + hasil_grover.hasil)
+    tampilkan("   Penjelasan: " + hasil_grover.penjelasan)
+    tampilkan("")
+
+    // Demonstrate Shor's algorithm
+    tampilkan("3. Menjalankan Algoritma Shor:")
+    buat parameter_shor = {
+        bilangan: 15
+    }
+    buat hasil_shor = mesin.jalankan_algoritma("shor", parameter_shor)
+    tampilkan("   Nama: " + hasil_shor.nama)
+    tampilkan("   Hasil: " + hasil_shor.hasil)
+    tampilkan("   Penjelasan: " + hasil_shor.penjelasan)
+    tampilkan("")
+
+fungsi demonstrasi_visualisasi():
+    tampilkan("=== Demonstrasi Visualisasi Keadaan Kuantum ===")
+    tampilkan("")
+
+    // Create a visualizer
+    buat visualisasi = kuantum.visualisasi.buat_visualisasi()
+
+    // Visualize a Bell state
+    tampilkan("1. Visualisasi Keadaan Bell (|00⟩ + |11⟩)/√2:")
+    buat bell_state = [0.707+0i, 0+0i, 0+0i, 0.707+0i]
+    tampilkan(visualisasi.visualisasi_probabilitas(bell_state))
+
+    // Visualize a GHZ state
+    tampilkan("2. Visualisasi Keadaan GHZ (|000⟩ + |111⟩)/√2:")
+    buat ghz_state = [0.707+0i, 0+0i, 0+0i, 0+0i, 0+0i, 0+0i, 0+0i, 0.707+0i]
+    tampilkan(visualisasi.visualisasi_probabilitas(ghz_state))
+
+    // Simulate measurement results
+    tampilkan("3. Histogram Pengukuran Simulasi:")
+    buat hasil_simulasi = []
+    // Simulate 1000 measurements of a biased qubit
+    untuk buat i = 0 sampai i < 1000:
+        buat acak_val = acak(0, 1000) / 1000.0
+        jika acak_val < 0.8:  // 80% chance of |0⟩
+            hasil_simulasi.tambah([0])
+        lain:
+            hasil_simulasi.tambah([1])
+
+    tampilkan(visualisasi.visualisasi_pengukuran(hasil_simulasi, 1000))
+
+fungsi utama():
+    demonstrasi_algoritma()
+    demonstrasi_visualisasi()
+
+utama()

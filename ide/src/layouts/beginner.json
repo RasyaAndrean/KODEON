@@ -1,0 +1,27 @@
+{
+  "name": "Beginner",
+  "description": "Simplified layout for beginners with larger fonts and simplified interface",
+  "fontSize": 16,
+  "zoomLevel": 1.2,
+  "panels": {
+    "editor": {
+      "visible": true,
+      "position": "center",
+      "size": "100%"
+    },
+    "output": {
+      "visible": true,
+      "position": "bottom",
+      "size": "40%"
+    },
+    "problems": {
+      "visible": true,
+      "position": "bottom",
+      "size": "40%"
+    }
+  },
+  "toolbar": {
+    "visible": true,
+    "buttons": ["newFile", "openFile", "saveFile", "compile", "run"]
+  }
+}

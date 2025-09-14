@@ -1,0 +1,48 @@
+{
+  "name": "Debugging",
+  "description": "Debugging-focused layout with debugging panels and tools",
+  "fontSize": 12,
+  "zoomLevel": 1.0,
+  "panels": {
+    "editor": {
+      "visible": true,
+      "position": "center",
+      "size": "60%"
+    },
+    "output": {
+      "visible": true,
+      "position": "right",
+      "size": "20%"
+    },
+    "problems": {
+      "visible": true,
+      "position": "right",
+      "size": "20%"
+    },
+    "debug": {
+      "visible": true,
+      "position": "bottom",
+      "size": "40%"
+    },
+    "variables": {
+      "visible": true,
+      "position": "right",
+      "size": "20%"
+    }
+  },
+  "toolbar": {
+    "visible": true,
+    "buttons": [
+      "newFile",
+      "openFile",
+      "saveFile",
+      "compile",
+      "run",
+      "debug",
+      "stepOver",
+      "stepInto",
+      "stepOut",
+      "stop"
+    ]
+  }
+}

@@ -3,162 +3,455 @@
   <head>
     <meta charset="UTF-8" />
     <title>KODEON IDE</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="src/styles/monetization.css" />
     <style>
       body {
         margin: 0;
         padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          Helvetica, Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
         height: 100vh;
         overflow: hidden;
-        background-color: #1e1e1e;
-        color: #d4d4d4;
       }
 
       #toolbar {
-        height: 40px;
+        height: 50px;
         background-color: #333;
         color: white;
         display: flex;
         align-items: center;
         padding: 0 10px;
-        border-bottom: 1px solid #444;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      .toolbar-group {
-        display: flex;
-        margin-right: 10px;
-      }
-
-      .toolbar-button {
-        background: none;
-        border: 1px solid #555;
-        color: white;
-        padding: 5px 10px;
-        margin-right: 5px;
-        cursor: pointer;
-        border-radius: 3px;
-        font-size: 12px;
-      }
-
-      .toolbar-button:hover {
+      #toolbar button {
         background-color: #555;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        margin-right: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
       }
 
-      .toolbar-button:active {
-        background-color: #666;
+      #toolbar button:hover {
+        background-color: #777;
       }
 
-      #main-container {
-        display: flex;
-        height: calc(100vh - 40px);
-      }
-
-      #editor-container {
-        flex: 1;
-        height: 100%;
-      }
-
-      #panels-container {
+      #main-content {
+        height: calc(100vh - 50px);
         display: flex;
         flex-direction: column;
-        width: 350px;
       }
 
-      .panel {
+      #editor {
         flex: 1;
-        background-color: #252526;
-        border-left: 1px solid #444;
-        padding: 10px;
-        overflow-y: auto;
+        width: 100%;
       }
 
-      .panel-title {
-        font-weight: bold;
-        margin-bottom: 10px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #444;
-        color: #cccccc;
-        font-size: 14px;
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
       }
 
-      #output-content {
-        font-family: 'Courier New', monospace;
-        white-space: pre-wrap;
-        font-size: 12px;
-        color: #cccccc;
-        height: calc(100% - 30px);
-        overflow-y: auto;
-      }
-
-      #problems-content {
-        font-family: 'Courier New', monospace;
-        white-space: pre-wrap;
-        font-size: 12px;
-        color: #f48771;
-        height: calc(100% - 30px);
-        overflow-y: auto;
-      }
-
-      .panel-resizer {
-        height: 1px;
-        background-color: #444;
-        cursor: ns-resize;
-      }
-
-      .status-bar {
-        height: 20px;
-        background-color: #007acc;
-        color: white;
-        font-size: 12px;
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 80vh;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         display: flex;
-        align-items: center;
-        padding: 0 10px;
+        flex-direction: column;
       }
 
-      .status-item {
-        margin-right: 15px;
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #007bff;
+        color: white;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .modal-title {
+        font-size: 1.3em;
+        font-weight: bold;
+      }
+
+      .close {
+        font-size: 1.8em;
+        cursor: pointer;
+        color: white;
+      }
+
+      .close:hover {
+        color: #f0f0f0;
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #dee2e6;
+        background-color: #f8f9fa;
+      }
+
+      .tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        border-right: 1px solid #dee2e6;
+        font-weight: 500;
+        color: #6c757d;
+      }
+
+      .tab.active {
+        color: #007bff;
+        border-bottom: 3px solid #007bff;
+        background-color: white;
+        margin-bottom: -1px;
+      }
+
+      .tab-content {
+        padding: 20px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .tab-pane {
+        display: none;
+      }
+
+      .tab-pane.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1em;
+        box-sizing: border-box;
+      }
+
+      textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.2s;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #0069d9;
+      }
+
+      .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #5a6268;
+      }
+
+      .btn-success {
+        background-color: #28a745;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #218838;
+      }
+
+      .btn-info {
+        background-color: #17a2b8;
+        color: white;
+      }
+
+      .btn-info:hover {
+        background-color: #138496;
+      }
+
+      .btn-warning {
+        background-color: #ffc107;
+        color: #212529;
+      }
+
+      .btn-warning:hover {
+        background-color: #e0a800;
+      }
+
+      #ai-output {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        min-height: 150px;
+        font-family: "Courier New", monospace;
+        white-space: pre-wrap;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        color: #333;
+      }
+
+      .analysis-results {
+        margin-top: 15px;
+      }
+
+      .analysis-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        background-color: #fff;
+      }
+
+      .analysis-section h3 {
+        margin-top: 0;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 8px;
+      }
+
+      .issue-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .issue-item:last-child {
+        border-bottom: none;
+      }
+
+      .issue-high {
+        border-left: 4px solid #dc3545;
+        padding-left: 12px;
+      }
+
+      .issue-medium {
+        border-left: 4px solid #ffc107;
+        padding-left: 12px;
+      }
+
+      .issue-low {
+        border-left: 4px solid #28a745;
+        padding-left: 12px;
+      }
+
+      .suggestion-item {
+        background-color: #e9f7ef;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+
+      .suggestion-item h4 {
+        margin-top: 0;
+        color: #155724;
+      }
+
+      .security-item {
+        background-color: #f8d7da;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+      }
+
+      .security-item h4 {
+        margin-top: 0;
+        color: #721c24;
+      }
+
+      .quality-score {
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+
+      .quality-high {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .quality-medium {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+
+      .quality-low {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
       }
     </style>
   </head>
   <body>
     <div id="toolbar">
-      <div class="toolbar-group">
-        <button class="toolbar-button" id="new-file">New</button>
-        <button class="toolbar-button" id="open-file">Open</button>
-        <button class="toolbar-button" id="save-file">Save</button>
-      </div>
-      <div class="toolbar-group">
-        <button class="toolbar-button" id="compile-btn">Compile</button>
-        <button class="toolbar-button" id="run-btn">Run</button>
-      </div>
-      <div class="toolbar-group">
-        <button class="toolbar-button" id="undo-btn">Undo</button>
-        <button class="toolbar-button" id="redo-btn">Redo</button>
-      </div>
+      <button id="run-btn">Run</button>
+      <button id="debug-btn">Debug</button>
+      <button id="ai-assistant-btn">AI Assistant</button>
     </div>
 
-    <div id="main-container">
-      <div id="editor-container"></div>
-      <div id="panels-container">
-        <div class="panel">
-          <div class="panel-title">Output</div>
-          <div id="output-content">Welcome to KODEON IDE</div>
+    <div id="main-content">
+      <div id="editor"></div>
+
+      <!-- AI Assistant Modal -->
+      <div id="ai-assistant-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title">AI Assistant 2.0</div>
+            <span class="close">&times;</span>
+          </div>
+
+          <div class="tabs">
+            <div class="tab active" data-tab="generate">Generate Code</div>
+            <div class="tab" data-tab="analyze">Analyze Code</div>
+            <div class="tab" data-tab="improve">Improve Code</div>
+            <div class="tab" data-tab="docs">Generate Docs</div>
+          </div>
+
+          <div class="tab-content">
+            <!-- Generate Code Tab -->
+            <div class="tab-pane active" id="generate-tab">
+              <div class="form-group">
+                <label class="form-label">Describe what you want to do:</label>
+                <textarea
+                  class="form-control"
+                  id="ai-input"
+                  rows="3"
+                  placeholder="e.g., Create a function that adds two numbers, or Show me how to loop through a list"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary" id="ai-process-btn">
+                  Generate Code
+                </button>
+                <button class="btn btn-secondary" id="ai-complex-btn">
+                  Complex Request
+                </button>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Generated Code:</label>
+                <div id="ai-output">
+                  Your generated code will appear here...
+                </div>
+              </div>
+            </div>
+
+            <!-- Analyze Code Tab -->
+            <div class="tab-pane" id="analyze-tab">
+              <div class="form-group">
+                <p>
+                  Click the button below to analyze the current code in the
+                  editor for quality, security issues, and refactoring
+                  suggestions.
+                </p>
+                <button class="btn btn-info" id="ai-analyze-btn">
+                  Analyze Current Code
+                </button>
+              </div>
+              <div class="analysis-results">
+                <div id="analysis-output">
+                  <p>Analysis results will appear here...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Improve Code Tab -->
+            <div class="tab-pane" id="improve-tab">
+              <div class="form-group">
+                <p>
+                  Click the button below to get refactoring suggestions and
+                  automatically improve your code based on best practices.
+                </p>
+                <button class="btn btn-success" id="ai-improve-btn">
+                  Improve Current Code
+                </button>
+              </div>
+              <div class="analysis-results">
+                <div id="improve-output">
+                  <p>Improvement suggestions will appear here...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Generate Docs Tab -->
+            <div class="tab-pane" id="docs-tab">
+              <div class="form-group">
+                <p>
+                  Click the button below to automatically generate documentation
+                  for your current code.
+                </p>
+                <button class="btn btn-warning" id="ai-doc-btn">
+                  Generate Documentation
+                </button>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Generated Documentation:</label>
+                <div id="docs-output">
+                  <p>Documentation will appear here...</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="panel-resizer"></div>
-        <div class="panel">
-          <div class="panel-title">Problems</div>
-          <div id="problems-content">No problems detected</div>
-        </div>
       </div>
     </div>
 
-    <div class="status-bar">
-      <div class="status-item">KODEON v0.1.0</div>
-      <div class="status-item" id="status-position">Line 1, Column 1</div>
-      <div class="status-item" id="status-language">kodeon</div>
-    </div>
-
+    <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
     <script src="renderer.js"></script>
   </body>
 </html>

@@ -1,0 +1,133 @@
+// KODEON Voice/Gesture - Device Controller Component
+// Component for controlling devices through voice and gesture commands
+
+kelas PengendaliPerangkat {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.perangkat_terhubung = []
+        ini.perintah_didukung = []
+        ini.mode = ini.opsi.mode || "normal"
+        ini.aktif = salah
+    }
+
+    // Initialize device controller
+    fungsi inisialisasi_kontroler() {
+        ini.aktif = benar
+        tampilkan("Pengendali perangkat diinisialisasi")
+        kembalikan benar
+    }
+
+    // Connect device
+    fungsi hubungkan_perangkat(perangkat, alamat) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengendali perangkat belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat entri_perangkat = {
+            id: ini.perangkat_terhubung.panjang + 1,
+            nama: perangkat,
+            alamat: alamat,
+            terhubung: benar,
+            waktu_koneksi: sekarang()
+        }
+
+        ini.perangkat_terhubung.tambah(entri_perangkat)
+        tampilkan("Perangkat terhubung: " + perangkat + " (" + alamat + ")")
+        kembalikan entri_perangkat.id
+    }
+
+    // Disconnect device
+    fungsi putuskan_perangkat(id_perangkat) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengendali perangkat belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat indeks = ini.perangkat_terhubung.findIndex(fungsi(perangkat) {
+            kembalikan perangkat.id === id_perangkat
+        })
+
+        jika indeks !== -1 {
+            buat perangkat = ini.perangkat_terhubung[indeks]
+            perangkat.terhubung = salah
+            tampilkan("Perangkat diputuskan: " + perangkat.nama)
+            kembalikan benar
+        } lain {
+            tampilkan("Perangkat tidak ditemukan: " + id_perangkat)
+            kembalikan salah
+        }
+    }
+
+    // Send command to device
+    fungsi kirim_perintah(id_perangkat, perintah, parameter) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengendali perangkat belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat perangkat = ini.perangkat_terhubung.cari(fungsi(p) {
+            kembalikan p.id === id_perangkat
+        })
+
+        jika bukan perangkat {
+            tampilkan("Perangkat tidak ditemukan: " + id_perangkat)
+            kembalikan salah
+        }
+
+        jika bukan perangkat.terhubung {
+            tampilkan("Perangkat tidak terhubung: " + perangkat.nama)
+            kembalikan salah
+        }
+
+        // Register supported command
+        jika bukan ini.perintah_didukung.termasuk(perintah) {
+            ini.perintah_didukung.tambah(perintah)
+        }
+
+        tampilkan("Mengirim perintah ke " + perangkat.nama + ": " + perintah)
+        // In a real implementation, this would send actual commands to devices
+
+        kembalikan {
+            berhasil: benar,
+            perangkat: perangkat.nama,
+            perintah: perintah,
+            parameter: parameter
+        }
+    }
+
+    // Get connected devices
+    fungsi dapatkan_perangkat_terhubung() {
+        kembalikan ini.perangkat_terhubung.filter(fungsi(perangkat) {
+            kembalikan perangkat.terhubung
+        })
+    }
+
+    // Get supported commands
+    fungsi dapatkan_perintah_didukung() {
+        kembalikan ini.perintah_didukung
+    }
+
+    // Set mode
+    fungsi atur_mode(mode) {
+        ini.mode = mode
+        tampilkan("Mode pengendali perangkat diatur ke: " + mode)
+        kembalikan benar
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Check device connections
+        untuk setiap perangkat dalam ini.perangkat_terhubung {
+            jika perangkat.terhubung dan Math.acak() > 0.95 {
+                tampilkan("Memeriksa koneksi perangkat: " + perangkat.nama)
+            }
+        }
+    }
+}
+
+ekspor PengendaliPerangkat

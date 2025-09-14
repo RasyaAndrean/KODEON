@@ -1,0 +1,23 @@
+{
+  "name": "@kodeon/university",
+  "version": "1.0.0",
+  "description": "KODEON University - Educational resources and tools for learning KODEON programming language",
+  "main": "src/university.kodeon",
+  "scripts": {
+    "test": "kodeon test",
+    "build": "kodeon build",
+    "start": "kodeon run examples/basic-usage.kodeon"
+  },
+  "keywords": [
+    "kodeon",
+    "education",
+    "learning",
+    "courses",
+    "tutorials",
+    "programming"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

@@ -1,0 +1,53 @@
+// Demo program to showcase debugging capabilities in KODEON
+
+kelas Penghitung {
+    var nilai: int
+    var mutex: mutex
+
+    fungsi baru() {
+        nilai = 0
+    }
+
+    fungsi tambah(s: int) {
+        kunci_mutex(mutex)
+        nilai = nilai + s
+        buka_kunci_mutex(mutex)
+    }
+
+    fungsi ambil(): int {
+        kunci_mutex(mutex)
+        var hasil = nilai
+        buka_kunci_mutex(mutex)
+        kembali hasil
+    }
+}
+
+fungsi faktorial(n: int): int {
+    jika n <= 1 {
+        kembali 1
+    } lainnya {
+        kembali n * faktorial(n - 1)
+    }
+}
+
+fungsi utama() {
+    var penghitung = Penghitung.baru()
+    var hasil = 0
+
+    // Add some values
+    untuk i dalam 1..5 {
+        penghitung.tambah(i)
+    }
+
+    // Calculate factorial
+    var fact = faktorial(5)
+
+    // Get the counter value
+    hasil = penghitung.ambil()
+
+    // Print results
+    cetak("Hasil penjumlahan: ", hasil)
+    cetak("Faktorial 5: ", fact)
+
+    kembali 0
+}

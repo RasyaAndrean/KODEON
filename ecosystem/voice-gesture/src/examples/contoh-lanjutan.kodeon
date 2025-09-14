@@ -1,0 +1,63 @@
+// KODEON Voice/Gesture - Advanced Example
+// Advanced example of using voice and gesture recognition with device control
+
+kelas ContohLanjutan {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.nama = ini.opsi.nama || "Contoh Lanjutan"
+        ini.deskripsi = "Contoh lanjutan penggunaan voice/gesture dengan kontrol perangkat"
+    }
+
+    // Run advanced example
+    fungsi jalankan() {
+        tampilkan("=== Contoh Lanjutan Voice/Gesture ===")
+        tampilkan("Nama: " + ini.nama)
+        tampilkan("Deskripsi: " + ini.deskripsi)
+        tampilkan("")
+
+        // Simulate advanced voice commands
+        tampilkan("1. Mendaftarkan perintah suara lanjutan:")
+        tampilkan("   - 'buka aplikasi [nama]' -> Membuka aplikasi tertentu")
+        tampilkan("   - 'tutup aplikasi [nama]' -> Menutup aplikasi tertentu")
+        tampilkan("   - 'naikkan volume' -> Menaikkan volume sistem")
+        tampilkan("   - 'turunkan volume' -> Menurunkan volume sistem")
+        tampilkan("   - 'matikan layar' -> Mematikan layar komputer")
+        tampilkan("")
+
+        // Simulate advanced gesture commands
+        tampilkan("2. Mendaftarkan perintah gestur lanjutan:")
+        tampilkan("   - 'gerak_ke_kiri' -> Berpindah ke tab sebelumnya")
+        tampilkan("   - 'gerak_ke_kanan' -> Berpindah ke tab berikutnya")
+        tampilkan("   - 'angkat_tangan' -> Mengaktifkan mode presentasi")
+        tampilkan("   - 'lingkarkan_jari' -> Zoom in/out pada dokumen")
+        tampilkan("")
+
+        // Simulate device control
+        tampilkan("3. Mengontrol perangkat terhubung:")
+        tampilkan("   - Menghubungkan ke smart TV melalui WiFi")
+        tampilkan("   - Menghubungkan ke speaker Bluetooth")
+        tampilkan("   - Mengontrol lampu pintar melalui protokol IoT")
+        tampilkan("")
+
+        // Simulate command combinations
+        tampilkan("4. Menggabungkan perintah:")
+        tampilkan("   - 'buka musik dan naikkan volume' -> Membuka aplikasi musik dan menaikkan volume")
+        tampilkan("   - 'mode presentasi' + gestur lingkaran -> Memulai presentasi dengan zoom kontrol")
+        tampilkan("")
+
+        tampilkan("Contoh lanjutan selesai dijalankan.")
+        kembalikan benar
+    }
+
+    // Get example info
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            deskripsi: ini.deskripsi,
+            tingkat_kesulitan: "lanjutan",
+            waktu_estimasi: "15 menit"
+        }
+    }
+}
+
+ekspor ContohLanjutan

@@ -1,0 +1,39 @@
+{
+  "name": "@kodeon/marketplace",
+  "version": "1.0.0",
+  "description": "KODEON Marketplace for extensions, themes, and other IDE resources",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "kodeon",
+    "marketplace",
+    "ide",
+    "extensions",
+    "themes"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^6.1.5",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!node_modules/**",
+      "!test/**"
+    ]
+  }
+}

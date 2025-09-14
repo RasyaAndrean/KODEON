@@ -1,0 +1,129 @@
+// KODEON IoT/Edge Integration - Sensor Component
+// Sensor representation and management for IoT
+
+kelas Sensor {
+    fungsi inisialisasi(id, tipe, unit) {
+        ini.id = id
+        ini.tipe = tipe // "suhu", "kelembaban", "tekanan", "cahaya", "gerak", "suara"
+        ini.unit = unit
+        ini.nilai_terakhir = 0
+        ini.akurasi = 0.95 // 95% accuracy
+        ini.berfungsi = benar
+        ini.kalibrasi = 1.0
+        ini.offset = 0
+    }
+
+    // Read sensor value
+    fungsi baca() {
+        jika bukan ini.berfungsi {
+            tampilkan("Kesalahan: Sensor " + ini.id + " tidak berfungsi")
+            kembalikan tidak_ada
+        }
+
+        // Simulate sensor reading based on type
+        buat nilai_dasar = 0
+
+        pilih ini.tipe:
+            kasus "suhu":
+                nilai_dasar = 20 + Math.random() * 20 // 20-40°C
+            kasus "kelembaban":
+                nilai_dasar = 30 + Math.random() * 50 // 30-80%
+            kasus "tekanan":
+                nilai_dasar = 1000 + Math.random() * 50 // 1000-1050 hPa
+            kasus "cahaya":
+                nilai_dasar = Math.random() * 1000 // 0-1000 lux
+            kasus "gerak":
+                nilai_dasar = Math.random() > 0.9 ? 1 : 0 // Binary motion detection
+            kasus "suara":
+                nilai_dasar = Math.random() * 100 // 0-100 dB
+            bawaan:
+                nilai_dasar = Math.random() * 100
+
+        // Apply calibration and offset
+        buat nilai_dikalibrasi = nilai_dasar * ini.kalibrasi + ini.offset
+
+        // Apply accuracy factor (add some noise)
+        buat noise = (Math.random() * 2 - 1) * (1 - ini.akurasi) * nilai_dikalibrasi
+        buat nilai_akhir = nilai_dikalibrasi + noise
+
+        ini.nilai_terakhir = nilai_akhir
+        kembalikan nilai_akhir
+    }
+
+    // Calibrate sensor
+    fungsi kalibrasi(nilai_referensi, nilai_terukur) {
+        jika nilai_terukur != 0 {
+            ini.kalibrasi = nilai_referensi / nilai_terukur
+            tampilkan("Sensor " + ini.id + " dikalibrasi dengan faktor: " + ini.kalibrasi.toFixed(4))
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Set offset
+    fungsi atur_offset(offset) {
+        ini.offset = offset
+        tampilkan("Offset sensor " + ini.id + " diatur ke: " + offset)
+    }
+
+    // Set accuracy
+    fungsi atur_akurasi(akurasi) {
+        ini.akurasi = Math.max(0, Math.min(1, akurasi)) // Clamp between 0 and 1
+        tampilkan("Akurasi sensor " + ini.id + " diatur ke: " + (ini.akurasi * 100).toFixed(2) + "%")
+    }
+
+    // Simulate sensor failure
+    fungsi simulasi_kegagalan() {
+        ini.berfungsi = salah
+        tampilkan("Sensor " + ini.id + " gagal")
+    }
+
+    // Restore sensor function
+    fungsi pulihkan() {
+        ini.berfungsi = benar
+        tampilkan("Sensor " + ini.id + " dipulihkan")
+    }
+
+    // Check if sensor is functioning
+    fungsi apakah_berfungsi() {
+        kembalikan ini.berfungsi
+    }
+
+    // Get sensor data with metadata
+    fungsi dapatkan_data() {
+        kembalikan {
+            id: ini.id,
+            tipe: ini.tipe,
+            unit: ini.unit,
+            nilai: ini.baca(),
+            akurasi: ini.akurasi,
+            berfungsi: ini.berfungsi,
+            timestamp: sekarang()
+        }
+    }
+
+    // Get sensor information
+    fungsi dapatkan_info() {
+        kembalikan {
+            id: ini.id,
+            tipe: ini.tipe,
+            unit: ini.unit,
+            nilai_terakhir: ini.nilai_terakhir,
+            akurasi: ini.akurasi,
+            berfungsi: ini.berfungsi,
+            kalibrasi: ini.kalibrasi,
+            offset: ini.offset
+        }
+    }
+
+    // Create sensor array for batch operations
+    fungsi buat_array(sensor_list) {
+        buat array = []
+        untuk setiap sensor dalam sensor_list {
+            array.tambah(sensor.dapatkan_data())
+        }
+        kembalikan array
+    }
+}
+
+ekspor Sensor

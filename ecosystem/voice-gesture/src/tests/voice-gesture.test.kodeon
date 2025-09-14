@@ -1,0 +1,197 @@
+// KODEON Voice/Gesture - Test File
+// Unit tests for voice/gesture functionality
+
+// Import required modules
+impor VoiceGesture dari '../voice-gesture.kodeon'
+impor IntiVoiceGesture dari '../core/inti-voice-gesture.kodeon'
+impor { PengenalanSuara, PengenalanGerakan } dari '../components/komponen.kodeon'
+
+// Test suite for VoiceGesture class
+fungsi uji_VoiceGesture() {
+  tampilkan("=== Mengujai VoiceGesture ===")
+
+  // Test 1: Initialization
+  tampilkan("Test 1: Inisialisasi VoiceGesture")
+  buat voiceGesture = VoiceGesture()
+  tampilkan("✓ VoiceGesture instance dibuat")
+
+  // Test 2: Framework initialization
+  tampilkan("Test 2: Inisialisasi framework")
+  buat hasilInisialisasi = voiceGesture.inisialisasi_voice_gesture({
+    bahasa: "indonesia",
+    perangkat_suara: "test_microphone",
+    perangkat_gestur: "test_camera"
+  })
+
+  jika hasilInisialisasi {
+    tampilkan("✓ Framework berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi framework")
+    kembalikan salah
+  }
+
+  // Test 3: Voice command registration
+  tampilkan("Test 3: Pendaftaran perintah suara")
+  buat hasilDaftarSuara = voiceGesture.daftar_perintah_suara("test command", fungsi() {
+    tampilkan("Perintah suara dijalankan")
+  })
+
+  jika hasilDaftarSuara {
+    tampilkan("✓ Perintah suara berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan perintah suara")
+    kembalikan salah
+  }
+
+  // Test 4: Gesture command registration
+  tampilkan("Test 4: Pendaftaran perintah gestur")
+  buat hasilDaftarGestur = voiceGesture.daftar_perintah_gerakan("test gesture", fungsi() {
+    tampilkan("Perintah gestur dijalankan")
+  })
+
+  jika hasilDaftarGestur {
+    tampilkan("✓ Perintah gestur berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan perintah gestur")
+    kembalikan salah
+  }
+
+  // Test 5: Starting recognition
+  tampilkan("Test 5: Memulai pengenalan")
+  buat hasilMulaiSuara = voiceGesture.mulai_pengenalan_suara()
+  buat hasilMulaiGestur = voiceGesture.mulai_pengenalan_gerakan()
+
+  jika hasilMulaiSuara dan hasilMulaiGestur {
+    tampilkan("✓ Pengenalan suara dan gestur dimulai")
+  } lain {
+    tampilkan("✗ Gagal memulai pengenalan")
+    kembalikan salah
+  }
+
+  // Test 6: Update loop
+  tampilkan("Test 6: Loop pembaruan")
+  coba {
+    voiceGesture.perbarui()
+    tampilkan("✓ Loop pembaruan berjalan tanpa error")
+  } tangkap(error) {
+    tampilkan("✗ Error pada loop pembaruan: " + error)
+    kembalikan salah
+  }
+
+  // Test 7: Shutdown
+  tampilkan("Test 7: Mematikan framework")
+  voiceGesture.hentikan()
+  tampilkan("✓ Framework berhasil dimatikan")
+
+  tampilkan("Semua test VoiceGesture berhasil!")
+  kembalikan benar
+}
+
+// Test suite for IntiVoiceGesture class
+fungsi uji_IntiVoiceGesture() {
+  tampilkan("=== Mengujai IntiVoiceGesture ===")
+
+  // Test 1: Initialization
+  tampilkan("Test 1: Inisialisasi IntiVoiceGesture")
+  buat inti = IntiVoiceGesture()
+  tampilkan("✓ IntiVoiceGesture instance dibuat")
+
+  // Test 2: Core initialization
+  tampilkan("Test 2: Inisialisasi inti")
+  inti.inisialisasi({
+    bahasa: "english",
+    pengguna: "test_user"
+  })
+
+  buat profil = inti.dapatkan_profil()
+  jika profil dan profil.pengguna === "test_user" {
+    tampilkan("✓ Inti berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi inti")
+    kembalikan salah
+  }
+
+  // Test 3: Command registration
+  tampilkan("Test 3: Pendaftaran perintah")
+  buat perintahDidaftar = inti.daftar_perintah_suara("test", fungsi() {})
+  jika perintahDidaftar {
+    tampilkan("✓ Perintah berhasil didaftarkan")
+  } lain {
+    tampilkan("✗ Gagal mendaftarkan perintah")
+    kembalikan salah
+  }
+
+  // Test 4: Profile retrieval
+  tampilkan("Test 4: Pengambilan profil")
+  buat profil2 = inti.dapatkan_profil()
+  jika profil2 dan profil2.bahasa === "english" {
+    tampilkan("✓ Profil berhasil diambil")
+  } lain {
+    tampilkan("✗ Gagal mengambil profil")
+    kembalikan salah
+  }
+
+  // Test 5: Shutdown
+  tampilkan("Test 5: Mematikan inti")
+  inti.hentikan()
+  tampilkan("✓ Inti berhasil dimatikan")
+
+  tampilkan("Semua test IntiVoiceGesture berhasil!")
+  kembalikan benar
+}
+
+// Test suite for components
+fungsi uji_Komponen() {
+  tampilkan("=== Mengujai Komponen ===")
+
+  // Test PengenalanSuara
+  tampilkan("Test 1: PengenalanSuara")
+  buat pengenalanSuara = PengenalanSuara({ bahasa: "indonesia" })
+  buat initSuara = pengenalanSuara.inisialisasi_pengenalan()
+  jika initSuara {
+    tampilkan("✓ PengenalanSuara berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi PengenalanSuara")
+    kembalikan salah
+  }
+
+  // Test PengenalanGerakan
+  tampilkan("Test 2: PengenalanGerakan")
+  buat pengenalanGestur = PengenalanGerakan({ perangkat: "test_camera" })
+  buat initGestur = pengenalanGestur.inisialisasi_pengenalan()
+  jika initGestur {
+    tampilkan("✓ PengenalanGerakan berhasil diinisialisasi")
+  } lain {
+    tampilkan("✗ Gagal menginisialisasi PengenalanGerakan")
+    kembalikan salah
+  }
+
+  tampilkan("Semua test komponen berhasil!")
+  kembalikan benar
+}
+
+// Main test function
+fungsi jalankan_semua_test() {
+  tampilkan("Memulai test Voice/Gesture...")
+  tampilkan("")
+
+  buat hasil1 = uji_VoiceGesture()
+  tampilkan("")
+
+  buat hasil2 = uji_IntiVoiceGesture()
+  tampilkan("")
+
+  buat hasil3 = uji_Komponen()
+  tampilkan("")
+
+  jika hasil1 dan hasil2 dan hasil3 {
+    tampilkan("🎉 Semua test berhasil!")
+    kembalikan benar
+  } lain {
+    tampilkan("❌ Beberapa test gagal!")
+    kembalikan salah
+  }
+}
+
+// Run tests
+jalankan_semua_test()

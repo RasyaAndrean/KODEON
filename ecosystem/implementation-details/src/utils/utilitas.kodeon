@@ -1,0 +1,12 @@
+// KODEON Implementation Details - Utility Exports
+// Centralized export file for all implementation details utilities
+
+// Utilities
+ekspor { default sebagai LoggerImplementation } dari './logger-implementation.kodeon'
+ekspor { default sebagai ValidatorImplementasi } dari './validator-implementasi.kodeon'
+ekspor { default sebagai GeneratorDokumentasi } dari './generator-dokumentasi.kodeon'
+
+// Export all utilities
+ekspor * dari './logger-implementation.kodeon'
+ekspor * dari './validator-implementasi.kodeon'
+ekspor * dari './generator-dokumentasi.kodeon'

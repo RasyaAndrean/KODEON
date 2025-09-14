@@ -1,0 +1,16 @@
+// KODEON Neural Networks - ReLU Activation
+// ReLU activation function implementation
+
+kelas AktivasiReLU meluas FungsiAktivasi:
+    fungsi inisialisasi():
+        induk.inisialisasi("ReLU")
+
+    // Calculate ReLU activation
+    fungsi hitung(input):
+        kembalikan maksimum(0, input)
+
+    // Calculate derivative of ReLU
+    fungsi turunan(input):
+        kembalikan jika input > 0 maka 1.0 lain 0.0
+
+ekspor AktivasiReLU

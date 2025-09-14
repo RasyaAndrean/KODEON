@@ -1,0 +1,216 @@
+// KODEON Runtime - Profiler Utility
+// Performance profiling functionality
+
+kelas Profiler {
+    fungsi inisialisasi(opsi) {
+        ini.terhubung = benar
+        ini.sesi = []
+        ini.sesi_aktif = tidak_ada
+        ini.konfigurasi = opsi || {
+            sampling_rate: 100, // ms
+            detail_level: "tinggi"
+        }
+    }
+
+    // Start profiling session
+    fungsi mulai_sesi(nama, opsi) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        buat sesi = {
+            id: ini.sesi.panjang + 1,
+            nama: nama,
+            dimulai: sekarang(),
+            selesai: tidak_ada,
+            opsi: opsi || {},
+            sampel: [],
+            metrik: {
+                durasi: 0,
+                cpu: [],
+                memori: [],
+                fungsi: {}
+            }
+        }
+
+        ini.sesi_aktif = sesi
+        ini.sesi.tambah(sesi)
+
+        tampilkan("Sesi profiling dimulai: " + nama)
+        kembalikan sesi
+    }
+
+    // Stop profiling session
+    fungsi hentikan_sesi() {
+        jika bukan ini.terhubung atau bukan ini.sesi_aktif {
+            kembalikan salah
+        }
+
+        ini.sesi_aktif.selesai = sekarang()
+        ini.sesi_aktif.metrik.durasi = ini.sesi_aktif.selesai - ini.sesi_aktif.dimulai
+
+        buat sesi = ini.sesi_aktif
+        ini.sesi_aktif = tidak_ada
+
+        tampilkan("Sesi profiling dihentikan: " + sesi.nama)
+        kembalikan sesi
+    }
+
+    // Sample performance metrics
+    fungsi ambil_sampel(label) {
+        jika bukan ini.terhubung atau bukan ini.sesi_aktif {
+            kembalikan salah
+        }
+
+        buat sampel = {
+            waktu: sekarang(),
+            label: label || "sampel",
+            cpu: Math.acak() * 100,
+            memori: Math.acak() * 8192,
+            stack: [] // In a real implementation, this would capture the call stack
+        }
+
+        ini.sesi_aktif.sampel.tambah(sampel)
+
+        // Update metrics
+        ini.sesi_aktif.metrik.cpu.tambah(sampel.cpu)
+        ini.sesi_aktif.metrik.memori.tambah(sampel.memori)
+
+        kembalikan sampel
+    }
+
+    // Record function call
+    fungsi catat_fungsi(nama, durasi) {
+        jika bukan ini.terhubung atau bukan ini.sesi_aktif {
+            kembalikan salah
+        }
+
+        jika bukan ini.sesi_aktif.metrik.fungsi[nama] {
+            ini.sesi_aktif.metrik.fungsi[nama] = {
+                panggilan: 0,
+                total_durasi: 0,
+                rata_rata: 0,
+                maks: 0,
+                min: tak_hingga
+            }
+        }
+
+        buat fungsi = ini.sesi_aktif.metrik.fungsi[nama]
+        fungsi.panggilan++
+        fungsi.total_durasi += durasi
+        fungsi.rata_rata = fungsi.total_durasi / fungsi.panggilan
+        fungsi.maks = Math.maks(fungsi.maks, durasi)
+        fungsi.min = Math.min(fungsi.min, durasi)
+
+        kembalikan benar
+    }
+
+    // Get session data
+    fungsi dapatkan_sesi(id) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        jika bukan id {
+            kembalikan ini.sesi
+        }
+
+        kembalikan ini.sesi.cari(fungsi(s) { kembalikan s.id == id })
+    }
+
+    // Get active session
+    fungsi dapatkan_sesi_aktif() {
+        kembalikan ini.sesi_aktif
+    }
+
+    // Analyze performance
+    fungsi analisis_kinerja(sesi) {
+        jika bukan ini.terhubung atau bukan sesi {
+            kembalikan tidak_ada
+        }
+
+        buat analisis = {
+            sesi: sesi.nama,
+            durasi: sesi.metrik.durasi,
+            cpu: {
+                rata_rata: sesi.metrik.cpu.panjang > 0 ?
+                    sesi.metrik.cpu.reduce(fungsi(a, b) { kembalikan a + b }, 0) / sesi.metrik.cpu.panjang : 0,
+                maks: Math.maks(...sesi.metrik.cpu),
+                min: Math.min(...sesi.metrik.cpu)
+            },
+            memori: {
+                rata_rata: sesi.metrik.memori.panjang > 0 ?
+                    sesi.metrik.memori.reduce(fungsi(a, b) { kembalikan a + b }, 0) / sesi.metrik.memori.panjang : 0,
+                maks: Math.maks(...sesi.metrik.memori),
+                min: Math.min(...sesi.metrik.memori)
+            },
+            fungsi: sesi.metrik.fungsi
+        }
+
+        kembalikan analisis
+    }
+
+    // Generate report
+    fungsi buat_laporan(sesi) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        sesi = sesi || ini.sesi_aktif
+
+        jika bukan sesi {
+            kembalikan tidak_ada
+        }
+
+        buat analisis = ini.analisis_kinerja(sesi)
+
+        kembalikan {
+            ringkasan: {
+                sesi: analisis.sesi,
+                durasi_ms: analisis.durasi,
+                sampel_diambil: sesi.sampel.panjang
+            },
+            cpu: {
+                penggunaan_rata_rata_persen: analisis.cpu.rata_rata.toFixed(2),
+                penggunaan_maks_persen: analisis.cpu.maks.toFixed(2)
+            },
+            memori: {
+                penggunaan_rata_rata_mb: (analisis.memori.rata_rata / 1024).toFixed(2),
+                penggunaan_maks_mb: (analisis.memori.maks / 1024).toFixed(2)
+            },
+            fungsi_terberat: Object.entri(analisis.fungsi)
+                .urutkan(fungsi([a_nama, a_data], [b_nama, b_data]) {
+                    kembalikan b_data.total_durasi - a_data.total_durasi
+                })
+                .slice(0, 5)
+                .petakan(fungsi([nama, data]) {
+                    kembalikan { nama: nama, durasi_total: data.total_durasi }
+                })
+        }
+    }
+
+    // Clear data
+    fungsi hapus_data() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        ini.sesi = []
+        ini.sesi_aktif = tidak_ada
+        kembalikan benar
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Automatically sample if active session
+        jika ini.sesi_aktif dan Math.acak() > 0.7 {
+            ini.ambil_sampel("auto")
+        }
+    }
+}
+
+ekspor Profiler

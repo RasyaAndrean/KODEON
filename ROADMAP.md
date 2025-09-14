@@ -110,8 +110,10 @@ This document provides a high-level overview of the KODEON project roadmap. For 
 
 -   Operating system development
 -   Distributed computing
--   Edge computing
+-   Edge computing ✅
 -   Blockchain integration
+-   AR/VR development tools ✅
+-   BCI integration tools ✅
 
 ## Success Metrics
 

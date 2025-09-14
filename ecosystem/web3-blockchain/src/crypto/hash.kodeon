@@ -1,0 +1,45 @@
+// KODEON Web3/Blockchain - Hash Functions
+// Cryptographic hash functions
+
+// SHA-256 hash function
+fungsi sha256(input):
+    // In a real implementation, this would use a proper SHA-256 algorithm
+    // For demonstration, we'll create a simple hash
+    buat hash = 0
+    untuk setiap karakter dalam input:
+        hash = ((hash << 5) - hash + karakter.kode_karakter) & 0xFFFFFFFF
+
+    // Convert to hex string
+    kembalikan hash.toString(16).padStart(64, '0')
+
+ekspor sha256
+
+// Keccak-256 hash function (used in Ethereum)
+fungsi keccak256(input):
+    // In a real implementation, this would use the Keccak-256 algorithm
+    // For demonstration, we'll use SHA-256
+    kembalikan sha256(input)
+
+ekspor keccak256
+
+// RIPEMD-160 hash function
+fungsi ripemd160(input):
+    // In a real implementation, this would use the RIPEMD-160 algorithm
+    // For demonstration, we'll create a simple hash
+    buat hash = 0
+    untuk setiap karakter dalam input:
+        hash = (hash + karakter.kode_karakter) % 1000000007
+
+    // Convert to hex string
+    kembalikan hash.toString(16).padStart(40, '0')
+
+ekspor ripemd160
+
+// Get hash information
+fungsi dapatkan_info():
+    kembalikan {
+        algoritma: ["SHA-256", "Keccak-256", "RIPEMD-160"],
+        deskripsi: "Fungsi hash kriptografis untuk blockchain"
+    }
+
+ekspor dapatkan_info

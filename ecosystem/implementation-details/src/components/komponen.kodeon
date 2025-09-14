@@ -1,0 +1,12 @@
+// KODEON Implementation Details - Component Exports
+// Centralized export file for all implementation details components
+
+// Core components
+ekspor { default sebagai SistemDokumentasi } dari './sistem-dokumentasi.kodeon'
+ekspor { default sebagai SistemPelacakan } dari './sistem-pelacakan.kodeon'
+ekspor { default sebagai SistemVerifikasi } dari './sistem-verifikasi.kodeon'
+
+// Export all components
+ekspor * dari './sistem-dokumentasi.kodeon'
+ekspor * dari './sistem-pelacakan.kodeon'
+ekspor * dari './sistem-verifikasi.kodeon'

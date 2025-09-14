@@ -1,467 +1,176 @@
 # KODEON Performance Optimization
 
-The KODEON Performance Optimization framework provides comprehensive tools and techniques to ensure KODEON applications run with maximum efficiency, meeting the demanding performance requirements of modern software applications.
+Natural language performance optimization framework for KODEON programming language.
+
+## Overview
+
+The KODEON Performance Optimization component provides a comprehensive framework for measuring, analyzing, and optimizing the performance of KODEON applications. It supports both Indonesian and English programming constructs, making performance optimization accessible to a wider audience.
 
 ## Features
 
-### Extreme Performance Optimization
+-   **Dual Language Support**: Write performance optimization code in both Indonesian (Bahasa Indonesia) and English
+-   **Profiling Tools**: Comprehensive profiling capabilities for CPU, memory, and I/O performance
+-   **Benchmarking**: Built-in benchmarking framework for performance testing
+-   **Memory Management**: Advanced memory profiling and optimization tools
+-   **CPU Optimization**: CPU usage analysis and optimization recommendations
+-   **I/O Monitoring**: Input/output performance monitoring and optimization
+-   **Real-time Monitoring**: Real-time performance metrics and alerts
+-   **Performance Reports**: Detailed performance analysis reports
+-   **Optimization Suggestions**: AI-powered performance optimization recommendations
+-   **Cross-Platform**: Works on Windows, macOS, and Linux
 
-Achieve industry-leading performance metrics:
+## Installation
+
+```bash
+# Performance optimization tools are part of the KODEON ecosystem
+# No additional installation required
+```
+
+## Quick Start
+
+### Basic Performance Monitoring
 
 ```kodeon
-// Performance targets
-@optimize_for(speed="maximum", memory="minimum")
-@target_performance(
-    compile_time = "< 100ms for medium projects",
-    runtime_performance = "match C++ performance",
-    memory_usage = "50% reduction from current",
-    startup_time = "< 10ms for applications"
-)
-fungsi high_performance_calculation(data):
-    // Function optimized for maximum performance
-    return process_data_efficiently(data)
+// Import the Performance framework
+impor Performance
+
+// Create Performance instance
+buat perf = Performance()
+
+// Initialize performance monitoring
+perf.inisialisasi_monitoring({
+    mode: "realtime",
+    interval: 1000
+})
+
+// Start profiling
+perf.mulai_profil()
+
+// Your application code here
+fungsi aplikasi_utama() {
+    // Application logic
+}
+
+aplikasi_utama()
+
+// Stop profiling
+perf.hentikan_profil()
+
+// Get performance report
+buat laporan = perf.dapatkan_laporan()
+tampilkan(laporan)
 ```
 
-### Auto-Optimization
-
-Automatic performance improvements:
+### Memory Profiling
 
 ```kodeon
-// Auto-optimization
-@auto_optimize
-fungsi complex_algorithm(data):
-    // KODEON automatically applies:
-    // - Memory allocation optimization
-    // - Loop unrolling
-    // - Function inlining
-    // - Parallel processing where possible
-    // - Cache optimization
-    return compute_result(data)
+// Start memory profiling
+perf.mulai_profil_memori()
+
+// Your memory-intensive code here
+fungsi operasi_berat() {
+    buat data_besar = []
+    untuk buat i = 0; i < 1000000; i++ {
+        data_besar.tambah(i)
+    }
+    kembalikan data_besar
+}
+
+operasi_berat()
+
+// Stop memory profiling
+perf.hentikan_profil_memori()
+
+// Get memory report
+buat laporan_memori = perf.dapatkan_laporan_memori()
+tampilkan(laporan_memori)
 ```
 
-### Massive Scalability
-
-Handle enormous workloads:
+### CPU Profiling
 
 ```kodeon
-// Auto-scaling application
-buat web_service "viral_content":
-    handle hingga 1_juta concurrent users
-    auto_scale berdasarkan load
-    distribute across multiple regions
-    cache strategy = intelligent
-    database = auto_sharding
+// Start CPU profiling
+perf.mulai_profil_cpu()
+
+// Your CPU-intensive code here
+fungsi hitung_berat() {
+    buat hasil = 0
+    untuk buat i = 0; i < 1000000; i++ {
+        hasil += i * i
+    }
+    kembalikan hasil
+}
+
+hitung_berat()
+
+// Stop CPU profiling
+perf.hentikan_profil_cpu()
+
+// Get CPU report
+buat laporan_cpu = perf.dapatkan_laporan_cpu()
+tampilkan(laporan_cpu)
 ```
 
-### Green Computing
+## Components
 
-Environmentally conscious performance:
+### Core Modules
 
-```kodeon
-// Green computing features
-@optimize_for(energy_efficiency="maximum")
-@green_computing(
-    carbon_footprint_tracking = true,
-    energy_efficient_compilation = true,
-    sustainable_deployment = true
-)
-fungsi environmentally_optimized_function(data):
-    // Function optimized for both performance and environmental impact
-    return eco_friendly_computation(data)
-```
+-   `IntiPerformance`: Performance optimization core functionality
 
-## Performance Features
+### Performance Components
 
-### Compiler Optimizations
+-   `Profiler`: Performance profiling and analysis
+-   `Benchmark`: Benchmarking framework for performance testing
+-   `Monitor`: Real-time performance monitoring
+-   `Optimizer`: Performance optimization recommendations
 
-Advanced compilation techniques:
+### Utilities
 
-```kodeon
-// Compiler optimization directives
-@compile_optimization(
-    level = "aggressive",
-    target_architecture = "native",
-    vectorization = true,
-    parallelization = true,
-    dead_code_elimination = true,
-    constant_folding = true,
-    loop_optimization = true
-)
-fungsi optimized_computation(data):
-    // Compiled with maximum optimization
-    hasil = 0
-    untuk i dalam rentang(1000000):
-        hasil = hasil + (data[i] * 2)
-    return hasil
-```
-
-### Memory Management
-
-Efficient memory utilization:
-
-```kodeon
-// Memory optimization
-@memory_management(
-    garbage_collection = "real_time",
-    memory_pooling = true,
-    object_reuse = true,
-    allocation_strategy = "bump_pointer"
-)
-struktur DataProcessor:
-    buffer_pool = buat_buffer_pool(size=1024*1024)  // 1MB pool
-
-    fungsi process_data(data):
-        // Use pooled memory for efficiency
-        buffer = alokasi_dari_pool(buffer_pool, size=len(data))
-        hasil = transform_data(data, buffer)
-        kembalikan_buffer_ke_pool(buffer_pool, buffer)
-        return hasil
-```
-
-### Parallel Processing
-
-Multi-core utilization:
-
-```kodeon
-// Parallel processing
-@parallel_processing(
-    max_threads = "cpu_count",
-    load_balancing = "work_stealing",
-    synchronization = "lock_free"
-)
-fungsi parallel_computation(data):
-    // Automatically parallelized across available cores
-    chunks = bagi_data_menjadi_chunks(data, chunk_size=1000)
-
-    hasil_paralel = parallel_map(chunks) dengan fungsi:
-        fungsi(chunk):
-            return process_chunk(chunk)
-
-    return gabungkan_hasil(hasil_paralel)
-```
-
-### Caching Strategies
-
-Intelligent caching mechanisms:
-
-```kodeon
-// Intelligent caching
-@cache_strategy(
-    type = "multi_level",
-    l1_cache = "memory",
-    l2_cache = "disk",
-    expiration = "adaptive",
-    eviction_policy = "least_recently_used"
-)
-fungsi expensive_calculation(input):
-    // Results automatically cached
-    jika hasil dalam cache:
-        return ambil_dari_cache(input)
-
-    hasil = hitung_secara_mahal(input)
-    simpan_ke_cache(input, hasil)
-    return hasil
-```
-
-## Implementation Plan
-
-### Phase 1 (Months 1-4)
-
-- Basic compiler optimizations
-- Memory management improvements
-- Simple parallel processing
-- Fundamental caching mechanisms
-
-### Phase 2 (Months 5-8)
-
-- Advanced optimization algorithms
-- Real-time garbage collection
-- Work-stealing scheduler
-- Multi-level caching
-
-### Phase 3 (Months 9-12)
-
-- Machine learning-based optimization
-- Quantum-inspired algorithms
-- Hardware-specific optimizations
-- Green computing integration
-
-## Technical Architecture
-
-```
-┌─────────────────────────────┐
-│    Performance Annotations  │
-├─────────────────────────────┤
-│  Optimization Engine        │
-├─────────────────────────────┤
-│    Compiler Optimizer       │
-├─────────────────────────────┤
-│  Runtime Performance Manager│
-├─────────────────────────────┤
-│    Memory Manager           │
-├─────────────────────────────┤
-│    Parallel Scheduler       │
-└─────────────────────────────┘
-```
-
-## Integration with KODEON Core
-
-The performance optimization framework integrates with KODEON through:
-
-- Specialized performance syntax annotations
-- Compiler-level optimization passes
-- Runtime performance monitoring
-- Memory management integration
-
-## Performance Libraries
-
-The performance framework includes several specialized libraries:
-
-### Optimization Library
-
-Provides optimization algorithms:
-
-- Compiler optimization passes
-- Runtime optimization techniques
-- Profile-guided optimization
-- Machine learning-based tuning
-
-### Memory Management Library
-
-Implements memory optimization:
-
-- Custom allocators
-- Garbage collection algorithms
-- Memory pooling
-- Object lifetime management
-
-### Parallel Processing Library
-
-Handles concurrent execution:
-
-- Thread scheduling
-- Work distribution
-- Synchronization primitives
-- Lock-free data structures
-
-### Profiling Library
-
-Implements performance monitoring:
-
-- CPU profiling
-- Memory profiling
-- I/O profiling
-- Energy consumption monitoring
+-   `MemoryProfiler`: Memory profiling and analysis
+-   `CPUProfiler`: CPU usage analysis
+-   `IOProfiler`: I/O performance monitoring
+-   `Reporter`: Performance reporting and visualization
 
 ## API Reference
 
-### Performance Annotations
+### Performance Class
+
+Main class for performance optimization in KODEON applications.
 
 ```kodeon
-@optimize_for(speed="maximum", memory="minimum")
-@auto_optimize
-@parallel_processing(max_threads="cpu_count")
-@cache_strategy(type="multi_level")
+kelas Performance {
+    fungsi inisialisasi()  // Initialize performance optimization
+    fungsi inisialisasi_monitoring(konfigurasi)  // Initialize performance monitoring
+    fungsi matikan_monitoring()  // Shutdown performance monitoring
+    fungsi mulai_profil()  // Start performance profiling
+    fungsi hentikan_profil()  // Stop performance profiling
+    fungsi dapatkan_laporan()  // Get performance report
+    fungsi mulai_profil_memori()  // Start memory profiling
+    fungsi hentikan_profil_memori()  // Stop memory profiling
+    fungsi dapatkan_laporan_memori()  // Get memory report
+    fungsi mulai_profil_cpu()  // Start CPU profiling
+    fungsi hentikan_profil_cpu()  // Stop CPU profiling
+    fungsi dapatkan_laporan_cpu()  // Get CPU report
+    fungsi mulai_profil_io()  // Start I/O profiling
+    fungsi hentikan_profil_io()  // Stop I/O profiling
+    fungsi dapatkan_laporan_io()  // Get I/O report
+    fungsi jalankan_benchmark(fungsi, iterasi)  // Run benchmark
+    fungsi dapatkan_saran_optimasi()  // Get optimization suggestions
+    fungsi perbarui()  // Update loop
+}
 ```
 
-### Optimization Functions
+## Examples
 
-```kodeon
-optimizer = buat_optimizer()
-optimizer.apply_optimizations(code)
-optimizer.profile_execution()
-optimizer.suggest_improvements()
-```
+Check the [examples](examples/) directory for complete usage examples:
 
-### Memory Management Functions
-
-```kodeon
-memory_manager = buat_memory_manager()
-memory_manager.allocate(size)
-memory_manager.deallocate(pointer)
-memory_manager.optimize_allocation()
-```
-
-### Parallel Processing Functions
-
-```kodeon
-scheduler = buat_parallel_scheduler()
-scheduler.execute_parallel(tasks)
-scheduler.balance_load()
-scheduler.synchronize_results()
-```
-
-## Performance Metrics
-
-### Target Performance Levels
-
-- **Compile Time**: < 100ms for medium projects
-- **Runtime Performance**: Match C++ performance
-- **Memory Usage**: 50% reduction from current
-- **Startup Time**: < 10ms for applications
-- **Scalability**: Support 10M+ concurrent users
-
-### Benchmarking Framework
-
-```kodeon
-// Performance benchmarking
-benchmark fungsi_sorting:
-    data_sizes = [1000, 10000, 100000, 1000000]
-
-    untuk size dalam data_sizes:
-        data = generate_random_data(size)
-
-        waktu_mulai = sekarang()
-        hasil = fungsi_sorting(data)
-        waktu_selesai = sekarang()
-
-        waktu_eksekusi = waktu_selesai - waktu_mulai
-        memory_usage = ukur_penggunaan_memori()
-
-        log_benchmark(
-            function="fungsi_sorting",
-            data_size=size,
-            execution_time=waktu_eksekusi,
-            memory_usage=memory_usage
-        )
-```
-
-### Performance Profiling
-
-```kodeon
-// Performance profiling
-@profile_performance
-fungsi complex_calculation(data):
-    profiler = aktifkan_profiler()
-
-    hasil_1 = tahap_1(data)
-    profiler.checkpoint("tahap_1_selesai")
-
-    hasil_2 = tahap_2(hasil_1)
-    profiler.checkpoint("tahap_2_selesai")
-
-    hasil_akhir = tahap_3(hasil_2)
-    profiler.checkpoint("tahap_3_selesai")
-
-    laporan = profiler.generate_report()
-    simpan_laporan(laporan, "performance_report.json")
-
-    return hasil_akhir
-```
-
-## Green Computing Integration
-
-### Carbon Footprint Tracking
-
-```kodeon
-// Carbon footprint monitoring
-@green_computing(
-    track_carbon_footprint = true,
-    optimize_energy_usage = true,
-    report_sustainability = true
-)
-fungsi sustainable_computation(data):
-    carbon_tracker = aktifkan_pelacak_karbon()
-
-    hasil = proses_data(data)
-
-    penggunaan_energi = carbon_tracker.get_energy_usage()
-    jejak_karbon = carbon_tracker.calculate_carbon_footprint()
-
-    log_sustainability_metrics(
-        energy_consumption = penggunaan_energi,
-        carbon_footprint = jejak_karbon
-    )
-
-    return hasil
-```
-
-### Energy-Efficient Compilation
-
-```kodeon
-// Energy-efficient compilation options
-@compile_options(
-    energy_efficient = true,
-    optimize_for_battery = true,
-    reduce_heat_generation = true
-)
-fungsi mobile_optimized_function(data):
-    // Compiled with energy efficiency in mind
-    return process_data_for_mobile(data)
-```
-
-## Development Status
-
-This is a planned module for the advanced development roadmap. Implementation will follow the 36-month roadmap:
-
-- **Phase 1** (Months 16-18): Performance optimization foundation
-- **Phase 2** (Months 19-21): Advanced optimization features
-- **Phase 3** (Months 22-24): Green computing and scalability
-
-## Best Practices
-
-### Performance Optimization Guidelines
-
-```kodeon
-// Example of performance-optimized code
-@optimize_for(speed="maximum")
-@memory_management(allocation_strategy="pool")
-@parallel_processing(max_threads=4)
-fungsi high_performance_data_processing(data):
-    // Use memory pools to reduce allocation overhead
-    pool = buat_memory_pool(initial_size=1024*1024)
-
-    // Process data in parallel chunks
-    chunks = bagi_menjadi_chunks(data, num_chunks=4)
-
-    hasil_paralel = parallel_map(chunks) dengan fungsi:
-        fungsi(chunk):
-            buffer = alokasi_dari_pool(pool, size=len(chunk)*2)
-            hasil = proses_chunk_dengan_buffer(chunk, buffer)
-            kembalikan_buffer_ke_pool(pool, buffer)
-            return hasil
-
-    // Efficiently combine results
-    hasil_akhir = gabungkan_tanpa_alokasi_tambahan(hasil_paralel)
-
-    // Clean up
-    hapus_memory_pool(pool)
-
-    return hasil_akhir
-```
-
-### Performance Testing
-
-```kodeon
-// Performance testing framework
-test_performance fungsi high_performance_data_processing:
-    test_case "small_dataset":
-        input = generate_test_data(size=1000)
-        max_execution_time = 1_ms
-        max_memory_usage = 1_mb
-        verify_performance_targets()
-
-    test_case "large_dataset":
-        input = generate_test_data(size=1000000)
-        max_execution_time = 100_ms
-        max_memory_usage = 100_mb
-        verify_performance_targets()
-
-    test_case "concurrent_execution":
-        inputs = [generate_test_data(size=10000) untuk _ dalam rentang(100)]
-        max_concurrent_execution_time = 500_ms
-        verify_concurrent_performance()
-```
+-   [Basic Usage](examples/basic-usage.kodeon): Comprehensive example showing performance monitoring
+-   [Advanced Features](examples/advanced.kodeon): Advanced features like profiling and benchmarking
 
 ## Contributing
 
-We welcome contributions to the performance optimization framework. To contribute:
+Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-1. Fork the repository
-2. Create a branch for your changes
-3. Implement your performance features
-4. Submit a pull request
+## License
 
-Please follow the [Performance Development Guidelines](docs/performance-development-guidelines.md) when contributing to ensure optimal performance characteristics.
-
-Note: Performance optimization requires special expertise in algorithms and systems programming. Contributors should have appropriate qualifications or work under supervision of performance experts.
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.

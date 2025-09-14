@@ -1,0 +1,25 @@
+{
+  "name": "@kodeon/quantum-computing",
+  "version": "1.0.0",
+  "description": "KODEON Quantum Computing Framework - A comprehensive quantum computing library for the KODEON programming language",
+  "main": "src/quantum.kodeon",
+  "keywords": [
+    "kodeon",
+    "quantum",
+    "quantum-computing",
+    "qubit",
+    "quantum-algorithms"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon-lang/ecosystem/quantum-computing"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon-lang/ecosystem/quantum-computing/issues"
+  },
+  "homepage": "https://github.com/kodeon-lang/ecosystem/quantum-computing#readme"
+}

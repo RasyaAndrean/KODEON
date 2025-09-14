@@ -1,0 +1,18 @@
+{
+  "name": "Vim",
+  "shortcuts": {
+    "newFile": ":e",
+    "openFile": ":o",
+    "saveFile": ":w",
+    "compile": ":compile",
+    "run": ":run",
+    "undo": "u",
+    "redo": "Ctrl+R",
+    "cut": "dd",
+    "copy": "yy",
+    "paste": "p",
+    "find": "/",
+    "replace": ":%s/",
+    "selectAll": "ggVG"
+  }
+}

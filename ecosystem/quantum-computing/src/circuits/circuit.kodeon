@@ -1,0 +1,95 @@
+// KODEON Quantum Computing - Quantum Circuit
+// Represents a quantum circuit composed of quantum gates
+
+kelas SirkuitKuantum:
+    fungsi inisialisasi():
+        ini.gerbang = []
+        ini.jumlah_qubit = 0
+        ini.nama = "Sirkuit Kuantum"
+
+    // Set the name of the circuit
+    fungsi atur_nama(nama):
+        ini.nama = nama
+
+    // Add a gate to the circuit
+    fungsi tambah_gerbang(gerbang, qubit_target, qubit_kontrol):
+        buat gerbang_dalam_sirkuit = {
+            gerbang: gerbang,
+            qubit_target: qubit_target,
+            qubit_kontrol: qubit_kontrol,
+            indeks: ini.gerbang.panjang
+        }
+        ini.gerbang.tambah(gerbang_dalam_sirkuit)
+        tampilkan("Gerbang " + gerbang.nama + " ditambahkan ke sirkuit")
+
+    // Remove a gate from the circuit
+    fungsi hapus_gerbang(indeks):
+        jika indeks >= 0 dan indeks < ini.gerbang.panjang:
+            buat gerbang_dihapus = ini.gerbang.hapus_pada(indeks)
+            tampilkan("Gerbang " + gerbang_dihapus.gerbang.nama + " dihapus dari sirkuit")
+        lain:
+            tampilkan("Kesalahan: Indeks gerbang tidak valid")
+
+    // Get a specific gate
+    fungsi dapatkan_gerbang(indeks):
+        jika indeks >= 0 dan indeks < ini.gerbang.panjang:
+            kembalikan ini.gerbang[indeks]
+        lain:
+            tampilkan("Kesalahan: Indeks gerbang tidak valid")
+            kembalikan tidak_ada
+
+    // Optimize the circuit by removing redundant gates
+    fungsi optimasi():
+        buat gerbang_dioptimasi = []
+        buat terakhir_gerbang = tidak_ada
+
+        untuk setiap gerbang_sekarang dalam ini.gerbang:
+            // Simple optimization: remove consecutive identical single-qubit gates
+            jika terakhir_gerbang bukan_tidak_ada dan
+               terakhir_gerbang.gerbang.nama == gerbang_sekarang.gerbang.nama dan
+               terakhir_gerbang.qubit_target == gerbang_sekarang.qubit_target dan
+               terakhir_gerbang.qubit_kontrol == gerbang_sekarang.qubit_kontrol:
+                // Skip this gate (optimization)
+                tampilkan("Mengoptimasi gerbang duplikat: " + gerbang_sekarang.gerbang.nama)
+            lain:
+                gerbang_dioptimasi.tambah(gerbang_sekarang)
+                terakhir_gerbang = gerbang_sekarang
+
+        ini.gerbang = gerbang_dioptimasi
+        tampilkan("Sirkuit dioptimasi: " + (ini.gerbang.panjang) + " gerbang")
+
+    // Visualize the circuit
+    fungsi visualisasi():
+        jika ini.gerbang.panjang == 0:
+            kembalikan "Sirkuit kosong"
+
+        buat representasi = "Sirkuit: " + ini.nama + "\n"
+        representasi = representasi + "Qubit -> Gerbang\n"
+        representasi = representasi + "----------------\n"
+
+        untuk setiap gerbang_dalam_sirkuit dalam ini.gerbang:
+            buat baris = "Q" + gerbang_dalam_sirkuit.qubit_target + " -> "
+            jika gerbang_dalam_sirkuit.qubit_kontrol bukan_tidak_ada:
+                baris = baris + "C-" + gerbang_dalam_sirkuit.gerbang.nama
+            lain:
+                baris = baris + gerbang_dalam_sirkuit.gerbang.nama
+            representasi = representasi + baris + "\n"
+
+        kembalikan representasi
+
+    // Get circuit information
+    fungsi dapatkan_info():
+        kembalikan {
+            nama: ini.nama,
+            jumlah_gerbang: ini.gerbang.panjang,
+            gerbang: ini.gerbang.peta(fungsi(g): kembalikan g.gerbang.nama)
+        }
+
+    // Clone the circuit
+    fungsi klon():
+        buat sirkuit_baru = SirkuitKuantum()
+        sirkuit_baru.nama = ini.nama + " (Klon)"
+        sirkuit_baru.gerbang = [...ini.gerbang]
+        kembalikan sirkuit_baru
+
+ekspor SirkuitKuantum

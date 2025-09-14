@@ -1,0 +1,261 @@
+// KODEON Performance Optimization - Benchmark Component
+// Benchmarking framework for performance testing
+
+kelas Benchmark {
+    fungsi inisialisasi(nama, konfigurasi) {
+        ini.nama = nama || "Benchmark"
+        ini.konfigurasi = konfigurasi || {}
+        ini.uji = []
+        ini.berjalan = salah
+        ini.hasil = []
+    }
+
+    // Add test case
+    fungsi tambah_uji(nama, fungsi, setup, teardown) {
+        buat uji = {
+            nama: nama,
+            fungsi: fungsi,
+            setup: setup || fungsi() {},
+            teardown: teardown || fungsi() {},
+            iterasi: 0,
+            hasil: []
+        }
+
+        ini.uji.tambah(uji)
+        tampilkan("Uji ditambahkan: " + nama)
+        kembalikan uji
+    }
+
+    // Run single test
+    fungsi jalankan_uji(uji, iterasi, panas) {
+        iterasi = iterasi || 1000
+        panas = panas || 100
+
+        jika bukan uji fungsi bukan_tidak_ada {
+            tampilkan("Uji tidak valid")
+            kembalikan tidak_ada
+        }
+
+        tampilkan("Menjalankan uji: " + uji.nama + " (" + iterasi + " iterasi)")
+
+        // Run warmup iterations
+        untuk buat i = 0; i < panas; i++ {
+            uji.setup()
+            uji.fungsi()
+            uji.teardown()
+        }
+
+        // Run actual benchmark
+        buat mulai = sekarang()
+        untuk buat i = 0; i < iterasi; i++ {
+            uji.setup()
+            uji.fungsi()
+            uji.teardown()
+        }
+        buat berhenti = sekarang()
+
+        buat durasi = berhenti - mulai
+        buat rata_rata = durasi / iterasi
+
+        buat hasil = {
+            uji: uji.nama,
+            iterasi: iterasi,
+            durasi_total: durasi,
+            rata_rata_per_iterasi: rata_rata,
+            timestamp: sekarang()
+        }
+
+        uji.hasil.tambah(hasil)
+        uji.iterasi += iterasi
+
+        tampilkan("Uji selesai: " + uji.nama + " (Rata-rata: " + rata_rata + "ms per iterasi)")
+        kembalikan hasil
+    }
+
+    // Run all tests
+    fungsi jalankan_semua(iterasi, panas) {
+        jika ini.uji.panjang == 0 {
+            tampilkan("Tidak ada uji untuk dijalankan")
+            kembalikan []
+        }
+
+        tampilkan("Menjalankan semua uji benchmark: " + ini.nama)
+        ini.berjalan = benar
+
+        buat hasil_semua = []
+        untuk setiap uji dalam ini.uji {
+            buat hasil = ini.jalankan_uji(uji, iterasi, panas)
+            jika hasil bukan_tidak_ada {
+                hasil_semua.tambah(hasil)
+            }
+        }
+
+        ini.hasil.tambah(hasil_semua)
+        ini.berjalan = salah
+
+        tampilkan("Semua uji benchmark selesai")
+        kembalikan hasil_semua
+    }
+
+    // Run benchmark suite
+    fungsi jalankan_suite(konfigurasi) {
+        konfigurasi = konfigurasi || {}
+        buat iterasi = konfigurasi.iterasi || 1000
+        buat panas = konfigurasi.panas || 100
+        buat variasi = konfigurasi.variasi || [1, 10, 100, 1000]
+
+        tampilkan("Menjalankan suite benchmark: " + ini.nama)
+
+        buat hasil_suite = []
+        untuk setiap faktor dalam variasi {
+            tampilkan("Menjalankan dengan variasi: " + faktor + "x")
+            buat iterasi_disesuaikan = iterasi * faktor
+            buat hasil = ini.jalankan_semua(iterasi_disesuaikan, panas)
+            hasil_suite.tambah({
+                variasi: faktor,
+                iterasi: iterasi_disesuaikan,
+                hasil: hasil
+            })
+        }
+
+        kembalikan hasil_suite
+    }
+
+    // Compare test results
+    fungsi bandingkan_uji(nama1, nama2) {
+        buat uji1 = ini.uji.cari(fungsi(u) { kembalikan u.nama == nama1 })
+        buat uji2 = ini.uji.cari(fungsi(u) { kembalikan u.nama == nama2 })
+
+        jika bukan uji1 atau bukan uji2 {
+            tampilkan("Uji tidak ditemukan")
+            kembalikan tidak_ada
+        }
+
+        jika uji1.hasil.panjang == 0 atau uji2.hasil.panjang == 0 {
+            tampilkan("Tidak ada hasil untuk dibandingkan")
+            kembalikan tidak_ada
+        }
+
+        buat hasil1 = uji1.hasil[uji1.hasil.panjang - 1]
+        buat hasil2 = uji2.hasil[uji2.hasil.panjang - 1]
+
+        buat perbandingan = {
+            uji1: {
+                nama: nama1,
+                rata_rata: hasil1.rata_rata_per_iterasi
+            },
+            uji2: {
+                nama: nama2,
+                rata_rata: hasil2.rata_rata_per_iterasi
+            },
+            selisih: hasil1.rata_rata_per_iterasi - hasil2.rata_rata_per_iterasi,
+            rasio: hasil1.rata_rata_per_iterasi / hasil2.rata_rata_per_iterasi
+        }
+
+        kembalikan perbandingan
+    }
+
+    // Get test results
+    fungsi dapatkan_hasil(nama) {
+        jika nama bukan_tidak_ada {
+            buat uji = ini.uji.cari(fungsi(u) { kembalikan u.nama == nama })
+            jika uji bukan_tidak_ada {
+                kembalikan uji.hasil
+            }
+            kembalikan []
+        }
+
+        // Return all results
+        kembalikan ini.hasil
+    }
+
+    // Get test statistics
+    fungsi dapatkan_statistik(nama) {
+        buat uji = ini.uji.cari(fungsi(u) { kembalikan u.nama == nama })
+        jika bukan uji {
+            kembalikan tidak_ada
+        }
+
+        jika uji.hasil.panjang == 0 {
+            kembalikan {
+                nama: uji.nama,
+                iterasi_total: 0,
+                durasi_total: 0,
+                rata_rata: 0,
+                tercepat: 0,
+                terlama: 0
+            }
+        }
+
+        buat durasi_total = 0
+        buat rata_rata_total = 0
+        buat tercepat = uji.hasil[0].rata_rata_per_iterasi
+        buat terlama = uji.hasil[0].rata_rata_per_iterasi
+
+        untuk setiap hasil dalam uji.hasil {
+            durasi_total += hasil.durasi_total
+            rata_rata_total += hasil.rata_rata_per_iterasi
+
+            jika hasil.rata_rata_per_iterasi < tercepat {
+                tercepat = hasil.rata_rata_per_iterasi
+            }
+
+            jika hasil.rata_rata_per_iterasi > terlama {
+                terlama = hasil.rata_rata_per_iterasi
+            }
+        }
+
+        buat rata_rata = rata_rata_total / uji.hasil.panjang
+
+        kembalikan {
+            nama: uji.nama,
+            iterasi_total: uji.iterasi,
+            durasi_total: durasi_total,
+            rata_rata: rata_rata,
+            tercepat: tercepat,
+            terlama: terlama,
+            jumlah_pengujian: uji.hasil.panjang
+        }
+    }
+
+    // Export benchmark results
+    fungsi ekspor_hasil(format) {
+        format = format || "json"
+        buat data = {
+            nama: ini.nama,
+            konfigurasi: ini.konfigurasi,
+            uji: ini.uji.panjang,
+            hasil: ini.hasil
+        }
+
+        jika format == "json" {
+            kembalikan JSON.stringify(data)
+        } lain jika format == "csv" {
+            // In a real implementation, this would convert to CSV
+            kembalikan "CSV format not implemented yet"
+        } lain {
+            kembalikan data
+        }
+    }
+
+    // Clear benchmark results
+    fungsi bersihkan_hasil() {
+        untuk setiap uji dalam ini.uji {
+            uji.hasil = []
+            uji.iterasi = 0
+        }
+        ini.hasil = []
+        tampilkan("Hasil benchmark dibersihkan: " + ini.nama)
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // jika ini.berjalan {
+        //     tampilkan("Benchmark sedang berjalan: " + ini.nama)
+        // }
+    }
+}
+
+ekspor Benchmark

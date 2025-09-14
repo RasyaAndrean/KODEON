@@ -1,0 +1,103 @@
+// KODEON Quantum Computing - Utility Functions
+// Helper functions for quantum computing operations
+
+// Convert binary string to decimal
+fungsi biner_ke_desimal(biner):
+    buat hasil = 0
+    buat pangkat = 0
+
+    untuk buat i = biner.panjang - 1 sampai i >= 0:
+        jika biner[i] == "1":
+            hasil = hasil + (2 ^ pangkat)
+        pangkat = pangkat + 1
+
+    kembalikan hasil
+
+ekspor biner_ke_desimal
+
+// Convert decimal to binary string
+fungsi desimal_ke_biner(desimal, panjang):
+    jika desimal == 0:
+        kembalikan "0".ulang(panjang)
+
+    buat hasil = ""
+    buat num = desimal
+
+    selama num > 0:
+        hasil = (num % 2) + hasil
+        num = num.bagi_bulat(2)
+
+    // Pad with leading zeros if needed
+    selama hasil.panjang < panjang:
+        hasil = "0" + hasil
+
+    kembalikan hasil
+
+ekspor desimal_ke_biner
+
+// Calculate tensor product of two state vectors
+fungsi produk_tensor(keadaan1, keadaan2):
+    buat hasil = []
+
+    untuk setiap amplitudo1 dalam keadaan1:
+        untuk setiap amplitudo2 dalam keadaan2:
+            hasil.tambah(amplitudo1 * amplitudo2)
+
+    kembalikan hasil
+
+ekspor produk_tensor
+
+// Normalize a quantum state vector
+fungsi normalisasi(keadaan):
+    // Calculate the norm
+    buat norm_kuadrat = 0
+    untuk setiap amplitudo dalam keadaan:
+        norm_kuadrat = norm_kuadrat + (amplitudo.nyata * amplitudo.nyata + amplitudo.imajiner * amplitudo.imajiner)
+
+    buat norm = akar_kuadrat(norm_kuadrat)
+
+    // Normalize the state
+    jika norm != 0:
+        untuk buat i = 0 sampai i < keadaan.panjang:
+            keadaan[i] = keadaan[i] / norm
+
+    kembalikan keadaan
+
+ekspor normalisasi
+
+// Generate a random quantum state vector
+fungsi hasilkan_keadaan_acak(dimensi):
+    buat keadaan = []
+
+    // Generate random complex amplitudes
+    untuk buat i = 0 sampai i < dimensi:
+        buat nyata = (acak(0, 1000) / 1000.0) * 2 - 1  // Random between -1 and 1
+        buat imajiner = (acak(0, 1000) / 1000.0) * 2 - 1  // Random between -1 and 1
+        keadaan.tambah(nyata + imajiner * i)
+
+    // Normalize the state
+    kembalikan normalisasi(keadaan)
+
+ekspor hasilkan_keadaan_acak
+
+// Format complex number for display
+fungsi format_bilangan_kompleks(kompleks):
+    buat nyata = kompleks.nyata.bulat(3)
+    buat imajiner = kompleks.imajiner.bulat(3)
+
+    jika imajiner == 0:
+        kembalikan nyata
+    lain jika nyata == 0:
+        kembalikan imajiner + "i"
+    lain jika imajiner > 0:
+        kembalikan nyata + "+" + imajiner + "i"
+    lain:
+        kembalikan nyata + "" + imajiner + "i"
+
+ekspor format_bilangan_kompleks
+
+// Calculate probability from amplitude
+fungsi hitung_probabilitas(amplitudo):
+    kembalikan amplitudo.nyata * amplitudo.nyata + amplitudo.imajiner * amplitudo.imajiner
+
+ekspor hitung_probabilitas

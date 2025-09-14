@@ -1,0 +1,62 @@
+// KODEON Web3/Blockchain - Formatters
+// Data formatting functions for blockchain
+
+// Format transaction data
+fungsi format_transaksi(transaksi):
+    kembalikan {
+        hash: transaksi.hash jika transaksi.hash bukan_tidak_ada lain "0x0",
+        dari: transaksi.dari_alamat,
+        ke: transaksi.ke_alamat,
+        nilai: format_nilai(transaksi.jumlah),
+        data: transaksi.data,
+        timestamp: format_timestamp(transaksi.timestamp)
+    }
+
+ekspor format_transaksi
+
+// Format value in Ether
+fungsi format_nilai(nilai):
+    kembalikan (nilai / 1000000000000000000).toFixed(18) + " ETH"
+
+ekspor format_nilai
+
+// Format timestamp
+fungsi format_timestamp(timestamp):
+    jika timestamp adalah_tipe angka:
+        kembalikan tanggal_baru(timestamp).toUTCString()
+    lain:
+        kembalikan timestamp
+
+ekspor format_timestamp
+
+// Format block data
+fungsi format_blok(blok):
+    kembalikan {
+        nomor: blok.nomor,
+        hash: blok.hash,
+        timestamp: format_timestamp(blok.timestamp),
+        transaksi: blok.transaksi.panjang,
+        ukuran: blok.ukuran jika blok.ukuran bukan_tidak_ada lain 0
+    }
+
+ekspor format_blok
+
+// Format account data
+fungsi format_akun(akun):
+    kembalikan {
+        alamat: akun.alamat,
+        saldo: format_nilai(akun.saldo jika akun.saldo bukan_tidak_ada lain 0),
+        nonce: akun.nonce jika akun.nonce bukan_tidak_ada lain 0
+    }
+
+ekspor format_akun
+
+// Format contract data
+fungsi format_kontrak(kontrak):
+    kembalikan {
+        alamat: kontrak.alamat,
+        metode: kontrak.metode.panjang jika kontrak.metode bukan_tidak_ada lain 0,
+        event: kontrak.event.panjang jika kontrak.event bukan_tidak_ada lain 0
+    }
+
+ekspor format_kontrak

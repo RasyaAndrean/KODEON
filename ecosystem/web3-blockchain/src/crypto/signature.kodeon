@@ -1,0 +1,47 @@
+// KODEON Web3/Blockchain - Digital Signatures
+// Digital signature functions
+
+// Sign data with private key
+fungsi tandatangani(data, kunci_pribadi):
+    // In a real implementation, this would use ECDSA or other digital signature algorithms
+    // For demonstration, we'll create a simple signature
+    buat hash_data = hash.sha256(data)
+    buat signature = hash.sha256(hash_data + kunci_pribadi)
+
+    kembalikan signature
+
+ekspor tandatangani
+
+// Verify signature with public key
+fungsi verifikasi(data, signature, kunci_publik):
+    // In a real implementation, this would verify the digital signature
+    // For demonstration, we'll simulate verification
+    buat hash_data = hash.sha256(data)
+    buat expected_signature = hash.sha256(hash_data + kunci_publik)  // Simplified
+
+    kembalikan signature == expected_signature
+
+ekspor verifikasi
+
+// Generate key pair
+fungsi hasilkan_pasangan_kunci():
+    // In a real implementation, this would generate a proper key pair
+    // For demonstration, we'll create simple keys
+    buat kunci_pribadi = utilitas.id_acak() + utilitas.id_acak()
+    buat kunci_publik = hash.sha256(kunci_pribadi)
+
+    kembalikan {
+        kunci_pribadi: kunci_pribadi,
+        kunci_publik: kunci_publik
+    }
+
+ekspor hasilkan_pasangan_kunci
+
+// Get signature information
+fungsi dapatkan_info():
+    kembalikan {
+        algoritma: "ECDSA (simulated)",
+        deskripsi: "Fungsi tanda tangan digital untuk transaksi blockchain"
+    }
+
+ekspor dapatkan_info

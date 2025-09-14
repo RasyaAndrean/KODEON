@@ -1,0 +1,47 @@
+// KODEON Quantum Computing - Main Entry Point
+// This file exports all the main components of the quantum computing framework
+
+// Core components
+impor "core/engine" sebagai mesin
+impor "core/simulator" sebagai simulator
+
+// Qubit components
+impor "qubits/qubit" sebagai qubit
+impor "qubits/register" sebagai register
+
+// Gate components
+impor "gates/gate" sebagai gerbang
+impor "gates/pauli" sebagai pauli
+impor "gates/hadamard" sebagai hadamard
+impor "gates/cnot" sebagai cnot
+
+// Circuit components
+impor "circuits/circuit" sebagai sirkuit
+
+// Algorithm components
+impor "algorithms/algorithms" sebagai algoritma
+
+// Utilities
+impor "utils/helpers" sebagai utilitas
+
+// Visualization
+impor "visualization/visualizer" sebagai visualisasi
+
+// Export main quantum engine creator
+fungsi buat_mesin_kuantum():
+    kembalikan mesin.buat_mesin_kuantum()
+
+// Export all components
+ekspor buat_mesin_kuantum
+ekspor mesin
+ekspor simulator
+ekspor qubit
+ekspor register
+ekspor gerbang
+ekspor pauli
+ekspor hadamard
+ekspor cnot
+ekspor sirkuit
+ekspor algoritma
+ekspor utilitas
+ekspor visualisasi

@@ -1,0 +1,344 @@
+// KODEON IoT/Edge Integration - Data Processor Utility
+// Data processing utilities for IoT/Edge applications
+
+kelas PemrosesData {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe || "dasar"
+        ini.parameter = parameter || {}
+        ini.aktif = benar
+    }
+
+    // Process data
+    fungsi proses(data) {
+        jika bukan ini.aktif {
+            kembalikan data
+        }
+
+        pilih ini.tipe:
+            kasus "filter":
+                kembalikan ini.terapkan_filter(data)
+            kasus "agregasi":
+                kembalikan ini.terapkan_agregasi(data)
+            kasus "normalisasi":
+                kembalikan ini.terapkan_normalisasi(data)
+            kasus "deteksi_anomali":
+                kembalikan ini.deteksi_anomali(data)
+            bawaan:
+                kembalikan ini.proses_dasar(data)
+
+    // Apply filtering to data
+    fungsi terapkan_filter(data) {
+        // Simple moving average filter
+        jika ini.parameter.tipe_filter == "rata_rata" {
+            kembalikan ini.filter_rata_rata(data)
+        }
+
+        // Median filter
+        jika ini.parameter.tipe_filter == "median" {
+            kembalikan ini.filter_median(data)
+        }
+
+        // Low-pass filter
+        jika ini.parameter.tipe_filter == "low_pass" {
+            kembalikan ini.filter_low_pass(data)
+        }
+
+        kembalikan data
+    }
+
+    // Moving average filter
+    fungsi filter_rata_rata(data) {
+        buat ukuran_jendela = ini.parameter.ukuran_jendela || 5
+        buat data_difilter = []
+
+        untuk buat i = 0 sampai i < data.panjang:
+            buat awal = Math.max(0, i - Math.floor(ukuran_jendela / 2))
+            buat akhir = Math.min(data.panjang, i + Math.floor(ukuran_jendela / 2) + 1)
+            buat jumlah = 0
+            buat hitung = 0
+
+            untuk buat j = awal sampai j < akhir:
+                jika typeof data[j] == "angka" {
+                    jumlah = jumlah + data[j]
+                    hitung = hitung + 1
+                }
+
+            data_difilter.tambah(hitung > 0 ? jumlah / hitung : data[i])
+
+        kembalikan data_difilter
+    }
+
+    // Median filter
+    fungsi filter_median(data) {
+        buat ukuran_jendela = ini.parameter.ukuran_jendela || 5
+        buat data_difilter = []
+
+        untuk buat i = 0 sampai i < data.panjang:
+            buat awal = Math.max(0, i - Math.floor(ukuran_jendela / 2))
+            buat akhir = Math.min(data.panjang, i + Math.floor(ukuran_jendela / 2) + 1)
+            buat nilai_jendela = []
+
+            untuk buat j = awal sampai j < akhir:
+                jika typeof data[j] == "angka" {
+                    nilai_jendela.tambah(data[j])
+                }
+
+            // Sort and get median
+            nilai_jendela.urutkan((a, b) => a - b)
+            buat median = nilai_jendela.panjang > 0 ?
+                nilai_jendela[Math.floor(nilai_jendela.panjang / 2)] : data[i]
+
+            data_difilter.tambah(median)
+
+        kembalikan data_difilter
+    }
+
+    // Low-pass filter
+    fungsi filter_low_pass(data) {
+        buat alpha = ini.parameter.alpha || 0.1
+        buat data_difilter = []
+        buat nilai_sebelumnya = 0
+
+        untuk setiap nilai dalam data {
+            jika typeof nilai == "angka" {
+                buat nilai_difilter = alpha * nilai + (1 - alpha) * nilai_sebelumnya
+                data_difilter.tambah(nilai_difilter)
+                nilai_sebelumnya = nilai_difilter
+            } lain {
+                data_difilter.tambah(nilai)
+                nilai_sebelumnya = 0
+            }
+        }
+
+        kembalikan data_difilter
+    }
+
+    // Apply aggregation to data
+    fungsi terapkan_agregasi(data) {
+        buat tipe_agregasi = ini.parameter.tipe_agregasi || "rata_rata"
+        buat interval = ini.parameter.interval || 10 // seconds
+
+        // Group data by time interval and apply aggregation
+        buat data_agregat = []
+
+        pilih tipe_agregasi:
+            kasus "rata_rata":
+                kembalikan ini.agregat_rata_rata(data, interval)
+            kasus "jumlah":
+                kembalikan ini.agregat_jumlah(data, interval)
+            kasus "maksimum":
+                kembalikan ini.agregat_maksimum(data, interval)
+            kasus "minimum":
+                kembalikan ini.agregat_minimum(data, interval)
+            bawaan:
+                kembalikan this.agregat_rata_rata(data, interval)
+
+    // Average aggregation
+    fungsi agregat_rata_rata(data, interval) {
+        // In a real implementation, this would group data by time intervals
+        // and calculate averages
+        tampilkan("Menghitung agregat rata-rata dengan interval " + interval + " detik")
+
+        // For now, we'll just return a simplified result
+        buat hasil = []
+        untuk setiap item dalam data {
+            jika typeof item == "objek" dan item.nilai bukan_tidak_ada {
+                hasil.tambah({
+                    ...item,
+                    nilai_agregat: item.nilai,
+                    tipe_agregat: "rata_rata"
+                })
+            }
+        }
+        kembalikan hasil
+    }
+
+    // Sum aggregation
+    fungsi agregat_jumlah(data, interval) {
+        tampilkan("Menghitung agregat jumlah dengan interval " + interval + " detik")
+
+        // For now, we'll just return a simplified result
+        buat hasil = []
+        untuk setiap item dalam data {
+            jika typeof item == "objek" dan item.nilai bukan_tidak_ada {
+                hasil.tambah({
+                    ...item,
+                    nilai_agregat: item.nilai,
+                    tipe_agregat: "jumlah"
+                })
+            }
+        }
+        kembalikan hasil
+    }
+
+    // Max aggregation
+    fungsi agregat_maksimum(data, interval) {
+        tampilkan("Menghitung agregat maksimum dengan interval " + interval + " detik")
+
+        // For now, we'll just return a simplified result
+        buat hasil = []
+        untuk setiap item dalam data {
+            jika typeof item == "objek" dan item.nilai bukan_tidak_ada {
+                hasil.tambah({
+                    ...item,
+                    nilai_agregat: item.nilai,
+                    tipe_agregat: "maksimum"
+                })
+            }
+        }
+        kembalikan hasil
+    }
+
+    // Min aggregation
+    fungsi agregat_minimum(data, interval) {
+        tampilkan("Menghitung agregat minimum dengan interval " + interval + " detik")
+
+        // For now, we'll just return a simplified result
+        buat hasil = []
+        untuk setiap item dalam data {
+            jika typeof item == "objek" dan item.nilai bukan_tidak_ada {
+                hasil.tambah({
+                    ...item,
+                    nilai_agregat: item.nilai,
+                    tipe_agregat: "minimum"
+                })
+            }
+        }
+        kembalikan hasil
+    }
+
+    // Normalize data
+    fungsi terapkan_normalisasi(data) {
+        // Min-max normalization
+        jika ini.parameter.metode == "min_max" {
+            kembalikan ini.normalisasi_min_max(data)
+        }
+
+        // Z-score normalization
+        jika ini.parameter.metode == "z_score" {
+            kembalikan ini.normalisasi_z_score(data)
+        }
+
+        kembalikan data
+    }
+
+    // Min-max normalization
+    fungsi normalisasi_min_max(data) {
+        // Find min and max values
+        buat nilai = data.filter(item => typeof item == "angka")
+        jika nilai.panjang == 0 {
+            kembalikan data
+        }
+
+        buat min = Math.min(...nilai)
+        buat max = Math.max(...nilai)
+        buat range = max - min
+
+        jika range == 0 {
+            kembalikan data.map(item => typeof item == "angka" ? 0 : item)
+        }
+
+        // Apply normalization
+        kembalikan data.map(item =>
+            typeof item == "angka" ? (item - min) / range : item
+        )
+    }
+
+    // Z-score normalization
+    fungsi normalisasi_z_score(data) {
+        // Calculate mean
+        buat nilai = data.filter(item => typeof item == "angka")
+        jika nilai.panjang == 0 {
+            kembalikan data
+        }
+
+        buat mean = nilai.reduce((sum, val) => sum + val, 0) / nilai.panjang
+
+        // Calculate standard deviation
+        buat variance = nilai.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / nilai.panjang
+        buat std_dev = Math.sqrt(variance)
+
+        jika std_dev == 0 {
+            kembalikan data.map(item => typeof item == "angka" ? 0 : item)
+        }
+
+        // Apply normalization
+        kembalikan data.map(item =>
+            typeof item == "angka" ? (item - mean) / std_dev : item
+        )
+    }
+
+    // Detect anomalies in data
+    fungsi deteksi_anomali(data) {
+        // Simple statistical anomaly detection
+        buat nilai = data.filter(item => typeof item == "angka")
+        jika nilai.panjang == 0 {
+            kembalikan data
+        }
+
+        // Calculate mean and standard deviation
+        buat mean = nilai.reduce((sum, val) => sum + val, 0) / nilai.panjang
+        buat variance = nilai.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / nilai.panjang
+        buat std_dev = Math.sqrt(variance)
+
+        // Define threshold (e.g., 2 standard deviations)
+        buat threshold = ini.parameter.threshold || 2
+        buat batas_bawah = mean - threshold * std_dev
+        buat batas_atas = mean + threshold * std_dev
+
+        // Mark anomalies
+        buat data_dengan_anomali = []
+        untuk setiap item dalam data {
+            jika typeof item == "angka" {
+                buat anomali = item < batas_bawah atau item > batas_atas
+                data_dengan_anomali.tambah({
+                    nilai: item,
+                    anomali: anomali,
+                    mean: mean,
+                    batas_bawah: batas_bawah,
+                    batas_atas: batas_atas
+                })
+            } lain {
+                data_dengan_anomali.tambah(item)
+            }
+        }
+
+        kembalikan data_dengan_anomali
+    }
+
+    // Basic processing
+    fungsi proses_dasar(data) {
+        // Apply common preprocessing steps
+        buat data_diproses = data
+
+        // Apply filtering if enabled
+        jika ini.parameter.filter != salah {
+            data_diproses = ini.terapkan_filter(data_diproses)
+        }
+
+        kembalikan data_diproses
+    }
+
+    // Enable/disable processor
+    fungsi atur_aktif(aktif) {
+        ini.aktif = aktif
+    }
+
+    // Update parameters
+    fungsi atur_parameter(parameter_baru) {
+        untuk setiap kunci dalam parameter_baru {
+            ini.parameter[kunci] = parameter_baru[kunci]
+        }
+    }
+
+    // Get processor information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            aktif: ini.aktif
+        }
+    }
+}
+
+ekspor PemrosesData

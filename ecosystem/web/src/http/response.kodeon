@@ -1,0 +1,53 @@
+// KODEON Web Framework - Response Class
+// Represents an HTTP response
+
+kelas Respons:
+    fungsi inisialisasi():
+        ini.statusCode = 200
+        ini.headers = {}
+        ini.data = ""
+    
+    // Set the status code
+    fungsi status(kode):
+        ini.statusCode = kode
+        kembalikan ini
+    
+    // Set a response header
+    fungsi header(nama, nilai):
+        ini.headers[nama] = nilai
+        kembalikan ini
+    
+    // Send plain text response
+    fungsi kirim(data):
+        ini.data = data
+        ini.kirim_respons()
+        kembalikan ini
+    
+    // Send JSON response
+    fungsi json(data):
+        ini.headers["Content-Type"] = "application/json"
+        ini.data = JSON.stringify(data)
+        ini.kirim_respons()
+        kembalikan ini
+    
+    // Render a template
+    fungsi render(template, data):
+        // In a real implementation, this would render a template
+        ini.headers["Content-Type"] = "text/html"
+        ini.data = "<h1>" + template + "</h1>"
+        ini.kirim_respons()
+        kembalikan ini
+    
+    // Redirect to another URL
+    fungsi arahkan(url):
+        ini.statusCode = 302
+        ini.headers["Location"] = url
+        ini.kirim_respons()
+        kembalikan ini
+    
+    // Send the response (simulated)
+    fungsi kirim_respons():
+        // In a real implementation, this would send the actual HTTP response
+        tampilkan("HTTP " + ini.statusCode + " - " + ini.data)
+
+ekspor Respons

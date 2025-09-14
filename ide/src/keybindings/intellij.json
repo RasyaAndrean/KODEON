@@ -1,0 +1,18 @@
+{
+  "name": "IntelliJ IDEA",
+  "shortcuts": {
+    "newFile": "Ctrl+N",
+    "openFile": "Ctrl+O",
+    "saveFile": "Ctrl+S",
+    "compile": "Ctrl+F9",
+    "run": "Shift+F10",
+    "undo": "Ctrl+Z",
+    "redo": "Ctrl+Shift+Z",
+    "cut": "Ctrl+X",
+    "copy": "Ctrl+C",
+    "paste": "Ctrl+V",
+    "find": "Ctrl+F",
+    "replace": "Ctrl+R",
+    "selectAll": "Ctrl+A"
+  }
+}

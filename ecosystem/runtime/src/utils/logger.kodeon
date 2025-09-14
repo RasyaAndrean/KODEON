@@ -1,0 +1,157 @@
+// KODEON Runtime - Logger Utility
+// Logging functionality
+
+kelas Logger {
+    fungsi inisialisasi(opsi) {
+        ini.level = opsi.level || "info"
+        ini.format = opsi.format || "teks"
+        ini.output = opsi.output || "konsol"
+        ini.file = opsi.file || tidak_ada
+        ini.terhubung = benar
+        ini.log = []
+    }
+
+    // Log message
+    fungsi catat(level, pesan, metadata) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        // Check if log level is enabled
+        buat level_prioritas = {
+            "debug": 1,
+            "info": 2,
+            "peringatan": 3,
+            "kesalahan": 4,
+            "fatal": 5
+        }
+
+        jika level_prioritas[level] < level_prioritas[ini.level] {
+            kembalikan benar // Don't log but not an error
+        }
+
+        buat entri = {
+            waktu: sekarang(),
+            level: level,
+            pesan: pesan,
+            metadata: metadata || {}
+        }
+
+        ini.log.tambah(entri)
+
+        // Keep only last 1000 log entries
+        jika ini.log.panjang > 1000 {
+            ini.log = ini.log.slice(-1000)
+        }
+
+        // Output log
+        jika ini.output == "konsol" {
+            tampilkan("[" + level.toUpperCase() + "] " + pesan)
+        } lain jika ini.output == "file" dan ini.file {
+            // In a real implementation, this would write to a file
+            tampilkan("Menulis ke file log: " + pesan)
+        }
+
+        kembalikan benar
+    }
+
+    // Debug log
+    fungsi debug(pesan, metadata) {
+        kembalikan ini.catat("debug", pesan, metadata)
+    }
+
+    // Info log
+    fungsi info(pesan, metadata) {
+        kembalikan ini.catat("info", pesan, metadata)
+    }
+
+    // Warning log
+    fungsi peringatan(pesan, metadata) {
+        kembalikan ini.catat("peringatan", pesan, metadata)
+    }
+
+    // Error log
+    fungsi kesalahan(pesan, metadata) {
+        kembalikan ini.catat("kesalahan", pesan, metadata)
+    }
+
+    // Fatal log
+    fungsi fatal(pesan, metadata) {
+        kembalikan ini.catat("fatal", pesan, metadata)
+    }
+
+    // Get logs
+    fungsi dapatkan_log(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.log
+        }
+
+        kembalikan ini.log.saring(fungsi(entrI) {
+            untuk setiap kunci dalam filter {
+                jika entrI[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Clear logs
+    fungsi hapus_log() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        ini.log = []
+        kembalikan benar
+    }
+
+    // Set log level
+    fungsi atur_level(level) {
+        ini.level = level
+        tampilkan("Level log diatur ke: " + level)
+        kembalikan benar
+    }
+
+    // Get log level
+    fungsi dapatkan_level() {
+        kembalikan ini.level
+    }
+
+    // Export logs
+    fungsi ekspor_log(format) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        format = format || ini.format
+
+        jika format == "json" {
+            kembalikan JSON.stringify(ini.log)
+        } lain {
+            buat hasil = ""
+            untuk setiap entrI dalam ini.log {
+                hasil += "[" + entrI.waktu + "] " + entrI.level.toUpperCase() + " " + entrI.pesan
+                jika Object.kunci(entrI.metadata).panjang > 0 {
+                    hasil += " " + JSON.stringify(entrI.metadata)
+                }
+                hasil += "\n"
+            }
+            kembalikan hasil
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Periodic log maintenance
+        jika ini.log.panjang > 1000 {
+            ini.log = ini.log.slice(-1000)
+        }
+    }
+}
+
+ekspor Logger

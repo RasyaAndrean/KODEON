@@ -1,0 +1,79 @@
+// KODEON Web Framework - Todo App Example
+
+// Import the web framework
+impor "web" sebagai web
+
+// Create a new web application
+buat aplikasi = web.buat_aplikasi()
+
+// Use middleware
+aplikasi.gunakan(web.logger)
+
+// In-memory storage for todos (in a real app, this would be a database)
+buat todos = []
+buat todo_id = 1
+
+// Define routes
+aplikasi.dapatkan("/todos", fungsi(permintaan, respons):
+    respons.json(todos)
+)
+
+aplikasi.dapatkan("/todos/:id", fungsi(permintaan, respons):
+    buat id = parseInt(permintaan.parameter("id"))
+    buat todo = todos.cari(fungsi(t): kembalikan t.id == id)
+    
+    jika todo bukan_tidak_ada:
+        respons.json(todo)
+    lain:
+        respons.status(404).json({ pesan: "Todo tidak ditemukan" })
+)
+
+aplikasi.kirim("/todos", fungsi(permintaan, respons):
+    buat data = permintaan.json()
+    buat todo_baru = {
+        id: todo_id,
+        judul: data.judul,
+        selesai: salah,
+        dibuat_pada: sekarang()
+    }
+    
+    todos.tambah(todo_baru)
+    todo_id = todo_id + 1
+    
+    respons.status(201).json(todo_baru)
+)
+
+aplikasi.perbarui("/todos/:id", fungsi(permintaan, respons):
+    buat id = parseInt(permintaan.parameter("id"))
+    buat indeks = todos.cari_indeks(fungsi(t): kembalikan t.id == id)
+    
+    jika indeks != -1:
+        buat data = permintaan.json()
+        todos[indeks].judul = data.judul jika data.judul bukan_tidak_ada
+        todos[indeks].selesai = data.selesai jika data.selesai bukan_tidak_ada
+        respons.json(todos[indeks])
+    lain:
+        respons.status(404).json({ pesan: "Todo tidak ditemukan" })
+)
+
+aplikasi.hapus("/todos/:id", fungsi(permintaan, respons):
+    buat id = parseInt(permintaan.parameter("id"))
+    buat indeks = todos.cari_indeks(fungsi(t): kembalikan t.id == id)
+    
+    jika indeks != -1:
+        buat todo_dihapus = todos.hapus_pada(indeks)
+        respons.json({ pesan: "Todo dihapus", todo: todo_dihapus })
+    lain:
+        respons.status(404).json({ pesan: "Todo tidak ditemukan" })
+)
+
+// Start the server
+aplikasi.dengarkan(3001, fungsi():
+    tampilkan("Todo App berjalan di http://localhost:3001")
+    tampilkan("Endpoint yang tersedia:")
+    tampilkan("  GET    /todos        - Dapatkan semua todo")
+    tampilkan("  GET    /todos/:id    - Dapatkan todo berdasarkan ID")
+    tampilkan("  POST   /todos        - Buat todo baru")
+    tampilkan("  PUT    /todos/:id    - Perbarui todo")
+    tampilkan("  DELETE /todos/:id    - Hapus todo")
+)

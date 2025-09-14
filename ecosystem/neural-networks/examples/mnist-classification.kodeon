@@ -1,0 +1,82 @@
+// KODEON Neural Networks - MNIST Classification Example
+// Demonstrates image classification using a neural network
+
+// Import the neural networks framework
+impor "neural" sebagai neural
+
+fungsi contoh_klasifikasi_mnist():
+    tampilkan("=== Contoh Klasifikasi MNIST ===")
+    tampilkan("Mengklasifikasikan digit tulisan tangan menggunakan jaringan saraf")
+    tampilkan("")
+
+    // Create a sequential model
+    buat model = neural.sequential.ModelSequential()
+
+    // Add layers
+    tampilkan("1. Membuat arsitektur model:")
+    model.tambah(neural.padat.LapisanPadat(784, 128, neural.relu.AktivasiReLU()))
+    model.tambah(neural.dropout.LapisanDropout(0.2))
+    model.tambah(neural.padat.LapisanPadat(128, 10, neural.softmax.AktivasiSoftmax()))
+
+    // Show model summary
+    model.ringkasan()
+    tampilkan("")
+
+    // Compile the model
+    tampilkan("2. Mengompilasi model:")
+    model.kompilasi(
+        neural.adam.OptimizerAdam(0.001),
+        neural.kategorikal_crossentropi.LossCategoricalCrossentropy()
+    )
+    tampilkan("")
+
+    // Generate synthetic data for demonstration
+    tampilkan("3. Menghasilkan data sintetis untuk demonstrasi:")
+    buat data_sintetis = neural.data.hasilkan_data_sintetis(1000, 784)
+    buat data_latih = data_sintetis.data
+    buat label_latih = data_sintetis.label
+
+    // Convert labels to one-hot encoding
+    buat label_one_hot = []
+    untuk setiap label dalam label_latih:
+        label_one_hot.tambah(neural.utilitas.one_hot_encode(label, 10))
+
+    tampilkan("   Data latih: " + data_latih.panjang + " sampel")
+    tampilkan("   Dimensi fitur: " + data_latih[0].panjang)
+    tampilkan("   Jumlah kelas: 10")
+    tampilkan("")
+
+    // Train the model
+    tampilkan("4. Melatih model:")
+    buat riwayat = model.latih(data_latih, label_one_hot, 20, 32)
+    tampilkan("")
+
+    // Visualize training history
+    tampilkan("5. Visualisasi riwayat pelatihan:")
+    buat visualisasi = neural.visualisasi.buat_visualisasi()
+    visualisasi.visualisasi_riwayat(riwayat)
+    tampilkan("")
+
+    // Generate test data and make predictions
+    tampilkan("6. Membuat prediksi:")
+    buat data_test_sintetis = neural.data.hasilkan_data_sintetis(5, 784)
+    buat data_test = data_test_sintetis.data
+
+    untuk buat i = 0 sampai i < data_test.panjang:
+        buat prediksi = model.prediksi(data_test[i])
+        // Find the class with highest probability
+        buat kelas_prediksi = 0
+        buat prob_tertinggi = prediksi[0]
+        untuk buat j = 1 sampai j < prediksi.panjang:
+            jika prediksi[j] > prob_tertinggi:
+                prob_tertinggi = prediksi[j]
+                kelas_prediksi = j
+        tampilkan("   Sampel " + (i+1) + ": Diprediksi sebagai kelas " + kelas_prediksi + " (probabilitas: " + (prob_tertinggi * 100).bulat(2) + "%)")
+
+    tampilkan("")
+    tampilkan("Contoh klasifikasi MNIST selesai!")
+
+fungsi utama():
+    contoh_klasifikasi_mnist()
+
+utama()

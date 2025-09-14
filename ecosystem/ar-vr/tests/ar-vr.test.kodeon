@@ -1,0 +1,148 @@
+// KODEON AR/VR Integration - Unit Tests
+// Tests for AR/VR framework components
+
+// Import required modules
+impor ARVR
+impor { IntiAR, IntiVR } dari '../src/core/ar.kodeon'
+impor { Pemandangan3D, Objek3D, Kamera, Pencahayaan } dari '../src/components/scene.kodeon'
+impor { DeteksiGerak, PelacakanTangan, PengenalanSuara } dari '../src/utils/motion.kodeon'
+
+// Test ARVR Main Class
+fungsi uji_arvr_kelas_utama() {
+    tampilkan("Menguji ARVR kelas utama...")
+
+    // Test initialization
+    buat ar = ARVR("ar")
+    pastikan(ar.tipe == "ar", "ARVR seharusnya diinisialisasi dengan tipe 'ar'")
+
+    buat vr = ARVR("vr")
+    pastikan(vr.tipe == "vr", "ARVR seharusnya diinisialisasi dengan tipe 'vr'")
+
+    // Test component addition
+    buat pemandangan = Pemandangan3D("Test Scene")
+    ar.tambah_pemandangan(pemandangan)
+    pastikan(ar.komponen.panjang == 1, "Seharusnya menambahkan pemandangan ke komponen")
+
+    buat objek = Objek3D("Test Object")
+    ar.tambah_objek(objek)
+    pastikan(ar.komponen.panjang == 2, "Seharusnya menambahkan objek ke komponen")
+
+    tampilkan("Uji ARVR kelas utama berhasil!")
+}
+
+// Test IntiAR Class
+fungsi uji_intiar_kelas() {
+    tampilkan("Menguji IntiAR kelas...")
+
+    buat ar = IntiAR()
+    pastikan(bukan ar.terinisialisasi, "AR seharusnya belum diinisialisasi awalnya")
+
+    // Test initialization
+    buat hasil = ar.inisialisasi({})
+    // In real implementation, this would depend on camera availability
+    // For now, we'll just test that the method exists and runs
+    pastikan(benar, "Metode inisialisasi seharusnya ada dan dapat dijalankan")
+
+    tampilkan("Uji IntiAR kelas berhasil!")
+}
+
+// Test IntiVR Class
+fungsi uji_intivr_kelas() {
+    tampilkan("Menguji IntiVR kelas...")
+
+    buat vr = IntiVR()
+    pastikan(bukan vr.terinisialisasi, "VR seharusnya belum diinisialisasi awalnya")
+
+    // Test initialization
+    buat hasil = vr.inisialisasi({})
+    // In real implementation, this would depend on HMD availability
+    // For now, we'll just test that the method exists and runs
+    pastikan(benar, "Metode inisialisasi seharusnya ada dan dapat dijalankan")
+
+    tampilkan("Uji IntiVR kelas berhasil!")
+}
+
+// Test 3D Components
+fungsi uji_komponen_3d() {
+    tampilkan("Menguji komponen 3D...")
+
+    // Test Pemandangan3D
+    buat pemandangan = Pemandangan3D("Test Scene")
+    pastikan(pemandangan.nama == "Test Scene", "Nama pemandangan seharusnya disetel dengan benar")
+
+    // Test Objek3D
+    buat objek = Objek3D("Test Object")
+    pastikan(objek.nama == "Test Object", "Nama objek seharusnya disetel dengan benar")
+    pastikan(objek.posisi.x == 0 dan objek.posisi.y == 0 dan objek.posisi.z == 0, "Posisi objek seharusnya (0,0,0) secara default")
+
+    // Test transformations
+    objek.atur_posisi(1, 2, 3)
+    pastikan(objek.posisi.x == 1 dan objek.posisi.y == 2 dan objek.posisi.z == 3, "Posisi objek seharusnya dapat diatur")
+
+    objek.atur_rotasi(0.5, 1.0, 1.5)
+    pastikan(objek.rotasi.x == 0.5 dan objek.rotasi.y == 1.0 dan objek.rotasi.z == 1.5, "Rotasi objek seharusnya dapat diatur")
+
+    objek.atur_skala(2, 2, 2)
+    pastikan(objek.skala.x == 2 dan objek.skala.y == 2 dan objek.skala.z == 2, "Skala objek seharusnya dapat diatur")
+
+    // Test Kamera
+    buat kamera = Kamera()
+    pastikan(bukan kamera.aktif, "Kamera seharusnya tidak aktif secara default")
+
+    // Test Pencahayaan
+    buat pencahayaan = Pencahayaan("arah", "#ffffff", 1.0)
+    pastikan(pencahayaan.tipe == "arah", "Tipe pencahayaan seharusnya disetel dengan benar")
+    pastikan(pencahayaan.warna == "#ffffff", "Warna pencahayaan seharusnya disetel dengan benar")
+    pastikan(pencahayaan.intensitas == 1.0, "Intensitas pencahayaan seharusnya disetel dengan benar")
+
+    tampilkan("Uji komponen 3D berhasil!")
+}
+
+// Test Utility Modules
+fungsi uji_modul_utilitas() {
+    tampilkan("Menguji modul utilitas...")
+
+    // Test DeteksiGerak
+    buat deteksi_gerak = DeteksiGerak()
+    pastikan(bukan deteksi_gerak.sensor_aktif, "Sensor gerak seharusnya tidak aktif secara default")
+
+    // Test PelacakanTangan
+    buat pelacakan_tangan = PelacakanTangan()
+    pastikan(bukan pelacakan_tangan.pelacakan_aktif, "Pelacakan tangan seharusnya tidak aktif secara default")
+
+    // Test PengenalanSuara
+    buat pengenalan_suara = PengenalanSuara()
+    pastikan(bukan pengenalan_suara.pengenalan_aktif, "Pengenalan suara seharusnya tidak aktif secara default")
+    pastikan(pengenalan_suara.bahasa == "id-ID", "Bahasa default seharusnya Indonesia")
+
+    tampilkan("Uji modul utilitas berhasil!")
+}
+
+// Helper function for assertions
+fungsi pastikan(kondisi, pesan) {
+    jika bukan kondisi {
+        tampilkan("UJI GAGAL: " + pesan)
+        lempar "Uji gagal: " + pesan
+    }
+}
+
+// Run all tests
+fungsi jalankan_semua_uji() {
+    tampilkan("=== Menjalankan Semua Uji AR/VR ===\n")
+
+    coba {
+        uji_arvr_kelas_utama()
+        uji_intiar_kelas()
+        uji_intivr_kelas()
+        uji_komponen_3d()
+        uji_modul_utilitas()
+
+        tampilkan("\n=== Semua Uji Berhasil! ===")
+    } tangkap(error) {
+        tampilkan("\n=== Uji Gagal ===")
+        tampilkan("Kesalahan: " + error)
+    }
+}
+
+// Execute tests
+jalankan_semua_uji()

@@ -1,0 +1,263 @@
+// KODEON Performance Optimization - CPU Profiler Utility
+// CPU usage analysis
+
+kelas CPUProfiler {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.aktif = salah
+        ini.sesi = []
+        ini.fungsi = []
+        ini.thread = []
+    }
+
+    // Start CPU profiling session
+    fungsi mulai_sesi(nama) {
+        jika ini.aktif {
+            tampilkan("Profil CPU sudah aktif")
+            kembalikan salah
+        }
+
+        buat sesi = {
+            id: ini.sesi.panjang + 1,
+            nama: nama || "Sesi-" + (ini.sesi.panjang + 1),
+            mulai: sekarang(),
+            fungsi: [],
+            thread: [],
+            sampel: []
+        }
+
+        ini.sesi.tambah(sesi)
+        ini.aktif = benar
+        tampilkan("Sesi profil CPU dimulai: " + sesi.nama)
+        kembalikan benar
+    }
+
+    // Stop CPU profiling session
+    fungsi hentikan_sesi() {
+        jika bukan ini.aktif {
+            tampilkan("Tidak ada sesi profil CPU aktif")
+            kembalikan salah
+        }
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.berhenti = sekarang()
+        sesi_aktif.durasi = sesi_aktif.berhenti - sesi_aktif.mulai
+        ini.aktif = salah
+        tampilkan("Sesi profil CPU dihentikan: " + sesi_aktif.nama + " (Durasi: " + sesi_aktif.durasi + "ms)")
+        kembalikan benar
+    }
+
+    // Record function execution
+    fungsi catat_fungsi(nama, durasi, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Profil CPU tidak aktif, tidak dapat mencatat fungsi")
+            kembalikan salah
+        }
+
+        buat fungsi = {
+            timestamp: sekarang(),
+            nama: nama,
+            durasi: durasi,
+            informasi: informasi || {}
+        }
+
+        ini.fungsi.tambah(fungsi)
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.fungsi.tambah(fungsi)
+
+        kembalikan fungsi
+    }
+
+    // Record thread activity
+    fungsi catat_thread(id, aktivitas, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Profil CPU tidak aktif, tidak dapat mencatat thread")
+            kembalikan salah
+        }
+
+        buat thread = {
+            timestamp: sekarang(),
+            id: id,
+            aktivitas: aktivitas,
+            informasi: informasi || {}
+        }
+
+        ini.thread.tambah(thread)
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.thread.tambah(thread)
+
+        kembalikan thread
+    }
+
+    // Record CPU sample
+    fungsi catat_sampel(penggunaan, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Profil CPU tidak aktif, tidak dapat mencatat sampel")
+            kembalikan salah
+        }
+
+        buat sampel = {
+            timestamp: sekarang(),
+            penggunaan: penggunaan,
+            informasi: informasi || {}
+        }
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        sesi_aktif.sampel.tambah(sampel)
+
+        kembalikan sampel
+    }
+
+    // Get function performance report
+    fungsi dapatkan_laporan_fungsi() {
+        buat laporan = {
+            total_fungsi: ini.fungsi.panjang,
+            durasi_total: 0,
+            fungsi_terlama: tidak_ada,
+            fungsi_tercepat: tidak_ada,
+            rata_rata_durasi: 0
+        }
+
+        jika ini.fungsi.panjang == 0 {
+            kembalikan laporan
+        }
+
+        buat durasi_total = 0
+        buat terlama = ini.fungsi[0]
+        buat tercepat = ini.fungsi[0]
+
+        untuk setiap fungsi dalam ini.fungsi {
+            durasi_total += fungsi.durasi
+
+            jika fungsi.durasi > terlama.durasi {
+                terlama = fungsi
+            }
+
+            jika fungsi.durasi < tercepat.durasi {
+                tercepat = fungsi
+            }
+        }
+
+        laporan.durasi_total = durasi_total
+        laporan.fungsi_terlama = terlama
+        laporan.fungsi_tercepat = tercepat
+        laporan.rata_rata_durasi = durasi_total / ini.fungsi.panjang
+
+        kembalikan laporan
+    }
+
+    // Get top CPU consuming functions
+    fungsi dapatkan_fungsi_terberat(limit) {
+        limit = limit || 10
+
+        // Sort functions by duration (longest first)
+        buat fungsi_terurut = [...ini.fungsi]
+        fungsi_terurut.urutkan(fungsi(a, b) {
+            kembalikan b.durasi - a.durasi
+        })
+
+        kembalikan fungsi_terurut.slice(0, limit)
+    }
+
+    // Get CPU usage statistics
+    fungsi dapatkan_statistik_cpu() {
+        jika ini.sesi.panjang == 0 {
+            kembalikan {
+                sesi: 0,
+                rata_rata_penggunaan: 0,
+                puncak_penggunaan: 0,
+                terendah_penggunaan: 0
+            }
+        }
+
+        buat sesi_aktif = ini.sesi[ini.sesi.panjang - 1]
+        jika sesi_aktif.sampel.panjang == 0 {
+            kembalikan {
+                sesi: sesi_aktif.id,
+                rata_rata_penggunaan: 0,
+                puncak_penggunaan: 0,
+                terendah_penggunaan: 0
+            }
+        }
+
+        buat total_penggunaan = 0
+        buat puncak = sesi_aktif.sampel[0].penggunaan
+        buat terendah = sesi_aktif.sampel[0].penggunaan
+
+        untuk setiap sampel dalam sesi_aktif.sampel {
+            total_penggunaan += sampel.penggunaan
+
+            jika sampel.penggunaan > puncak {
+                puncak = sampel.penggunaan
+            }
+
+            jika sampel.penggunaan < terendah {
+                terendah = sampel.penggunaan
+            }
+        }
+
+        kembalikan {
+            sesi: sesi_aktif.id,
+            rata_rata_penggunaan: total_penggunaan / sesi_aktif.sampel.panjang,
+            puncak_penggunaan: puncak,
+            terendah_penggunaan: terendah
+        }
+    }
+
+    // Get session data
+    fungsi dapatkan_sesi(id) {
+        jika id bukan_tidak_ada {
+            jika id <= ini.sesi.panjang {
+                kembalikan ini.sesi[id - 1]
+            }
+            kembalikan tidak_ada
+        }
+
+        // Return latest session
+        jika ini.sesi.panjang > 0 {
+            kembalikan ini.sesi[ini.sesi.panjang - 1]
+        }
+        kembalikan tidak_ada
+    }
+
+    // Export CPU profiling data
+    fungsi ekspor_data(format) {
+        format = format || "json"
+        buat data = {
+            konfigurasi: ini.konfigurasi,
+            sesi: ini.sesi,
+            fungsi: ini.fungsi,
+            thread: ini.thread
+        }
+
+        jika format == "json" {
+            kembalikan JSON.stringify(data)
+        } lain jika format == "csv" {
+            // In a real implementation, this would convert to CSV
+            kembalikan "CSV format not implemented yet"
+        } lain {
+            kembalikan data
+        }
+    }
+
+    // Clear profiling data
+    fungsi bersihkan_data() {
+        ini.sesi = []
+        ini.fungsi = []
+        ini.thread = []
+        tampilkan("Data profil CPU dibersihkan")
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // jika ini.aktif {
+        //     tampilkan("CPU profiler diperbarui")
+        // }
+    }
+}
+
+ekspor CPUProfiler

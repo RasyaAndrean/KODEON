@@ -1,0 +1,23 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.connection-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.connection-status.disconnected {
+  background-color: #f44336;
+}

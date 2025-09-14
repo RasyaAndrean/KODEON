@@ -1,0 +1,144 @@
+// KODEON BCI Integration - Response Component
+// Response representation and management for BCI
+
+kelas Respons {
+    fungsi inisialisasi(tipe, data, kepercayaan) {
+        ini.tipe = tipe // "gerak_kiri", "gerak_kanan", "gerak_atas", "gerak_bawah", "istirahat", "pilihan"
+        ini.data = data || {}
+        ini.kepercayaan = kepercayaan || 0.0 // 0.0 to 1.0
+        ini.timestamp = sekarang()
+        ini.durasi = data.durasi || 0
+    }
+
+    // Motor imagery response
+    fungsi inisialisasi_gerak(arah, kekuatan) {
+        ini.tipe = "gerak_" + arah
+        ini.data = {
+            arah: arah, // "kiri", "kanan", "atas", "bawah"
+            kekuatan: kekuatan || 1.0
+        }
+        ini.durasi = 1.0
+    }
+
+    // Selection response
+    fungsi inisialisasi_pilihan(indeks, label) {
+        ini.tipe = "pilihan"
+        ini.data = {
+            indeks: indeks,
+            label: label
+        }
+        ini.durasi = 0.5
+    }
+
+    // Rest response
+    fungsi inisialisasi_istirahat(durasi) {
+        ini.tipe = "istirahat"
+        ini.data = {
+            durasi: durasi || 2.0
+        }
+        ini.durasi = durasi || 2.0
+    }
+
+    // Set confidence level
+    fungsi atur_kepercayaan(kepercayaan) {
+        ini.kepercayaan = Math.max(0, Math.min(1, kepercayaan)) // Clamp between 0 and 1
+    }
+
+    // Get response type
+    fungsi dapatkan_tipe() {
+        kembalikan ini.tipe
+    }
+
+    // Get response data
+    fungsi dapatkan_data() {
+        kembalikan ini.data
+    }
+
+    // Get confidence level
+    fungsi dapatkan_kepercayaan() {
+        kembalikan ini.kepercayaan
+    }
+
+    // Check if response is valid
+    fungsi apakah_valid() {
+        kembalikan ini.kepercayaan > 0.5 // Threshold for valid response
+    }
+
+    // Merge with another response
+    fungsi gabung(respons_lain) {
+        // Create a combined response
+        buat respons_gabungan = Respons("gabungan", {}, (ini.kepercayaan + respons_lain.kepercayaan) / 2)
+        respons_gabungan.data = {
+            respons1: ini,
+            respons2: respons_lain
+        }
+        kembalikan respons_gabungan
+    }
+
+    // Filter response based on criteria
+    fungsi saring(kriteria) {
+        jika kriteria.tipe bukan_tidak_ada dan ini.tipe != kriteria.tipe {
+            kembalikan tidak_ada
+        }
+
+        jika kriteria.kepercayaan_minimum bukan_tidak_ada dan ini.kepercayaan < kriteria.kepercayaan_minimum {
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini
+    }
+
+    // Map response to action
+    fungsi petakan_ke_aksi() {
+        peta_aksi = {
+            "gerak_kiri": "gerak_ke_kiri",
+            "gerak_kanan": "gerak_ke_kanan",
+            "gerak_atas": "gerak_ke_atas",
+            "gerak_bawah": "gerak_ke_bawah",
+            "istirahat": "berhenti",
+            "pilihan": "pilih_" + (ini.data.indeks || 0)
+        }
+
+        kembalikan peta_aksi[ini.tipe] || "tidak_diketahui"
+    }
+
+    // Calculate response similarity to another response
+    fungsi hitung_kesamaan(respons_lain) {
+        jika ini.tipe != respons_lain.tipe {
+            kembalikan 0
+        }
+
+        buat kesamaan_tipe = 1.0
+        buat kesamaan_data = 0.0
+
+        // Calculate data similarity (simplified)
+        jika ini.data.arah bukan_tidak_ada dan respons_lain.data.arah bukan_tidak_ada {
+            kesamaan_data = ini.data.arah == respons_lain.data.arah ? 1.0 : 0.0
+        } lain jika ini.data.indeks bukan_tidak_ada dan respons_lain.data.indeks bukan_tidak_ada {
+            // For selection responses, similarity decreases with index difference
+            buat perbedaan = Math.abs(ini.data.indeks - respons_lain.data.indeks)
+            kesamaan_data = Math.max(0, 1 - perbedaan / 10) // Normalize by max difference
+        } lain {
+            kesamaan_data = 1.0 // Assume same if no specific data to compare
+        }
+
+        // Weighted similarity based on confidence
+        buat kesamaan = (kesamaan_tipe * 0.5 + kesamaan_data * 0.5) *
+                       (ini.kepercayaan + respons_lain.kepercayaan) / 2
+
+        kembalikan kesamaan
+    }
+
+    // Get response information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            data: ini.data,
+            kepercayaan: ini.kepercayaan,
+            timestamp: ini.timestamp,
+            durasi: ini.durasi
+        }
+    }
+}
+
+ekspor Respons

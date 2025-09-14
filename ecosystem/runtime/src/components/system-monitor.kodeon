@@ -1,0 +1,219 @@
+// KODEON Runtime - System Monitor
+// System monitoring functionality
+
+kelas MonitorSistem {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.metrik = {
+            cpu: 0,
+            memori: 0,
+            disk: 0,
+            jaringan: 0
+        }
+        ini.riwayat = []
+        ini.alerts = []
+    }
+
+    // Initialize system monitor
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Monitor sistem diinisialisasi")
+    }
+
+    // Shutdown system monitor
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.metrik = {
+            cpu: 0,
+            memori: 0,
+            disk: 0,
+            jaringan: 0
+        }
+        ini.riwayat = []
+        ini.alerts = []
+        tampilkan("Monitor sistem dihentikan")
+    }
+
+    // Collect system metrics
+    fungsi kumpulkan_metrik() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would collect actual system metrics
+        ini.metrik.cpu = Math.max(0, Math.min(100, ini.metrik.cpu + (Math.acak() * 10 - 5)))
+        ini.metrik.memori = Math.max(0, Math.min(100, ini.metrik.memori + (Math.acak() * 10 - 5)))
+        ini.metrik.disk = Math.max(0, Math.min(100, ini.metrik.disk + (Math.acak() * 5 - 2.5)))
+        ini.metrik.jaringan = Math.max(0, ini.metrik.jaringan + (Math.acak() * 100))
+
+        buat snapshot = {
+            waktu: sekarang(),
+            metrik: {
+                cpu: ini.metrik.cpu,
+                memori: ini.metrik.memori,
+                disk: ini.metrik.disk,
+                jaringan: ini.metrik.jaringan
+            }
+        }
+
+        ini.riwayat.tambah(snapshot)
+
+        // Keep only last 100 snapshots
+        jika ini.riwayat.panjang > 100 {
+            ini.riwayat = ini.riwayat.slice(-100)
+        }
+
+        kembalikan snapshot
+    }
+
+    // Get current metrics
+    fungsi dapatkan_metrik() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.metrik
+    }
+
+    // Get metrics history
+    fungsi dapatkan_riwayat() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan []
+        }
+
+        kembalikan ini.riwayat
+    }
+
+    // Check for alerts
+    fungsi periksa_alerts() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan []
+        }
+
+        buat alerts_baru = []
+
+        // Check CPU usage
+        jika ini.metrik.cpu > 90 {
+            alerts_baru.tambah({
+                jenis: "cpu_tinggi",
+                nilai: ini.metrik.cpu,
+                ambang_batas: 90,
+                waktu: sekarang()
+            })
+        }
+
+        // Check memory usage
+        jika ini.metrik.memori > 85 {
+            alerts_baru.tambah({
+                jenis: "memori_tinggi",
+                nilai: ini.metrik.memori,
+                ambang_batas: 85,
+                waktu: sekarang()
+            })
+        }
+
+        // Check disk usage
+        jika ini.metrik.disk > 95 {
+            alerts_baru.tambah({
+                jenis: "disk_penuh",
+                nilai: ini.metrik.disk,
+                ambang_batas: 95,
+                waktu: sekarang()
+            })
+        }
+
+        // Add new alerts to the alerts list
+        untuk setiap alert dalam alerts_baru {
+            ini.alerts.tambah(alert)
+        }
+
+        // Keep only last 50 alerts
+        jika ini.alerts.panjang > 50 {
+            ini.alerts = ini.alerts.slice(-50)
+        }
+
+        jika alerts_baru.panjang > 0 {
+            tampilkan("Alerts sistem ditemukan: " + alerts_baru.panjang)
+        }
+
+        kembalikan alerts_baru
+    }
+
+    // Get alerts
+    fungsi dapatkan_alerts() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan []
+        }
+
+        kembalikan ini.alerts
+    }
+
+    // Clear alerts
+    fungsi hapus_alerts() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan salah
+        }
+
+        ini.alerts = []
+        tampilkan("Alerts dihapus")
+        kembalikan benar
+    }
+
+    // Generate report
+    fungsi buat_laporan() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Monitor sistem belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat rata_rata = {
+            cpu: 0,
+            memori: 0,
+            disk: 0,
+            jaringan: 0
+        }
+
+        jika ini.riwayat.panjang > 0 {
+            untuk setiap snapshot dalam ini.riwayat {
+                rata_rata.cpu += snapshot.metrik.cpu
+                rata_rata.memori += snapshot.metrik.memori
+                rata_rata.disk += snapshot.metrik.disk
+                rata_rata.jaringan += snapshot.metrik.jaringan
+            }
+
+            rata_rata.cpu /= ini.riwayat.panjang
+            rata_rata.memori /= ini.riwayat.panjang
+            rata_rata.disk /= ini.riwayat.panjang
+            rata_rata.jaringan /= ini.riwayat.panjang
+        }
+
+        kembalikan {
+            metrik_terkini: ini.metrik,
+            rata_rata: rata_rata,
+            jumlah_snapshot: ini.riwayat.panjang,
+            alerts_aktif: ini.alerts.panjang,
+            waktu_laporan: sekarang()
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Collect metrics periodically
+        jika Math.acak() > 0.7 {
+            ini.kumpulkan_metrik()
+            ini.periksa_alerts()
+        }
+    }
+}
+
+ekspor MonitorSistem

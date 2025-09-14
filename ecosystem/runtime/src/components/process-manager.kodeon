@@ -1,0 +1,197 @@
+// KODEON Runtime - Process Manager
+// Process management functionality
+
+kelas ManajerProses {
+    fungsi inisialisasi() {
+        ini.proses = []
+        ini.antrian = []
+        ini.terhubung = salah
+    }
+
+    // Initialize process manager
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Manajer proses diinisialisasi")
+    }
+
+    // Shutdown process manager
+    fungsi hentikan() {
+        // Terminate all processes
+        untuk setiap proses dalam ini.proses {
+            jika proses.hentikan bukan_tidak_ada {
+                proses.hentikan()
+            }
+        }
+
+        ini.proses = []
+        ini.antrian = []
+        ini.terhubung = salah
+        tampilkan("Manajer proses dihentikan")
+    }
+
+    // Create process
+    fungsi buat_proses(perintah, opsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat proses = {
+            id: ini.proses.panjang + 1,
+            perintah: perintah,
+            opsi: opsi || {},
+            status: "dibuat",
+            dimulai: tidak_ada,
+            selesai: tidak_ada,
+            pid: Math.acak() * 10000
+        }
+
+        ini.proses.tambah(proses)
+        tampilkan("Proses dibuat: " + perintah)
+        kembalikan proses
+    }
+
+    // Start process
+    fungsi mulai_proses(proses) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika bukan proses {
+            tampilkan("Kesalahan: Proses tidak valid")
+            kembalikan salah
+        }
+
+        proses.status = "berjalan"
+        proses.dimulai = sekarang()
+        tampilkan("Proses dimulai: " + proses.perintah)
+        kembalikan benar
+    }
+
+    // Stop process
+    fungsi hentikan_proses(proses) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika bukan proses {
+            tampilkan("Kesalahan: Proses tidak valid")
+            kembalikan salah
+        }
+
+        proses.status = "dihentikan"
+        proses.selesai = sekarang()
+        tampilkan("Proses dihentikan: " + proses.perintah)
+        kembalikan benar
+    }
+
+    // Get process status
+    fungsi dapatkan_status(proses) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        jika bukan proses {
+            tampilkan("Kesalahan: Proses tidak valid")
+            kembalikan tidak_ada
+        }
+
+        kembalikan {
+            id: proses.id,
+            status: proses.status,
+            dimulai: proses.dimulai,
+            selesai: proses.selesai,
+            durasi: proses.dimulai ? (proses.selesai || sekarang()) - proses.dimulai : 0
+        }
+    }
+
+    // List all processes
+    fungsi daftar_proses() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan []
+        }
+
+        kembalikan ini.proses
+    }
+
+    // Kill process
+    fungsi bunuh_proses(proses) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika bukan proses {
+            tampilkan("Kesalahan: Proses tidak valid")
+            kembalikan salah
+        }
+
+        proses.status = "dibunuh"
+        proses.selesai = sekarang()
+        tampilkan("Proses dibunuh: " + proses.perintah)
+        kembalikan benar
+    }
+
+    // Add to queue
+    fungsi tambah_ke_antrian(perintah, prioritas) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat item_antrian = {
+            perintah: perintah,
+            prioritas: prioritas || 0,
+            waktu: sekarang()
+        }
+
+        ini.antrian.tambah(item_antrian)
+        // Sort by priority (higher priority first)
+        ini.antrian = ini.antrian.urutkan(fungsi(a, b) { kembalikan b.prioritas - a.prioritas })
+
+        tampilkan("Perintah ditambahkan ke antrian: " + perintah)
+        kembalikan benar
+    }
+
+    // Process queue
+    fungsi proses_antrian() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Manajer proses belum diinisialisasi")
+            kembalikan salah
+        }
+
+        jika ini.antrian.panjang == 0 {
+            tampilkan("Antrian kosong")
+            kembalikan benar
+        }
+
+        buat item = ini.antrian.geser() // Remove first item
+        buat proses = ini.buat_proses(item.perintah)
+        ini.mulai_proses(proses)
+
+        tampilkan("Memproses antrian: " + item.perintah)
+        kembalikan proses
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Update process statuses
+        untuk setiap proses dalam ini.proses {
+            jika proses.status == "berjalan" dan Math.acak() > 0.95 {
+                proses.status = "selesai"
+                proses.selesai = sekarang()
+                tampilkan("Proses selesai: " + proses.perintah)
+            }
+        }
+    }
+}
+
+ekspor ManajerProses

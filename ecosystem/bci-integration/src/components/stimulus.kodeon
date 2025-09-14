@@ -1,0 +1,139 @@
+// KODEON BCI Integration - Stimulus Component
+// Stimulus representation and management for BCI
+
+kelas Stimulus {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe // "visual", "auditori", "taktil"
+        ini.parameter = parameter || {}
+        ini.durasi = parameter.durasi || 1.0 // seconds
+        ini.waktu_mulai = tidak_ada
+        ini.aktif = salah
+    }
+
+    // Visual stimulus (e.g., flashing checkerboard)
+    fungsi inisialisasi_visual(frekuensi, kontras, ukuran) {
+        ini.tipe = "visual"
+        ini.parameter = {
+            frekuensi: frekuensi || 10, // Hz
+            kontras: kontras || 1.0,
+            ukuran: ukuran || { lebar: 100, tinggi: 100 },
+            warna: parameter.warna || "#FFFFFF"
+        }
+    }
+
+    // Auditory stimulus (e.g., beeps)
+    fungsi inisialisasi_auditori(frekuensi, volume, durasi) {
+        ini.tipe = "auditori"
+        ini.parameter = {
+            frekuensi: frekuensi || 1000, // Hz
+            volume: volume || 0.5,
+            durasi: durasi || 1.0 // seconds
+        }
+    }
+
+    // Tactile stimulus (e.g., vibration)
+    fungsi inisialisasi_taktil(intensitas, durasi, lokasi) {
+        ini.tipe = "taktil"
+        ini.parameter = {
+            intensitas: intensitas || 1.0,
+            durasi: durasi || 1.0, // seconds
+            lokasi: lokasi || "tangan_kanan"
+        }
+    }
+
+    // Start stimulus
+    fungsi mulai() {
+        ini.waktu_mulai = sekarang()
+        ini.aktif = benar
+        tampilkan("Stimulus " + ini.tipe + " dimulai")
+    }
+
+    // Stop stimulus
+    fungsi hentikan() {
+        ini.aktif = salah
+        tampilkan("Stimulus " + ini.tipe + " dihentikan")
+    }
+
+    // Check if stimulus is active
+    fungsi apakah_aktif() {
+        kembalikan ini.aktif
+    }
+
+    // Check if stimulus has finished
+    fungsi apakah_selesai() {
+        jika bukan ini.aktif atau ini.waktu_mulai == tidak_ada {
+            kembalikan benar
+        }
+
+        buat waktu_berlalu = (sekarang() - ini.waktu_mulai) / 1000 // convert to seconds
+        kembalikan waktu_berlalu >= ini.durasi
+    }
+
+    // Update stimulus (for dynamic stimuli)
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // For visual stimuli with flickering
+        jika ini.tipe == "visual" dan ini.parameter.frekuensi > 0 {
+            // In a real implementation, this would update the visual display
+            // For now, we'll just log the update
+            // tampilkan("Memperbarui stimulus visual dengan frekuensi " + ini.parameter.frekuensi + " Hz")
+        }
+
+        // Check if stimulus should end
+        jika ini.apakah_selesai() {
+            ini.hentikan()
+        }
+    }
+
+    // Get stimulus intensity at specific time
+    fungsi dapatkan_intensitas(waktu_relatif) {
+        jika ini.tipe == "visual" {
+            // For flickering visual stimuli
+            jika ini.parameter.frekuensi > 0 {
+                buat fase = (waktu_relatif * ini.parameter.frekuensi) % 1
+                // Simple square wave
+                kembalikan fase < 0.5 ? ini.parameter.kontras : 0
+            } lain {
+                kembalikan ini.parameter.kontras
+            }
+        } lain jika ini.tipe == "auditori" {
+            // For auditory stimuli
+            kembalikan ini.parameter.volume
+        } lain jika ini.tipe == "taktil" {
+            // For tactile stimuli
+            kembalikan ini.parameter.intensitas
+        }
+
+        kembalikan 0
+    }
+
+    // Create stimulus sequence
+    fungsi buat_urutan(stimulus_array, interval) {
+        buat urutan = []
+        buat waktu_total = 0
+
+        untuk setiap stimulus dalam stimulus_array {
+            stimulus.waktu_mulai = waktu_total
+            urutan.tambah(stimulus)
+            waktu_total = waktu_total + stimulus.durasi + interval
+        }
+
+        kembalikan urutan
+    }
+
+    // Get stimulus information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            durasi: ini.durasi,
+            waktu_mulai: ini.waktu_mulai,
+            aktif: ini.aktif
+        }
+    }
+}
+
+ekspor Stimulus

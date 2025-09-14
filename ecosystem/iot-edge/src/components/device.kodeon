@@ -1,0 +1,173 @@
+// KODEON IoT/Edge Integration - Device Component
+// Device representation and management for IoT
+
+kelas Perangkat {
+    fungsi inisialisasi(id, tipe) {
+        ini.id = id
+        ini.tipe = tipe // "sensor", "aktuator", "gateway", "edge_node"
+        ini.status = "tidak_aktif"
+        ini.koneksi = tidak_ada
+        ini.sensor = []
+        ini.aktuator = []
+        ini.data_terakhir = tidak_ada
+        ini.timestamp = sekarang()
+    }
+
+    // Activate device
+    fungsi aktifkan() {
+        ini.status = "aktif"
+        tampilkan("Perangkat diaktifkan: " + ini.id)
+    }
+
+    // Deactivate device
+    fungsi nonaktifkan() {
+        ini.status = "tidak_aktif"
+        tampilkan("Perangkat dinonaktifkan: " + ini.id)
+    }
+
+    // Connect to network
+    fungsi hubungkan(jaringan) {
+        // In a real implementation, this would establish network connection
+        ini.koneksi = jaringan
+        tampilkan("Perangkat terhubung ke jaringan: " + jaringan)
+    }
+
+    // Disconnect from network
+    fungsi putuskan_koneksi() {
+        ini.koneksi = tidak_ada
+        tampilkan("Perangkat diputuskan koneksi dari jaringan")
+    }
+
+    // Add sensor
+    fungsi tambah_sensor(sensor) {
+        ini.sensor.tambah(sensor)
+        tampilkan("Sensor ditambahkan ke perangkat: " + sensor.tipe)
+    }
+
+    // Add actuator
+    fungsi tambah_aktuator(aktuator) {
+        ini.aktuator.tambah(aktuator)
+        tampilkan("Aktuator ditambahkan ke perangkat: " + aktuator.tipe)
+    }
+
+    // Read sensor data
+    fungsi baca_sensor() {
+        buat data = []
+
+        untuk setiap sensor dalam ini.sensor {
+            buat nilai = sensor.baca()
+            data.tambah({
+                id_sensor: sensor.id,
+                tipe: sensor.tipe,
+                nilai: nilai,
+                unit: sensor.unit,
+                timestamp: sekarang()
+            })
+        }
+
+        ini.data_terakhir = data
+        ini.timestamp = sekarang()
+
+        kembalikan data
+    }
+
+    // Control actuator
+    fungsi kendalikan_aktuator(id_aktuator, perintah) {
+        untuk setiap aktuator dalam ini.aktuator {
+            jika aktuator.id == id_aktuator {
+                kembalikan aktuator.kendalikan(perintah)
+            }
+        }
+
+        tampilkan("Aktuator tidak ditemukan: " + id_aktuator)
+        kembalikan salah
+    }
+
+    // Send data
+    fungsi kirim_data(data, tujuan) {
+        jika ini.koneksi == tidak_ada {
+            tampilkan("Kesalahan: Perangkat tidak terhubung ke jaringan")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would send data over the network
+        tampilkan("Data dikirim dari perangkat " + ini.id + " ke " + tujuan)
+        kembalikan benar
+    }
+
+    // Receive data
+    fungsi terima_data() {
+        jika ini.koneksi == tidak_ada {
+            tampilkan("Kesalahan: Perangkat tidak terhubung ke jaringan")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would receive data from the network
+        // For now, we'll simulate receiving data
+        tampilkan("Data diterima oleh perangkat: " + ini.id)
+        kembalikan {
+            id_perangkat: ini.id,
+            data: "data_simulasi",
+            timestamp: sekarang()
+        }
+    }
+
+    // Update device status
+    fungsi perbarui() {
+        // Update device status based on sensor readings or other factors
+        jika ini.status == "aktif" {
+            // Simulate periodic sensor reading
+            jika Math.random() < 0.1 { // 10% chance each update
+                ini.baca_sensor()
+            }
+        }
+    }
+
+    // Get device information
+    fungsi dapatkan_info() {
+        kembalikan {
+            id: ini.id,
+            tipe: ini.tipe,
+            status: ini.status,
+            koneksi: ini.koneksi,
+            jumlah_sensor: ini.sensor.panjang,
+            jumlah_aktuator: ini.aktuator.panjang,
+            data_terakhir: ini.data_terakhir,
+            timestamp: ini.timestamp
+        }
+    }
+
+    // Check device health
+    fungsi periksa_kesehatan() {
+        buat masalah = []
+
+        jika ini.status != "aktif" {
+            masalah.tambah("Perangkat tidak aktif")
+        }
+
+        jika ini.koneksi == tidak_ada {
+            masalah.tambah("Tidak terhubung ke jaringan")
+        }
+
+        // Check sensor health
+        untuk setiap sensor dalam ini.sensor {
+            jika bukan sensor.apakah_berfungsi() {
+                masalah.tambah("Sensor " + sensor.id + " tidak berfungsi")
+            }
+        }
+
+        // Check actuator health
+        untuk setiap aktuator dalam ini.aktuator {
+            jika bukan aktuator.apakah_berfungsi() {
+                masalah.tambah("Aktuator " + aktuator.id + " tidak berfungsi")
+            }
+        }
+
+        kembalikan {
+            sehat: masalah.panjang == 0,
+            masalah: masalah
+        }
+    }
+}
+
+ekspor Perangkat

@@ -1,0 +1,138 @@
+// KODEON Security Framework - Basic Usage Example
+// Demonstrates how to use the security framework in KODEON applications
+
+// Import the Security framework
+impor Security
+
+// Create Security instance
+buat security = Security()
+
+// Initialize security framework
+security.inisialisasi_keamanan({
+    mode: "strict",
+    log_level: "info",
+    lingkungan: "development"
+})
+
+// Create and add security components
+impor komponen.{Otentikasi, Otorisasi, Enkripsi, Audit}
+
+// Create authentication component
+buat auth = Otentikasi()
+security.tambah_otentikasi(auth)
+
+// Create authorization component
+buat authz = Otorisasi()
+security.tambah_otorisasi(authz)
+
+// Create encryption component
+buat enc = Enkripsi()
+security.tambah_enkripsi(enc)
+
+// Create audit component
+buat audit = Audit()
+security.tambah_audit(audit)
+
+// Add roles and permissions
+authz.tambah_peran("admin", "Administrator dengan akses penuh")
+authz.tambah_peran("user", "Pengguna biasa")
+authz.tambah_izin("baca", "Izin untuk membaca data")
+authz.tambah_izin("tulis", "Izin untuk menulis data")
+authz.tambah_izin("hapus", "Izin untuk menghapus data")
+
+// Assign permissions to roles
+authz.berikan_izin_ke_peran("admin", "baca")
+authz.berikan_izin_ke_peran("admin", "tulis")
+authz.berikan_izin_ke_peran("admin", "hapus")
+authz.berikan_izin_ke_peran("user", "baca")
+
+// Register a new user
+auth.daftarkan_pengguna("admin@example.com", "Password123!")
+auth.daftarkan_pengguna("user@example.com", "UserPass123!")
+
+// Assign roles to users
+authz.berikan_peran_ke_pengguna("admin@example.com", "admin")
+authz.berikan_peran_ke_pengguna("user@example.com", "user")
+
+// Authenticate user
+jika auth.otentikasi_pengguna("admin@example.com", "Password123!") {
+    tampilkan("Autentikasi berhasil untuk admin")
+} lain {
+    tampilkan("Autentikasi gagal untuk admin")
+}
+
+// Check authorization
+jika authz.periksa_izin("admin@example.com", "hapus") {
+    tampilkan("Admin diizinkan menghapus")
+} lain {
+    tampilkan("Admin tidak diizinkan menghapus")
+}
+
+// Encrypt data
+buat data_rahasia = "Data penting yang perlu dilindungi"
+buat kunci = "kunci_rahasia_untuk_enkripsi"
+buat data_terenkripsi = enc.enkripsi_aes(data_rahasia, kunci)
+tampilkan("Data terenkripsi: " + data_terenkripsi.data_terenkripsi)
+
+// Decrypt data
+buat data_asli = enc.dekripsi_aes(data_terenkripsi.data_terenkripsi, kunci, data_terenkripsi.iv, data_terenkripsi.tag)
+tampilkan("Data asli: " + data_asli)
+
+// Hash password
+impor utilitas.Hasing
+buat hasher = Hashing()
+buat password = "Password123!"
+buat hash = hasher.hash_bcrypt(password)
+tampilkan("Password hash: " + hash)
+
+// Verify password
+jika hasher.verifikasi_bcrypt(password, hash) {
+    tampilkan("Verifikasi password berhasil")
+} lain {
+    tampilkan("Verifikasi password gagal")
+}
+
+// Validate input
+impor utilitas.Validator
+buat validator = Validator()
+jika validator.validasi_email("user@example.com") {
+    tampilkan("Email valid")
+} lain {
+    tampilkan("Email tidak valid")
+}
+
+// Scan for vulnerabilities
+impor utilitas.Scanner
+buat scanner = Scanner()
+buat kode_contoh = `
+<form>
+    <input type="text" name="username">
+    <input type="password" name="password">
+</form>
+<script>alert('XSS')</script>
+`
+buat kerentanan = scanner.pindai_kode(kode_contoh)
+jika kerentanan.panjang > 0 {
+    tampilkan("Ditemukan " + kerentanan.panjang + " kerentanan:")
+    untuk setiap item dalam kerentanan {
+        tampilkan("- " + item.nama + " pada baris " + item.baris)
+    }
+} lain {
+    tampilkan("Tidak ditemukan kerentanan")
+}
+
+// Log security event
+audit.catat_kejadian("otentikasi_berhasil", "Pengguna berhasil login", {
+    pengguna: "admin@example.com",
+    ip: "192.168.1.100"
+})
+
+// Generate security report
+buat laporan = audit.hasilkan_laporan("ringkasan")
+tampilkan("Laporan keamanan:")
+tampilkan("Total kejadian: " + laporan.total_kejadian)
+
+// Shutdown security framework
+security.matikan_keamanan()
+
+tampilkan("Contoh penggunaan kerangka kerja keamanan selesai!")

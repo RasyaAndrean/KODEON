@@ -1,0 +1,91 @@
+// KODEON Web Framework - Application Class
+// This is the main entry point for the web framework
+
+kelas Aplikasi:
+    fungsi inisialisasi():
+        ini.rute = []
+        ini.middleware = []
+        ini.server = tidak_ada
+    
+    // Method to register GET routes
+    fungsi dapatkan(jalur, penangan):
+        ini.daftarkan_rute("GET", jalur, penangan)
+    
+    // Method to register POST routes
+    fungsi kirim(jalur, penangan):
+        ini.daftarkan_rute("POST", jalur, penangan)
+    
+    // Method to register PUT routes
+    fungsi perbarui(jalur, penangan):
+        ini.daftarkan_rute("PUT", jalur, penangan)
+    
+    // Method to register DELETE routes
+    fungsi hapus(jalur, penangan):
+        ini.daftarkan_rute("DELETE", jalur, penangan)
+    
+    // Private method to register routes
+    fungsi daftarkan_rute(metode, jalur, penangan):
+        buat rute_baru = {
+            metode: metode,
+            jalur: jalur,
+            penangan: penangan
+        }
+        ini.rute.tambah(rute_baru)
+    
+    // Method to register middleware
+    fungsi gunakan(middleware):
+        ini.middleware.tambah(middleware)
+    
+    // Method to start the HTTP server
+    fungsi dengarkan(port, callback):
+        // This would integrate with KODEON's HTTP server capabilities
+        // For now, we'll simulate the server start
+        ini.server = {
+            port: port,
+            berjalan: benar
+        }
+        
+        jika callback bukan_tidak_ada:
+            callback()
+        
+        tampilkan("KODEON Web Framework server berjalan di port " + port)
+    
+    // Method to stop the HTTP server
+    fungsi hentikan():
+        jika ini.server bukan_tidak_ada:
+            ini.server.berjalan = salah
+            tampilkan("Server dihentikan")
+    
+    // Method to match routes
+    fungsi cocokkan_rute(metode, jalur):
+        untuk setiap rute dalam ini.rute:
+            jika rute.metode == metode dan rute.jalur == jalur:
+                kembalikan rute
+        kembalikan tidak_ada
+    
+    // Method to process middleware
+    fungsi proses_middleware(permintaan, respons):
+        // Process each middleware in order
+        untuk setiap mw dalam ini.middleware:
+            mw(permintaan, respons)
+    
+    // Method to handle incoming requests
+    fungsi tangani_permintaan(permintaan, respons):
+        // Process middleware first
+        ini.proses_middleware(permintaan, respons)
+        
+        // Find matching route
+        buat rute = ini.cocokkan_rute(permintaan.metode, permintaan.jalur)
+        
+        jika rute bukan_tidak_ada:
+            // Call the route handler
+            rute.penangan(permintaan, respons)
+        lain:
+            // Return 404 if no route matches
+            respons.status(404).kirim("Halaman tidak ditemukan")
+
+// Export the Application class
+fungsi buat_aplikasi():
+    kembalikan Aplikasi()
+
+ekspor buat_aplikasi

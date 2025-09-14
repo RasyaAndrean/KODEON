@@ -1,247 +1,96 @@
 //! Main entry point for the KODEON compiler
 
-use clap::Parser;
-use std::path::PathBuf;
+use std::env;
+use std::fs;
 use std::process;
-use kodeon_compiler::{Lexer, Parser, SemanticAnalyzer, IRGenerator, print_ir};
+use kodeon_compiler::lexer::Lexer;
+use kodeon_compiler::parser::Parser;
+use kodeon_compiler::semantic_analyzer::SemanticAnalyzer;
+use kodeon_compiler::ir::{IRGenerator, print_ir};
 use kodeon_compiler::llvm_backend::LLVMBackend;
+use kodeon_compiler::debugger::{Debugger, create_debugger};
 use inkwell::context::Context;
 
-/// KODEON Programming Language Compiler
-#[derive(Parser, Debug)]
-#[clap(author, version, about, long_about = None)]
-struct Args {
-    /// Input KODEON source file
-    #[clap(value_parser)]
-    input: PathBuf,
-
-    /// Output file path
-    #[clap(short, long, value_parser)]
-    output: Option<PathBuf>,
-
-    /// Compile to specific target platform
-    #[clap(short, long, value_parser, possible_values = &["llvm", "javascript", "python"])]
-    target: Option<String>,
-
-    /// Enable verbose output
-    #[clap(short, long, action)]
-    verbose: bool,
-
-    /// Generate LLVM IR output
-    #[clap(long, action)]
-    llvm: bool,
-
-    /// Execute the compiled program
-    #[clap(long, action)]
-    execute: bool,
-}
-
 fn main() {
-    let args = Args::parse();
+    let args: Vec<String> = env::args().collect();
 
-    if args.verbose {
-        env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
-    }
-
-    // Validate input file
-    if !args.input.exists() {
-        eprintln!("❌ Error: Input file '{}' does not exist", args.input.display());
+    if args.len() < 2 {
+        eprintln!("Usage: {} <input_file> [--debug]", args[0]);
         process::exit(1);
     }
 
-    if args.input.extension().unwrap_or_default() != "kodeon" {
-        eprintln!("❌ Error: Input file must have .kodeon extension");
-        process::exit(1);
-    }
+    let input_file = &args[1];
+    let debug_mode = args.contains(&"--debug".to_string());
 
-    // Compile the source file
-    match compile_file(&args.input, &args.output, &args.target, args.verbose, args.llvm, args.execute) {
-        Ok(_) => {
-            println!("✅ Successfully compiled {}", args.input.display());
-        }
+    // Read the input file
+    let source_code = match fs::read_to_string(input_file) {
+        Ok(code) => code,
         Err(e) => {
-            eprintln!("💥 Compilation error: {}", e);
+            eprintln!("Error reading file {}: {}", input_file, e);
             process::exit(1);
         }
-    }
-}
+    };
 
-/// Compile a KODEON source file
-fn compile_file(
-    input: &PathBuf,
-    output: &Option<PathBuf>,
-    target: &Option<String>,
-    verbose: bool,
-    generate_llvm: bool,
-    execute: bool,
-) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Compiling {}...", input.display());
-
-    // Read the source file
-    let contents = std::fs::read_to_string(input)?;
-
-    // Tokenize the source code
-    let mut lexer = Lexer::new(&contents);
-    let mut tokens = Vec::new();
-
-    if verbose {
-        println!("Tokenizing...");
-    }
-
-    loop {
-        let token = lexer.next_token()?;
-        if token == kodeon_compiler::Token::Eof {
-            break;
+    // Lexical analysis
+    let mut lexer = Lexer::new(&source_code);
+    let tokens = match lexer.tokenize() {
+        Ok(tokens) => tokens,
+        Err(e) => {
+            eprintln!("Lexical analysis error: {}", e);
+            process::exit(1);
         }
-        tokens.push(token);
-    }
+    };
 
-    if verbose {
-        println!("Tokens: {:?}", tokens);
-    }
+    // Parsing
+    let mut parser = Parser::new(&tokens).expect("Failed to create parser");
+    let ast = match parser.parse_program() {
+        Ok(ast) => ast,
+        Err(e) => {
+            eprintln!("Parsing error: {}", e);
+            process::exit(1);
+        }
+    };
 
-    // Parse the source code
-    if verbose {
-        println!("Parsing...");
-    }
-
-    let mut parser = Parser::new(&contents)?;
-    let ast = parser.parse_program()?;
-
-    if verbose {
-        println!("AST: {:?}", ast);
-    }
-
-    // Perform semantic analysis
-    if verbose {
-        println!("Performing semantic analysis...");
-    }
-
+    // Semantic analysis
     let mut semantic_analyzer = SemanticAnalyzer::new();
-    semantic_analyzer.analyze(&ast)?;
-
-    // Create module resolver with project root for package management
-    let project_root = input.parent().unwrap_or_else(|| std::path::Path::new(".")).to_path_buf();
-    let module_resolver = kodeon_compiler::ModuleResolver::with_project_root(project_root);
-
-    // Generate IR
-    if verbose {
-        println!("Generating IR...");
+    if let Err(e) = semantic_analyzer.analyze(&ast) {
+        eprintln!("Semantic analysis error: {}", e);
+        process::exit(1);
     }
 
-    let mut ir_generator = IRGenerator::with_module_resolver(module_resolver);
-    let mut ir_module = ir_generator.generate_ir(&ast)?;
+    // IR generation
+    let mut ir_generator = IRGenerator::new();
+    let ir_module = match ir_generator.generate_ir(&ast) {
+        Ok(module) => module,
+        Err(e) => {
+            eprintln!("IR generation error: {}", e);
+            process::exit(1);
+        }
+    };
 
-    // Apply optimizations
-    if verbose {
-        println!("Applying optimizations...");
-    }
+    if debug_mode {
+        // Debug mode - start the debugger
+        println!("Starting debugger for {}", input_file);
+        let mut debugger = create_debugger();
+        if let Err(e) = debugger.debug(&ir_module) {
+            eprintln!("Debugging error: {}", e);
+            process::exit(1);
+        }
+    } else {
+        // Normal mode - compile to LLVM IR
+        let context = Context::create();
+        let module_name = input_file.clone();
+        let mut llvm_backend = LLVMBackend::new(&context, &module_name);
 
-    let optimizer = kodeon_compiler::Optimizer::new();
-    optimizer.optimize(&mut ir_module)?;
+        if let Err(e) = llvm_backend.compile_ir(&ir_module) {
+            eprintln!("LLVM compilation error: {}", e);
+            process::exit(1);
+        }
 
-    if verbose {
-        println!("Optimized IR generated:");
+        // Print the generated IR
         print_ir(&ir_module);
+
+        // Print the LLVM IR
+        llvm_backend.print_ir();
     }
-
-    // Handle different targets
-    match target.as_deref() {
-        Some("llvm") | None if generate_llvm => {
-            // Generate LLVM IR
-            println!("Generating LLVM IR...");
-            let context = Context::create();
-            let module_name = input.file_stem().unwrap().to_str().unwrap();
-            let mut llvm_backend = LLVMBackend::new(&context, module_name);
-
-            llvm_backend.compile_ir(&ir_module)?;
-
-            // Determine output path
-            let output_path = match output {
-                Some(path) => path.clone(),
-                None => {
-                    let mut path = input.clone();
-                    path.set_extension("ll");
-                    path
-                }
-            };
-
-            // Write LLVM IR to file
-            llvm_backend.write_ir_to_file(output_path.to_str().unwrap())?;
-            println!("LLVM IR written to {}", output_path.display());
-
-            // Print LLVM IR to stdout if verbose
-            if verbose {
-                llvm_backend.print_ir();
-            }
-
-            // Execute if requested
-            if execute {
-                // For now, we'll just print a message since actual execution would require
-                // additional steps like JIT compilation or linking with a runtime
-                println!("Note: Execution of LLVM IR not yet implemented. Use the generated .ll file with LLVM tools.");
-            }
-        }
-        Some("javascript") => {
-            // TODO: Implement JavaScript transpilation
-            println!("JavaScript transpilation not yet implemented");
-
-            // Determine output path
-            let output_path = match output {
-                Some(path) => path.clone(),
-                None => {
-                    let mut path = input.clone();
-                    path.set_extension("js");
-                    path
-                }
-            };
-
-            // Write a placeholder JavaScript file
-            std::fs::write(&output_path, "// JavaScript transpilation placeholder")?;
-            println!("JavaScript output written to {}", output_path.display());
-        }
-        Some("python") => {
-            // TODO: Implement Python transpilation
-            println!("Python transpilation not yet implemented");
-
-            // Determine output path
-            let output_path = match output {
-                Some(path) => path.clone(),
-                None => {
-                    let mut path = input.clone();
-                    path.set_extension("py");
-                    path
-                }
-            };
-
-            // Write a placeholder Python file
-            std::fs::write(&output_path, "# Python transpilation placeholder")?;
-            println!("Python output written to {}", output_path.display());
-        }
-        Some(target) => {
-            return Err(format!("Unknown target: {}", target).into());
-        }
-        None => {
-            // Default behavior - just generate IR and print it
-            if !verbose {
-                print_ir(&ir_module);
-            }
-
-            // Determine output path
-            let output_path = match output {
-                Some(path) => path.clone(),
-                None => {
-                    let mut path = input.clone();
-                    path.set_extension("ir");
-                    path
-                }
-            };
-
-            // Write IR to file
-            std::fs::write(&output_path, format!("{:#?}", ir_module))?;
-            println!("IR written to {}", output_path.display());
-        }
-    }
-
-    Ok(())
 }

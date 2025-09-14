@@ -1,0 +1,216 @@
+// KODEON Sustainable Technology - Carbon Tracker
+// Carbon footprint tracking functionality
+
+kelas PelacakKarbon {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.emisi = []
+        ini.kompensasi = []
+        ini.metrik = {
+            total_emisi: 0,
+            emisi_saat_ini: 0,
+            total_kompensasi: 0
+        }
+    }
+
+    // Initialize carbon tracker
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Pelacak karbon diinisialisasi")
+    }
+
+    // Shutdown carbon tracker
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.emisi = []
+        ini.kompensasi = []
+        tampilkan("Pelacak karbon dihentikan")
+    }
+
+    // Track carbon emission
+    fungsi lacak_emisi(sumber, jumlah, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pelacak karbon belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat emisi = {
+            id: ini.emisi.panjang + 1,
+            sumber: sumber,
+            jumlah: jumlah,
+            waktu: sekarang(),
+            metadata: metadata || {}
+        }
+
+        ini.emisi.tambah(emisi)
+        ini.metrik.total_emisi += jumlah
+        ini.metrik.emisi_saat_ini += jumlah
+
+        tampilkan("Emisi karbon dilacak: " + jumlah + " kg CO2 dari " + sumber)
+        kembalikan emisi
+    }
+
+    // Add carbon offset
+    fungsi tambah_kompensasi(sumber, jumlah, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pelacak karbon belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat offset = {
+            id: ini.kompensasi.panjang + 1,
+            sumber: sumber,
+            jumlah: jumlah,
+            waktu: sekarang(),
+            metadata: metadata || {}
+        }
+
+        ini.kompensasi.tambah(offset)
+        ini.metrik.total_kompensasi += jumlah
+
+        tampilkan("Kompensasi karbon ditambahkan: " + jumlah + " kg CO2 dari " + sumber)
+        kembalikan offset
+    }
+
+    // Get carbon metrics
+    fungsi dapatkan_metrik() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pelacak karbon belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.metrik
+    }
+
+    // Get emission history
+    fungsi dapatkan_riwayat_emisi(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.emisi
+        }
+
+        kembalikan ini.emisi.saring(fungsi(e) {
+            untuk setiap kunci dalam filter {
+                jika e[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Get offset history
+    fungsi dapatkan_riwayat_kompensasi(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.kompensasi
+        }
+
+        kembalikan ini.kompensasi.saring(fungsi(o) {
+            untuk setiap kunci dalam filter {
+                jika o[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Calculate carbon footprint
+    fungsi hitung_jejak_karbon() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pelacak karbon belum diinisialisasi")
+            kembalikan 0
+        }
+
+        buat total_emisi = ini.emisi.reduce(fungsi(total, e) { kembalikan total + e.jumlah }, 0)
+        buat total_kompensasi = ini.kompensasi.reduce(fungsi(total, o) { kembalikan total + o.jumlah }, 0)
+
+        kembalikan total_emisi - total_kompensasi
+    }
+
+    // Generate carbon report
+    fungsi buat_laporan() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pelacak karbon belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat total_emisi = ini.emisi.reduce(fungsi(total, e) { kembalikan total + e.jumlah }, 0)
+        buat total_kompensasi = ini.kompensasi.reduce(fungsi(total, o) { kembalikan total + o.jumlah }, 0)
+        buat jejak_bersih = total_emisi - total_kompensasi
+
+        kembalikan {
+            total_emisi: total_emisi,
+            total_kompensasi: total_kompensasi,
+            jejak_karbon_bersih: jejak_bersih,
+            jumlah_emisi: ini.emisi.panjang,
+            jumlah_kompensasi: ini.kompensasi.panjang,
+            emisi_per_sumber: ini.hitung_emisi_per_sumber(),
+            waktu_laporan: sekarang()
+        }
+    }
+
+    // Calculate emissions by source
+    fungsi hitung_emisi_per_sumber() {
+        jika bukan ini.terhubung {
+            kembalikan {}
+        }
+
+        buat per_sumber = {}
+
+        untuk setiap emisi dalam ini.emisi {
+            jika bukan per_sumber[emisi.sumber] {
+                per_sumber[emisi.sumber] = 0
+            }
+            per_sumber[emisi.sumber] += emisi.jumlah
+        }
+
+        kembalikan per_sumber
+    }
+
+    // Set carbon budget
+    fungsi atur_anggaran_karbon(batas) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Pelacak karbon belum diinisialisasi")
+            kembalikan salah
+        }
+
+        ini.anggaran_karbon = batas
+        tampilkan("Anggaran karbon diatur: " + batas + " kg CO2")
+        kembalikan benar
+    }
+
+    // Check if carbon budget is exceeded
+    fungsi apakah_anggaran_terlampaui() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika bukan ini.anggaran_karbon {
+            kembalikan salah
+        }
+
+        kembalikan ini.metrik.total_emisi > ini.anggaran_karbon
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Periodically update current emissions
+        jika Math.acak() > 0.9 {
+            ini.metrik.emisi_saat_ini = Math.max(0, ini.metrik.emisi_saat_ini * 0.9)
+        }
+    }
+}
+
+ekspor PelacakKarbon

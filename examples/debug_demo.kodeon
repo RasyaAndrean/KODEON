@@ -1,15 +1,34 @@
-// Debugging Support Demo
-
-fungsi hitung_faktorial(n) {
-    jika n <= 1 maka:
-        kembalikan 1
-    sebaliknya:
-        kembalikan n * hitung_faktorial(n - 1)
-}
+// Debug demonstration program in KODEON
 
 fungsi utama() {
-    buat angka = 5
-    buat hasil = hitung_faktorial(angka)
-    tampilkan("Faktorial dari " + string(angka) + " adalah " + string(hasil))
-    kembalikan 0
+    // Variable declarations with different types
+    angka x = 10;
+    angka y = 20;
+    teks nama = "KODEON";
+
+    // Arithmetic operations
+    angka hasil = x + y;
+    angka perkalian = x * y;
+
+    // Conditional statement
+    jika (hasil > 15) {
+        tampilkan("Hasil lebih besar dari 15");
+    } lainnya {
+        tampilkan("Hasil lebih kecil atau sama dengan 15");
+    }
+
+    // Loop
+    untuk (angka i = 0; i < 5; i = i + 1) {
+        tampilkan("Iterasi: " + i.ke_teks());
+    }
+
+    // Function call
+    angka kuadrat_hasil = hitung_kuadrat(hasil);
+    tampilkan("Kuadrat dari hasil: " + kuadrat_hasil.ke_teks());
+
+    kembalikan 0;
+}
+
+fungsi hitung_kuadrat(angka n) {
+    kembalikan n * n;
 }

@@ -1,0 +1,19 @@
+// Conceptual Metaverse example
+// This is a placeholder for future implementation
+
+fungsi utama():
+    // This would create a 3D scene in the metaverse
+    buat_3d_scene("Virtual World") sebagai dunia
+
+    // Add objects to the scene
+    tambah_objek(dunia, "cube", posisi: (0, 0, 0), ukuran: (2, 2, 2))
+    tambah_objek(dunia, "sphere", posisi: (3, 1, 0), radius: 1.5)
+
+    // Apply materials
+    atur_material("cube", "metal", warna: "blue")
+    atur_material("sphere", "glass", transparansi: 0.7)
+
+    // Render the scene
+    render(dunia)
+
+    kembalikan 0

@@ -1,0 +1,42 @@
+// KODEON Web3/Blockchain - Transaction Receipt
+// Represents a transaction receipt
+
+kelas TandaTerimaTransaksi:
+    fungsi inisialisasi():
+        ini.hash_transaksi = tidak_ada
+        ini.nomor_blok = tidak_ada
+        ini.gas_digunakan = tidak_ada
+        ini.status = tidak_ada
+        ini.log = []
+
+    // Set transaction hash
+    fungsi atur_hash_transaksi(hash):
+        ini.hash_transaksi = hash
+
+    // Set block number
+    fungsi atur_nomor_blok(nomor):
+        ini.nomor_blok = nomor
+
+    // Set gas used
+    fungsi atur_gas_digunakan(gas):
+        ini.gas_digunakan = gas
+
+    // Set status
+    fungsi atur_status(status):
+        ini.status = status
+
+    // Add log
+    fungsi tambah_log(log):
+        ini.log.tambah(log)
+
+    // Get receipt information
+    fungsi dapatkan_info():
+        kembalikan {
+            hash_transaksi: ini.hash_transaksi,
+            nomor_blok: ini.nomor_blok,
+            gas_digunakan: ini.gas_digunakan,
+            status: ini.status,
+            log: ini.log
+        }
+
+ekspor TandaTerimaTransaksi

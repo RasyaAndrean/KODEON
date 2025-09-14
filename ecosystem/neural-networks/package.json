@@ -1,0 +1,25 @@
+{
+  "name": "@kodeon/neural-networks",
+  "version": "1.0.0",
+  "description": "KODEON Neural Networks Framework - A comprehensive neural networks library for the KODEON programming language",
+  "main": "src/neural.kodeon",
+  "keywords": [
+    "kodeon",
+    "neural-networks",
+    "machine-learning",
+    "deep-learning",
+    "ai"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon-lang/ecosystem/neural-networks"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon-lang/ecosystem/neural-networks/issues"
+  },
+  "homepage": "https://github.com/kodeon-lang/ecosystem/neural-networks#readme"
+}

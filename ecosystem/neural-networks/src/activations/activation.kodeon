@@ -1,0 +1,18 @@
+// KODEON Neural Networks - Activation Base Class
+// Base class for all activation functions
+
+kelas FungsiAktivasi:
+    fungsi inisialisasi(nama):
+        ini.nama = nama
+
+    // Calculate activation
+    fungsi hitung(input):
+        // This will be implemented by subclasses
+        kembalikan input
+
+    // Calculate derivative
+    fungsi turunan(input):
+        // This will be implemented by subclasses
+        kembalikan 1.0
+
+ekspor FungsiAktivasi

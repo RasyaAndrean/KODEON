@@ -1,0 +1,85 @@
+// KODEON AI Assistant - Utility Functions
+// Helper functions for the AI assistant
+
+// Calculate similarity between two strings
+fungsi kesamaan_string(str1, str2):
+    jika str1.panjang == 0 dan str2.panjang == 0:
+        kembalikan 1.0
+    jika str1.panjang == 0 atau str2.panjang == 0:
+        kembalikan 0.0
+    
+    buat jarak = hitung_jarak_levenstein(str1, str2)
+    kembalikan 1.0 - (jarak / maks(str1.panjang, str2.panjang))
+
+// Calculate Levenshtein distance
+fungsi hitung_jarak_levenstein(str1, str2):
+    buat m = str1.panjang
+    buat n = str2.panjang
+    
+    // Create a matrix
+    buat matriks = []
+    untuk buat i = 0 sampai i <= m:
+        matriks[i] = []
+        untuk buat j = 0 sampai j <= n:
+            jika i == 0:
+                matriks[i][j] = j
+            lain jika j == 0:
+                matriks[i][j] = i
+            lain:
+                matriks[i][j] = 0
+    
+    // Fill the matrix
+    untuk buat i = 1 sampai i <= m:
+        untuk buat j = 1 sampai j <= n:
+            jika str1[i-1] == str2[j-1]:
+                matriks[i][j] = matriks[i-1][j-1]
+            lain:
+                matriks[i][j] = 1 + minimum(
+                    matriks[i-1][j],     // deletion
+                    matriks[i][j-1],     // insertion
+                    matriks[i-1][j-1]    // substitution
+                )
+    
+    kembalikan matriks[m][n]
+
+// Find minimum of three values
+fungsi minimum(a, b, c):
+    kembalikan a.min(b).min(c)
+
+// Extract keywords from text
+fungsi ekstrak_kata_kunci(teks):
+    // Simple keyword extraction
+    buat kata_kunci = []
+    buat kata = teks.pisah(" ")
+    
+    untuk setiap k dalam kata:
+        jika k.panjang > 3:  // Only consider words longer than 3 characters
+            kata_kunci.tambah(k.ke_bawah())
+    
+    kembalikan kata_kunci
+
+// Format code suggestions
+fungsi format_saran_kode(saran):
+    jika saran.panjang == 0:
+        kembalikan "Tidak ada saran yang tersedia."
+    
+    buat hasil = "Saran untuk perbaikan kode:\n"
+    untuk buat i = 0 sampai i < saran.panjang:
+        hasil = hasil + (i+1) + ". " + saran[i] + "\n"
+    
+    kembalikan hasil
+
+// Generate unique ID
+fungsi id_unik():
+    buat karakter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    buat hasil = ""
+    untuk buat i = 0 sampai i < 12:
+        buat indeks_acak = acak(0, karakter.panjang - 1)
+        hasil = hasil + karakter[indeks_acak]
+    kembalikan hasil
+
+// Export functions
+ekspor kesamaan_string
+ekspor ekstrak_kata_kunci
+ekspor format_saran_kode
+ekspor id_unik

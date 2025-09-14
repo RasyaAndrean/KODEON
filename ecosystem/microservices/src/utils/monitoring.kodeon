@@ -1,0 +1,271 @@
+// KODEON Microservices Integration - Monitoring Utility
+// Monitoring utilities for Microservices
+
+kelas Monitoring {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe || "metrics" // "metrics", "logging", "tracing", "health"
+        ini.parameter = parameter || {}
+        ini.metrik = {}
+        ini.log = []
+        ini.traces = {}
+        ini.alerts = []
+    }
+
+    // Record metric
+    fungsi catat_metrik(nama, nilai, label) {
+        jika ini.metrik[nama] == tidak_ada {
+            ini.metrik[nama] = {
+                nilai: [],
+                label: label || {},
+                timestamp: []
+            }
+        }
+
+        ini.metrik[nama].nilai.tambah(nilai)
+        ini.metrik[nama].timestamp.tambah(Date.now())
+
+        // Keep only last 1000 values
+        jika ini.metrik[nama].nilai.panjang > 1000 {
+            ini.metrik[nama].nilai.hapus_pada(0)
+            ini.metrik[nama].timestamp.hapus_pada(0)
+        }
+
+        // Check for alerts
+        ini.periksa_alert(nama, nilai)
+    }
+
+    // Record log
+    fungsi catat_log(level, pesan, metadata) {
+        buat entry = {
+            level: level,
+            pesan: pesan,
+            metadata: metadata || {},
+            timestamp: Date.now()
+        }
+
+        ini.log.tambah(entry)
+
+        // Keep only last 10000 log entries
+        jika ini.log.panjang > 10000 {
+            ini.log.hapus_pada(0)
+        }
+
+        // Print to console for immediate visibility
+        tampilkan("[" + level.toUpperCase() + "] " + pesan)
+    }
+
+    // Record trace
+    fungsi catat_trace(traceId, span) {
+        jika ini.traces[traceId] == tidak_ada {
+            ini.traces[traceId] = {
+                spans: [],
+                startTime: Date.now()
+            }
+        }
+
+        span.startTime = span.startTime || Date.now()
+        ini.traces[traceId].spans.tambah(span)
+    }
+
+    // Get metrics
+    fungsi dapatkan_metrik(nama) {
+        jika nama bukan_tidak_ada {
+            kembalikan ini.metrik[nama] || tidak_ada
+        }
+        kembalikan ini.metrik
+    }
+
+    // Get logs
+    fungsi dapatkan_log(level, limit) {
+        limit = limit || 100
+
+        jika level bukan_tidak_ada {
+            kembalikan ini.log.filter(fungsi(entry) {
+                kembalikan entry.level == level
+            }).slice(-limit)
+        }
+
+        kembalikan ini.log.slice(-limit)
+    }
+
+    // Get traces
+    fungsi dapatkan_traces(traceId) {
+        jika traceId bukan_tidak_ada {
+            kembalikan ini.traces[traceId] || tidak_ada
+        }
+        kembalikan ini.traces
+    }
+
+    // Calculate statistics for metric
+    fungsi hitung_statistik(nama) {
+        jika ini.metrik[nama] == tidak_ada {
+            kembalikan tidak_ada
+        }
+
+        buat nilai = ini.metrik[nama].nilai
+        jika nilai.panjang == 0 {
+            kembalikan {
+                count: 0
+            }
+        }
+
+        buat sum = nilai.reduce((a, b) => a + b, 0)
+        buat mean = sum / nilai.panjang
+        buat min = Math.min(...nilai)
+        buat max = Math.max(...nilai)
+
+        // Calculate standard deviation
+        buat variance = nilai.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / nilai.panjang
+        buat stdDev = Math.sqrt(variance)
+
+        kembalikan {
+            count: nilai.panjang,
+            sum: sum,
+            mean: mean,
+            min: min,
+            max: max,
+            stdDev: stdDev
+        }
+    }
+
+    // Add alert rule
+    fungsi tambah_alert(nama_metrik, kondisi, ambang_batas, pesan) {
+        jika ini.alerts[nama_metrik] == tidak_ada {
+            ini.alerts[nama_metrik] = []
+        }
+
+        ini.alerts[nama_metrik].tambah({
+            kondisi: kondisi, // ">", "<", "=", ">=", "<="
+            ambang_batas: ambang_batas,
+            pesan: pesan,
+            aktif: benar
+        })
+
+        tampilkan("Alert ditambahkan untuk metrik: " + nama_metrik)
+    }
+
+    // Check alert conditions
+    fungsi periksa_alert(nama_metrik, nilai) {
+        jika ini.alerts[nama_metrik] bukan_tidak_ada {
+            untuk setiap alert dalam ini.alerts[nama_metrik] {
+                jika bukan alert.aktif {
+                    lanjut
+                }
+
+                buat kondisi_terpenuhi = salah
+                pilih alert.kondisi:
+                    kasus ">":
+                        kondisi_terpenuhi = nilai > alert.ambang_batas
+                    kasus "<":
+                        kondisi_terpenuhi = nilai < alert.ambang_batas
+                    kasus "=":
+                        kondisi_terpenuhi = nilai == alert.ambang_batas
+                    kasus ">=":
+                        kondisi_terpenuhi = nilai >= alert.ambang_batas
+                    kasus "<=":
+                        kondisi_terpenuhi = nilai <= alert.ambang_batas
+
+                jika kondisi_terpenuhi {
+                    ini.catat_log("ALERT", "ALERT: " + alert.pesan + " (nilai: " + nilai + ")")
+                    // In a real implementation, this would trigger notifications
+                }
+            }
+        }
+    }
+
+    // Enable/disable alert
+    fungsi atur_alert(nama_metrik, index, aktif) {
+        jika ini.alerts[nama_metrik] bukan_tidak_ada dan
+           ini.alerts[nama_metrik][index] bukan_tidak_ada {
+            ini.alerts[nama_metrik][index].aktif = aktif
+            tampilkan("Alert " + (aktif ? "diaktifkan" : "dinonaktifkan"))
+        }
+    }
+
+    // Generate health report
+    fungsi hasilkan_laporan_kesehatan() {
+        buat laporan = {
+            timestamp: Date.now(),
+            metrik: {},
+            log_summary: {},
+            alert_summary: {
+                aktif: 0,
+                terpicu: 0
+            }
+        }
+
+        // Add metric statistics
+        untuk setiap nama_metrik dalam ini.metrik {
+            laporan.metrik[nama_metrik] = ini.hitung_statistik(nama_metrik)
+        }
+
+        // Add log summary
+        buat log_levels = {}
+        untuk setiap entry dalam ini.log {
+            jika log_levels[entry.level] == tidak_ada {
+                log_levels[entry.level] = 0
+            }
+            log_levels[entry.level] = log_levels[entry.level] + 1
+        }
+        laporan.log_summary = log_levels
+
+        // Add alert summary
+        buat alert_aktif = 0
+        untuk setiap nama_metrik dalam ini.alerts {
+            untuk setiap alert dalam ini.alerts[nama_metrik] {
+                jika alert.aktif {
+                    alert_aktif = alert_aktif + 1
+                }
+            }
+        }
+        laporan.alert_summary.aktif = alert_aktif
+
+        kembalikan laporan
+    }
+
+    // Export metrics in Prometheus format
+    fungsi ekspor_prometheus() {
+        buat output = ""
+
+        untuk setiap nama_metrik dalam ini.metrik {
+            buat statistik = ini.hitung_statistik(nama_metrik)
+            jika statistik bukan_tidak_ada {
+                output = output + "# TYPE " + nama_metrik + " gauge\n"
+                output = output + nama_metrik + " " + statistik.mean.toFixed(2) + "\n"
+            }
+        }
+
+        kembalikan output
+    }
+
+    // Get monitoring information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            jumlah_metrik: Object.keys(ini.metrik).panjang,
+            jumlah_log: ini.log.panjang,
+            jumlah_traces: Object.keys(ini.traces).panjang,
+            jumlah_alerts: Object.keys(ini.alerts).panjang
+        }
+    }
+
+    // Clear data
+    fungsi bersihkan() {
+        ini.metrik = {}
+        ini.log = []
+        ini.traces = {}
+        ini.alerts = []
+        tampilkan("Data monitoring dibersihkan")
+    }
+
+    // Update parameters
+    fungsi atur_parameter(parameter_baru) {
+        untuk setiap kunci dalam parameter_baru {
+            ini.parameter[kunci] = parameter_baru[kunci]
+        }
+        tampilkan("Parameter monitoring diperbarui")
+    }
+}
+
+ekspor Monitoring

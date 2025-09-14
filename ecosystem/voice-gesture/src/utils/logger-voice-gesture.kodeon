@@ -1,0 +1,152 @@
+// KODEON Voice/Gesture - Logger Utility
+// Utility for logging voice/gesture events and activities
+
+kelas LoggerVoiceGesture {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.tingkat_log = ini.opsi.tingkat_log || "info"
+        ini.aktivitas_tercatat = []
+        ini.maks_aktivitas = ini.opsi.maks_aktivitas || 1000
+        ini.aktif = benar
+    }
+
+    // Log info message
+    fungsi info(pesan, data) {
+        jika bukan ini.aktif atau ini.tingkat_log === "error" {
+            kembalikan
+        }
+
+        ini.catat_aktivitas("info", pesan, data)
+    }
+
+    // Log warning message
+    fungsi peringatan(pesan, data) {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        ini.catat_aktivitas("peringatan", pesan, data)
+    }
+
+    // Log error message
+    fungsi error(pesan, data) {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        ini.catat_aktivitas("error", pesan, data)
+    }
+
+    // Log voice command
+    fungsi log_perintah_suara(perintah, hasil) {
+        jika bukan ini.aktif atau (ini.tingkat_log === "error" dan hasil.berhasil) {
+            kembalikan
+        }
+
+        buat pesan = "Perintah suara: " + perintah + " - " + (hasil.berhasil ? "Berhasil" : "Gagal")
+        ini.catat_aktivitas("perintah_suara", pesan, hasil)
+    }
+
+    // Log gesture command
+    fungsi log_perintah_gestur(gestur, hasil) {
+        jika bukan ini.aktif atau (ini.tingkat_log === "error" dan hasil.berhasil) {
+            kembalikan
+        }
+
+        buat pesan = "Perintah gestur: " + gestur + " - " + (hasil.berhasil ? "Berhasil" : "Gagal")
+        ini.catat_aktivitas("perintah_gestur", pesan, hasil)
+    }
+
+    // Log device interaction
+    fungsi log_interaksi_perangkat(perangkat, aksi, hasil) {
+        jika bukan ini.aktif atau (ini.tingkat_log === "error" dan hasil.berhasil) {
+            kembalikan
+        }
+
+        buat pesan = "Interaksi perangkat: " + perangkat + " - " + aksi + " - " + (hasil.berhasil ? "Berhasil" : "Gagal")
+        ini.catat_aktivitas("interaksi_perangkat", pesan, hasil)
+    }
+
+    // Internal function to record activity
+    fungsi catat_aktivitas(tipe, pesan, data) {
+        buat entri = {
+            id: ini.aktivitas_tercatat.panjang + 1,
+            waktu: sekarang(),
+            tipe: tipe,
+            pesan: pesan,
+            data: data
+        }
+
+        ini.aktivitas_tercatat.tambah(entri)
+        tampilkan("[" + tipe.toUpperCase() + "] " + pesan)
+
+        // Limit activity log size
+        jika ini.aktivitas_tercatat.panjang > ini.maks_aktivitas {
+            ini.aktivitas_tercatat.shift()
+        }
+    }
+
+    // Get activity log
+    fungsi dapatkan_log(limit) {
+        buat log = [...ini.aktivitas_tercatat].reverse()
+        jika limit {
+            kembalikan log.slice(0, limit)
+        }
+        kembalikan log
+    }
+
+    // Get logs by type
+    fungsi dapatkan_log_berdasarkan_tipe(tipe, limit) {
+        buat log = ini.aktivitas_tercatat.filter(fungsi(aktivitas) {
+            kembalikan aktivitas.tipe === tipe
+        }).reverse()
+
+        jika limit {
+            kembalikan log.slice(0, limit)
+        }
+        kembalikan log
+    }
+
+    // Clear log
+    fungsi hapus_log() {
+        ini.aktivitas_tercatat = []
+        tampilkan("Log voice/gesture dihapus")
+    }
+
+    // Set log level
+    fungsi atur_tingkat_log(tingkat) {
+        buat tingkat_valid = ["info", "peringatan", "error"]
+        jika tingkat_valid.termasuk(tingkat) {
+            ini.tingkat_log = tingkat
+            tampilkan("Tingkat log diatur ke: " + tingkat)
+            kembalikan benar
+        } lain {
+            tampilkan("Kesalahan: Tingkat log tidak valid. Gunakan: info, peringatan, atau error")
+            kembalikan salah
+        }
+    }
+
+    // Get logger status
+    fungsi dapatkan_status() {
+        kembalikan {
+            aktif: ini.aktif,
+            tingkat_log: ini.tingkat_log,
+            total_aktivitas: ini.aktivitas_tercatat.panjang,
+            maks_aktivitas: ini.maks_aktivitas
+        }
+    }
+
+    // Enable logger
+    fungsi aktifkan() {
+        ini.aktif = benar
+        tampilkan("Logger voice/gesture diaktifkan")
+    }
+
+    // Disable logger
+    fungsi nonaktifkan() {
+        ini.aktif = salah
+        tampilkan("Logger voice/gesture dinonaktifkan")
+    }
+}
+
+ekspor LoggerVoiceGesture

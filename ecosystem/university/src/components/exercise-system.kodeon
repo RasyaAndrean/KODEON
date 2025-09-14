@@ -1,0 +1,297 @@
+// KODEON University - Exercise System
+// Exercise management functionality
+
+kelas SistemLatihan {
+    fungsi inisialisasi() {
+        ini.terhubung = salah
+        ini.latihan = []
+        ini.kategori = []
+        ini.submisi = []
+    }
+
+    // Initialize exercise system
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        tampilkan("Sistem latihan diinisialisasi")
+    }
+
+    // Shutdown exercise system
+    fungsi hentikan() {
+        ini.terhubung = salah
+        ini.latihan = []
+        ini.kategori = []
+        ini.submisi = []
+        tampilkan("Sistem latihan dihentikan")
+    }
+
+    // Create exercise
+    fungsi buat_latihan(judul, deskripsi, tipe, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat latihan = {
+            id: ini.latihan.panjang + 1,
+            judul: judul,
+            deskripsi: deskripsi,
+            tipe: tipe, // "kode", "pilihan_ganda", "teori", "debug"
+            metadata: metadata || {},
+            status: "draft",
+            dibuat: sekarang(),
+            diperbarui: sekarang(),
+            tingkat_kesulitan: "pemula",
+            kategori: [],
+            petunjuk: "",
+            solusi: tidak_ada,
+            test_cases: [],
+            batas_waktu: 0, // in minutes
+            poin: 10
+        }
+
+        ini.latihan.tambah(latihan)
+        tampilkan("Latihan dibuat: " + judul)
+        kembalikan latihan
+    }
+
+    // Add test case to exercise
+    fungsi tambah_test_case(latihan_id, test_case) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat latihan = ini.latihan.cari(fungsi(l) { kembalikan l.id == latihan_id })
+
+        jika bukan latihan {
+            tampilkan("Latihan tidak ditemukan: " + latihan_id)
+            kembalikan salah
+        }
+
+        test_case.id = latihan.test_cases.panjang + 1
+        latihan.test_cases.tambah(test_case)
+
+        tampilkan("Test case ditambahkan ke latihan: " + latihan.judul)
+        kembalikan benar
+    }
+
+    // Add solution to exercise
+    fungsi tambah_solusi(latihan_id, solusi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat latihan = ini.latihan.cari(fungsi(l) { kembalikan l.id == latihan_id })
+
+        jika bukan latihan {
+            tampilkan("Latihan tidak ditemukan: " + latihan_id)
+            kembalikan salah
+        }
+
+        latihan.solusi = solusi
+        tampilkan("Solusi ditambahkan ke latihan: " + latihan.judul)
+        kembalikan benar
+    }
+
+    // Submit exercise solution
+    fungsi kirim_solusi(latihan_id, pengguna, jawaban, metadata) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        buat latihan = ini.latihan.cari(fungsi(l) { kembalikan l.id == latihan_id })
+
+        jika bukan latihan {
+            tampilkan("Latihan tidak ditemukan: " + latihan_id)
+            kembalikan tidak_ada
+        }
+
+        buat submisi = {
+            id: ini.submisi.panjang + 1,
+            latihan_id: latihan_id,
+            pengguna: pengguna,
+            jawaban: jawaban,
+            metadata: metadata || {},
+            dikirim: sekarang(),
+            dinilai: tidak_ada,
+            nilai: tidak_ada,
+            umpan_balik: tidak_ada,
+            status: "dikirim"
+        }
+
+        ini.submisi.tambah(submisi)
+
+        // Auto-grade if possible
+        jika latihan.tipe == "kode" dan latihan.test_cases.panjang > 0 {
+            ini.nilai_submisi(submisi.id)
+        }
+
+        tampilkan("Solusi dikirim untuk latihan: " + latihan.judul)
+        kembalikan submisi
+    }
+
+    // Grade exercise submission
+    fungsi nilai_submisi(submisi_id) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat submisi = ini.submisi.cari(fungsi(s) { kembalikan s.id == submisi_id })
+
+        jika bukan submisi {
+            tampilkan("Submisi tidak ditemukan: " + submisi_id)
+            kembalikan salah
+        }
+
+        buat latihan = ini.latihan.cari(fungsi(l) { kembalikan l.id == submisi.latihan_id })
+
+        jika bukan latihan {
+            tampilkan("Latihan tidak ditemukan: " + submisi.latihan_id)
+            kembalikan salah
+        }
+
+        // In a real implementation, this would perform actual grading
+        // For now, we'll simulate with random grading
+        buat nilai = Math.acak() * 100
+        buat umpan_balik = nilai >= 70 ?
+            "Bagus! Jawaban Anda benar." :
+            "Perlu perbaikan. Periksa kembali logika Anda."
+
+        submisi.dinilai = sekarang()
+        submisi.nilai = nilai
+        submisi.umpan_balik = umpan_balik
+        submisi.status = "dinilai"
+
+        tampilkan("Submisi dinilai: " + submisi_id + " (Nilai: " + nilai.toFixed(2) + "%)")
+        kembalikan submisi
+    }
+
+    // Get exercise
+    fungsi dapatkan_latihan(latihan_id) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        kembalikan ini.latihan.cari(fungsi(l) { kembalikan l.id == latihan_id })
+    }
+
+    // List exercises
+    fungsi daftar_latihan(filter) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        jika bukan filter {
+            kembalikan ini.latihan
+        }
+
+        kembalikan ini.latihan.saring(fungsi(l) {
+            untuk setiap kunci dalam filter {
+                jika l[kunci] bukan filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Get user submissions
+    fungsi dapatkan_submisi_pengguna(pengguna, latihan_id) {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.submisi.saring(fungsi(s) {
+            buat cocok_pengguna = s.pengguna == pengguna
+            buat cocok_latihan = bukan latihan_id atau s.latihan_id == latihan_id
+            kembalikan cocok_pengguna dan cocok_latihan
+        })
+    }
+
+    // Add exercise category
+    fungsi tambah_kategori(nama, deskripsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat kategori = {
+            id: ini.kategori.panjang + 1,
+            nama: nama,
+            deskripsi: deskripsi,
+            dibuat: sekarang()
+        }
+
+        ini.kategori.tambah(kategori)
+        tampilkan("Kategori latihan ditambahkan: " + nama)
+        kembalikan kategori
+    }
+
+    // Assign category to exercise
+    fungsi tetapkan_kategori(latihan_id, kategori_id) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Sistem latihan belum diinisialisasi")
+            kembalikan salah
+        }
+
+        buat latihan = ini.latihan.cari(fungsi(l) { kembalikan l.id == latihan_id })
+        buat kategori = ini.kategori.cari(fungsi(k) { kembalikan k.id == kategori_id })
+
+        jika bukan latihan atau bukan kategori {
+            tampilkan("Latihan atau kategori tidak ditemukan")
+            kembalikan salah
+        }
+
+        jika bukan latihan.kategori.includes(kategori_id) {
+            latihan.kategori.tambah(kategori_id)
+            tampilkan("Kategori ditetapkan untuk latihan: " + kategori.nama + " -> " + latihan.judul)
+            kembalikan benar
+        }
+
+        tampilkan("Latihan sudah memiliki kategori ini")
+        kembalikan salah
+    }
+
+    // Get exercise statistics
+    fungsi dapatkan_statistik() {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        buat total_submisi = ini.submisi.panjang
+        buat submisi_dinilai = ini.submisi.saring(fungsi(s) {
+            kembalikan s.status == "dinilai"
+        }).panjang
+        buat rata_rata_nilai = submisi_dinilai > 0 ?
+            ini.submisi.saring(fungsi(s) { return s.status == "dinilai" })
+                .reduce(fungsi(sum, s) { kembalikan sum + s.nilai }, 0) / submisi_dinilai : 0
+
+        kembalikan {
+            total_latihan: ini.latihan.panjang,
+            total_kategori: ini.kategori.panjang,
+            total_submisi: total_submisi,
+            submisi_dinilai: submisi_dinilai,
+            submisi_menunggu: total_submisi - submisi_dinilai,
+            rata_rata_nilai: rata_rata_nilai.toFixed(2)
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Auto-grade ungraded submissions periodically
+        untuk setiap submisi dalam ini.submisi {
+            jika submisi.status == "dikirim" dan Math.acak() > 0.8 {
+                ini.nilai_submisi(submisi.id)
+            }
+        }
+    }
+}
+
+ekspor SistemLatihan

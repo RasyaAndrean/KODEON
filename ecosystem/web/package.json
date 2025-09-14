@@ -1,0 +1,26 @@
+{
+  "name": "kodeon-web-framework",
+  "version": "1.0.0",
+  "description": "Web framework for the KODEON programming language",
+  "main": "src/core/application.kodeon",
+  "scripts": {
+    "test": "kodeon tests/",
+    "example": "kodeon examples/",
+    "docs": "kodeon docs/"
+  },
+  "keywords": [
+    "kodeon",
+    "web",
+    "framework",
+    "http",
+    "server"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "kodeon-core": "^1.0.0"
+  },
+  "devDependencies": {
+    "kodeon-testing": "^1.0.0"
+  }
+}

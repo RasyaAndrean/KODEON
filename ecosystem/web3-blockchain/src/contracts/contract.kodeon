@@ -1,0 +1,104 @@
+// KODEON Web3/Blockchain - Contract
+// Represents a smart contract
+
+kelas Kontrak:
+    fungsi inisialisasi(abi, bytecode, alamat):
+        ini.abi = abi
+        ini.bytecode = bytecode
+        ini.alamat = alamat
+        ini.metode = {}
+        ini.event = {}
+
+        // Parse ABI to create methods and events
+        ini.parse_abi()
+
+    // Parse ABI to create methods and events
+    fungsi parse_abi():
+        jika ini.abi bukan_tidak_ada:
+            untuk setiap item dalam ini.abi:
+                jika item.type == "function":
+                    ini.metode[item.name] = item
+                lain jika item.type == "event":
+                    ini.event[item.name] = item
+
+    // Deploy contract
+    fungsi deploy(akun, parameter, penyedia):
+        tampilkan("Mendeploy kontrak...")
+
+        // Create deployment transaction
+        buat transaksi_deploy = transaksi.Transaksi(
+            akun.alamat,
+            tidak_ada,  // Contract deployment has no recipient
+            0,  // Value is 0 for deployment
+            ini.bytecode + (parameter jika parameter bukan_tidak_ada lain "")
+        )
+
+        // Sign transaction
+        transaksi_deploy.tandatangani(akun.kunci_pribadi)
+
+        // Send transaction
+        buat hash_transaksi = penyedia.kirim_transaksi(transaksi_deploy)
+
+        // In a real implementation, we would wait for the transaction to be mined
+        // and get the contract address from the receipt
+        ini.alamat = "0x" + hash.sha256(hash_transaksi).potong(0, 40)  // Simulated address
+
+        kembalikan {
+            hash_transaksi: hash_transaksi,
+            alamat_kontrak: ini.alamat
+        }
+
+    // Call a contract method (read-only)
+    fungsi panggil(nama_metode, parameter, penyedia):
+        jika ini.metode[nama_metode] bukan_tidak_ada:
+            tampilkan("Memanggil metode kontrak: " + nama_metode)
+
+            // In a real implementation, this would encode the function call
+            // and send it as a read-only call to the blockchain
+            buat data_encoded = ini.encode_function_call(nama_metode, parameter)
+
+            kembalikan penyedia.panggil_kontrak(ini.alamat, data_encoded)
+        lain:
+            tampilkan("Kesalahan: Metode '" + nama_metode + "' tidak ditemukan dalam kontrak")
+            kembalikan tidak_ada
+
+    // Send a contract transaction (state-changing)
+    fungsi kirim(nama_metode, parameter, akun, nilai, penyedia):
+        jika ini.metode[nama_metode] bukan_tidak_ada:
+            tampilkan("Mengirim transaksi kontrak: " + nama_metode)
+
+            // Encode function call
+            buat data_encoded = ini.encode_function_call(nama_metode, parameter)
+
+            // Create transaction
+            buat transaksi_kontrak = transaksi.Transaksi(
+                akun.alamat,
+                ini.alamat,
+                nilai jika nilai bukan_tidak_ada lain 0,
+                data_encoded
+            )
+
+            // Sign transaction
+            transaksi_kontrak.tandatangani(akun.kunci_pribadi)
+
+            // Send transaction
+            kembalikan penyedia.kirim_transaksi(transaksi_kontrak)
+        lain:
+            tampilkan("Kesalahan: Metode '" + nama_metode + "' tidak ditemukan dalam kontrak")
+            kembalikan tidak_ada
+
+    // Encode function call
+    fungsi encode_function_call(nama_metode, parameter):
+        // In a real implementation, this would properly encode the function call
+        // according to the Ethereum ABI specification
+        kembalikan nama_metode + "(" + (parameter.jika bukan_tidak_ada lain []).gabung(",") + ")"
+
+    // Get contract information
+    fungsi dapatkan_info():
+        kembalikan {
+            alamat: ini.alamat,
+            metode: Object.keys(ini.metode),
+            event: Object.keys(ini.event)
+        }
+
+ekspor Kontrak

@@ -1,0 +1,244 @@
+// KODEON Runtime - Test Suite
+// Basic tests for the Runtime component
+
+impor "../src/runtime.kodeon" sebagai runtime
+impor "../src/core/runtime-core.kodeon" sebagai IntiRuntime
+impor "../src/components/process-manager.kodeon" sebagai ManajerProses
+impor "../src/components/system-monitor.kodeon" sebagai MonitorSistem
+impor "../src/components/resource-manager.kodeon" sebagai PengelolaSumberDaya
+impor "../src/utils/logger.kodeon" sebagai Logger
+impor "../src/utils/profiler.kodeon" sebagai Profiler
+impor "../src/utils/config.kodeon" sebagai Konfigurasi
+impor "../src/process/executor.kodeon" sebagai Executor
+impor "../src/process/supervisor.kodeon" sebagai Supervisor
+impor "../src/system/os-integration.kodeon" sebagai IntegrasiOS
+impor "../src/system/system-services.kodeon" sebagai LayananSistem
+
+// Test runtime core
+fungsi uji_inti_runtime() {
+    tampilkan("Menguji IntiRuntime...")
+
+    buat inti = IntiRuntime.IntiRuntime()
+    periksa(inti bukan tidak_ada, "IntiRuntime harus dapat dibuat")
+
+    buat hasil_init = inti.inisialisasi({
+        lingkungan: "test",
+        mode: "debug"
+    })
+    periksa(hasil_init == benar, "IntiRuntime harus dapat diinisialisasi")
+
+    buat info = inti.dapatkan_info_sistem()
+    periksa(info bukan tidak_ada, "Harus dapat mendapatkan info sistem")
+    periksa(info.lingkungan == "test", "Lingkungan harus sesuai")
+
+    buat proses = inti.jalankan_aplikasi("test_app.kodeon")
+    periksa(proses bukan tidak_ada, "Harus dapat menjalankan aplikasi")
+    periksa(proses.id > 0, "Proses harus memiliki ID")
+
+    tampilkan("✅ IntiRuntime berfungsi dengan baik")
+}
+
+// Test process manager
+fungsi uji_manajer_proses() {
+    tampilkan("Menguji ManajerProses...")
+
+    buat manajer = ManajerProses.ManajerProses()
+    periksa(manajer bukan tidak_ada, "ManajerProses harus dapat dibuat")
+
+    manajer.inisialisasi()
+    periksa(manajer.terhubung == benar, "ManajerProses harus terhubung setelah inisialisasi")
+
+    buat proses = manajer.buat_proses("echo test")
+    periksa(proses bukan tidak_ada, "Harus dapat membuat proses")
+
+    buat status = manajer.dapatkan_status(proses)
+    periksa(status bukan tidak_ada, "Harus dapat mendapatkan status proses")
+
+    tampilkan("✅ ManajerProses berfungsi dengan baik")
+}
+
+// Test system monitor
+fungsi uji_monitor_sistem() {
+    tampilkan("Menguji MonitorSistem...")
+
+    buat monitor = MonitorSistem.MonitorSistem()
+    periksa(monitor bukan tidak_ada, "MonitorSistem harus dapat dibuat")
+
+    monitor.inisialisasi()
+    periksa(monitor.terhubung == benar, "MonitorSistem harus terhubung setelah inisialisasi")
+
+    buat metrik = monitor.kumpulkan_metrik()
+    periksa(metrik bukan tidak_ada, "Harus dapat mengumpulkan metrik")
+
+    buat metrik_saat_ini = monitor.dapatkan_metrik()
+    periksa(metrik_saat_ini bukan tidak_ada, "Harus dapat mendapatkan metrik saat ini")
+
+    tampilkan("✅ MonitorSistem berfungsi dengan baik")
+}
+
+// Test resource manager
+fungsi uji_pengelola_sumber_daya() {
+    tampilkan("Menguji PengelolaSumberDaya...")
+
+    buat pengelola = PengelolaSumberDaya.PengelolaSumberDaya()
+    periksa(pengelola bukan tidak_ada, "PengelolaSumberDaya harus dapat dibuat")
+
+    pengelola.inisialisasi()
+    periksa(pengelola.terhubung == benar, "PengelolaSumberDaya harus terhubung setelah inisialisasi")
+
+    buat status = pengelola.dapatkan_status_sumber_daya()
+    periksa(status bukan tidak_ada, "Harus dapat mendapatkan status sumber daya")
+
+    tampilkan("✅ PengelolaSumberDaya berfungsi dengan baik")
+}
+
+// Test logger
+fungsi uji_logger() {
+    tampilkan("Menguji Logger...")
+
+    buat logger = Logger.Logger({ level: "debug" })
+    periksa(logger bukan tidak_ada, "Logger harus dapat dibuat")
+
+    buat hasil = logger.info("Test message")
+    periksa(hasil == benar, "Harus dapat mencatat pesan info")
+
+    buat log = logger.dapatkan_log()
+    periksa(log.panjang > 0, "Harus ada entri log")
+
+    tampilkan("✅ Logger berfungsi dengan baik")
+}
+
+// Test profiler
+fungsi uji_profiler() {
+    tampilkan("Menguji Profiler...")
+
+    buat profiler = Profiler.Profiler()
+    periksa(profiler bukan tidak_ada, "Profiler harus dapat dibuat")
+
+    buat sesi = profiler.mulai_sesi("test_session")
+    periksa(sesi bukan tidak_ada, "Harus dapat memulai sesi profiling")
+
+    profiler.catat_fungsi("test_function", 100)
+
+    buat sesi_dihentikan = profiler.hentikan_sesi()
+    periksa(sesi_dihentikan bukan tidak_ada, "Harus dapat menghentikan sesi profiling")
+
+    tampilkan("✅ Profiler berfungsi dengan baik")
+}
+
+// Test configuration
+fungsi uji_konfigurasi() {
+    tampilkan("Menguji Konfigurasi...")
+
+    buat config = Konfigurasi.Konfigurasi({ test_value: 42 })
+    periksa(config bukan tidak_ada, "Konfigurasi harus dapat dibuat")
+
+    buat nilai = config.dapatkan("test_value")
+    periksa(nilai == 42, "Harus dapat mendapatkan nilai konfigurasi")
+
+    config.atur("new_value", "test")
+    buat nilai_baru = config.dapatkan("new_value")
+    periksa(nilai_baru == "test", "Harus dapat mengatur nilai konfigurasi baru")
+
+    tampilkan("✅ Konfigurasi berfungsi dengan baik")
+}
+
+// Test executor
+fungsi uji_executor() {
+    tampilkan("Menguji Executor...")
+
+    buat executor = Executor.Executor()
+    periksa(executor bukan tidak_ada, "Executor harus dapat dibuat")
+
+    buat hasil = executor.eksekusi_sinkron("echo test")
+    periksa(hasil bukan tidak_ada, "Harus dapat mengeksekusi perintah")
+    periksa(hasil.kode_keluar == 0, "Perintah harus berhasil dieksekusi")
+
+    tampilkan("✅ Executor berfungsi dengan baik")
+}
+
+// Test supervisor
+fungsi uji_supervisor() {
+    tampilkan("Menguji Supervisor...")
+
+    buat supervisor = Supervisor.Supervisor()
+    periksa(supervisor bukan tidak_ada, "Supervisor harus dapat dibuat")
+
+    buat proses_contoh = { id: 1, nama: "test_process" }
+    buat entri = supervisor.awasi(proses_contoh)
+    periksa(entri bukan tidak_ada, "Harus dapat mengawasi proses")
+
+    buat entri_diamati = supervisor.dapatkan_proses_diamati()
+    periksa(entri_diamati.panjang > 0, "Harus ada proses yang diamati")
+
+    tampilkan("✅ Supervisor berfungsi dengan baik")
+}
+
+// Test OS integration
+fungsi uji_integrasi_os() {
+    tampilkan("Menguji IntegrasiOS...")
+
+    buat integrasi = IntegrasiOS.IntegrasiOS()
+    periksa(integrasi bukan tidak_ada, "IntegrasiOS harus dapat dibuat")
+
+    buat platform = integrasi.dapatkan_platform()
+    periksa(platform bukan tidak_ada, "Harus dapat mendapatkan informasi platform")
+
+    buat info_sistem = integrasi.dapatkan_info_sistem()
+    periksa(info_sistem bukan tidak_ada, "Harus dapat mendapatkan informasi sistem")
+
+    tampilkan("✅ IntegrasiOS berfungsi dengan baik")
+}
+
+// Test system services
+fungsi uji_layanan_sistem() {
+    tampilkan("Menguji LayananSistem...")
+
+    buat layanan = LayananSistem.LayananSistem()
+    periksa(layanan bukan tidak_ada, "LayananSistem harus dapat dibuat")
+
+    buat layanan_contoh = layanan.daftarkan_layanan("test_service", fungsi() {
+        tampilkan("Layanan test dijalankan")
+    })
+    periksa(layanan_contoh bukan tidak_ada, "Harus dapat mendaftarkan layanan")
+
+    buat daftar = layanan.daftar_layanan()
+    periksa(daftar.panjang > 0, "Harus ada layanan yang terdaftar")
+
+    tampilkan("✅ LayananSistem berfungsi dengan baik")
+}
+
+// Main test function
+fungsi utama() {
+    tampilkan("=== Test Suite untuk KODEON Runtime ===")
+
+    coba {
+        uji_inti_runtime()
+        uji_manajer_proses()
+        uji_monitor_sistem()
+        uji_pengelola_sumber_daya()
+        uji_logger()
+        uji_profiler()
+        uji_konfigurasi()
+        uji_executor()
+        uji_supervisor()
+        uji_integrasi_os()
+        uji_layanan_sistem()
+
+        tampilkan("\n🎉 Semua test berhasil!")
+        kembalikan 0
+    } tangkap(error) {
+        tampilkan("\n❌ Test gagal dengan kesalahan: " + error)
+        kembalikan 1
+    }
+}
+
+// Helper function for assertions
+fungsi periksa(kondisi, pesan) {
+    jika bukan kondisi {
+        lempar "Assertion failed: " + pesan
+    }
+}
+
+// Run tests
+utama()

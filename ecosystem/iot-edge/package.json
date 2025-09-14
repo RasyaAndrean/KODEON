@@ -1,0 +1,44 @@
+{
+  "name": "@kodeon/iot-edge",
+  "version": "1.0.0",
+  "description": "Natural language programming framework for Internet of Things (IoT) and Edge Computing applications in KODEON",
+  "main": "src/iot.kodeon",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "kodeon-test tests/",
+    "example": "kodeon-run examples/basic-usage.kodeon",
+    "docs": "kodeon-docs docs/"
+  },
+  "keywords": [
+    "kodeon",
+    "iot",
+    "edge-computing",
+    "internet-of-things",
+    "sensor",
+    "actuator",
+    "natural-language",
+    "indonesian-programming"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "@kodeon/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@kodeon/testing": "^1.0.0",
+    "@kodeon/docs": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodeon-lang/kodeon.git",
+    "directory": "ecosystem/iot-edge"
+  },
+  "bugs": {
+    "url": "https://github.com/kodeon-lang/kodeon/issues"
+  },
+  "homepage": "https://github.com/kodeon-lang/kodeon/tree/main/ecosystem/iot-edge#readme"
+}

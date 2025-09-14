@@ -1,0 +1,74 @@
+// KODEON Neural Networks - Data Utilities
+// Data handling utilities for neural networks
+
+// Load data from file
+fungsi muat_data(nama_file):
+    tampilkan("Memuat data dari " + nama_file)
+    // In a real implementation, this would load data from a file
+    kembalikan {
+        data: [],
+        label: []
+    }
+
+ekspor muat_data
+
+// Save data to file
+fungsi simpan_data(data, nama_file):
+    tampilkan("Menyimpan data ke " + nama_file)
+    // In a real implementation, this would save data to a file
+
+ekspor simpan_data
+
+// Generate synthetic data
+fungsi hasilkan_data_sintetis(jumlah_sampel, jumlah_fitur):
+    buat data = []
+    buat label = []
+
+    untuk buat i = 0 sampai i < jumlah_sampel:
+        buat sampel = []
+        untuk buat j = 0 sampai j < jumlah_fitur:
+            // Generate random feature values
+            buat nilai = (acak(0, 1000) / 1000.0) * 2 - 1  // Random between -1 and 1
+            sampel.tambah(nilai)
+        data.tambah(sampel)
+
+        // Generate random labels
+        buat label_val = acak(0, 2)  // Random 0 or 1
+        label.tambah(label_val)
+
+    kembalikan {
+        data: data,
+        label: label
+    }
+
+ekspor hasilkan_data_sintetis
+
+// Preprocess data
+fungsi pra_proses_data(data):
+    // Normalize the data
+    buat data_diproses = []
+
+    untuk setiap sampel dalam data:
+        buat sampel_diproses = []
+        untuk setiap nilai dalam sampel:
+            // Simple normalization to [0, 1] range
+            sampel_diproses.tambah((nilai + 1) / 2)  // Assuming values are in [-1, 1]
+        data_diproses.tambah(sampel_diproses)
+
+    kembalikan data_diproses
+
+ekspor pra_proses_data
+
+// Convert data to tensor format
+fungsi ke_tensor(data):
+    // In a real implementation, this would convert data to tensor format
+    kembalikan data
+
+ekspor ke_tensor
+
+// Convert tensor to data format
+fungsi dari_tensor(tensor):
+    // In a real implementation, this would convert tensor to data format
+    kembalikan tensor
+
+ekspor dari_tensor

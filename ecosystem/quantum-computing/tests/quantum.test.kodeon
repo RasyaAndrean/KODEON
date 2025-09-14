@@ -1,0 +1,79 @@
+// KODEON Quantum Computing - Tests
+// Unit tests for the quantum computing framework
+
+// Import testing framework and quantum computing framework
+impor "testing" sebagai uji
+impor "quantum" sebagai kuantum
+
+// Test creating a quantum engine
+fungsi uji_buat_mesin():
+    buat mesin = kuantum.buat_mesin_kuantum()
+    uji.tidak_null(mesin)
+    uji.adalah_tipe(mesin, "objek")
+
+// Test qubit creation and basic operations
+fungsi uji_qubit():
+    buat qubit = kuantum.qubit.Qubit()
+    uji.tidak_null(qubit)
+
+    // Test initial state
+    buat keadaan = qubit.keadaan
+    uji.sama_dengan(keadaan[0], 1.0 + 0.0i)  // |0⟩ state
+    uji.sama_dengan(keadaan[1], 0.0 + 0.0i)
+
+    // Test probability calculations
+    buat prob_0 = qubit.dapatkan_probabilitas_0()
+    buat prob_1 = qubit.dapatkan_probabilitas_1()
+    uji.sama_dengan(prob_0, 1.0)
+    uji.sama_dengan(prob_1, 0.0)
+
+// Test quantum gates
+fungsi uji_gerbang():
+    // Test Pauli X gate
+    buat gerbang_x = kuantum.pauli.GerbangX()
+    uji.tidak_null(gerbang_x)
+    uji.sama_dengan(gerbang_x.nama, "X")
+
+    // Test Hadamard gate
+    buat gerbang_h = kuantum.hadamard.GerbangH()
+    uji.tidak_null(gerbang_h)
+    uji.sama_dengan(gerbang_h.nama, "H")
+
+// Test qubit register
+fungsi uji_register():
+    buat register = kuantum.register.RegisterQubit(3)
+    uji.tidak_null(register)
+    uji.sama_dengan(register.jumlah_qubit, 3)
+
+    buat qubit = register.dapatkan_qubit(0)
+    uji.tidak_null(qubit)
+
+// Test quantum circuit
+fungsi uji_sirkuit():
+    buat sirkuit = kuantum.sirkuit.SirkuitKuantum()
+    uji.tidak_null(sirkuit)
+
+    // Test adding gates
+    buat gerbang_h = kuantum.hadamard.GerbangH()
+    sirkuit.tambah_gerbang(gerbang_h, 0)
+    uji.sama_dengan(sirkuit.gerbang.panjang, 1)
+
+// Test utility functions
+fungsi uji_utilitas():
+    // Test binary to decimal conversion
+    buat desimal = kuantum.utilitas.biner_ke_desimal("101")
+    uji.sama_dengan(desimal, 5)
+
+    // Test decimal to binary conversion
+    buat biner = kuantum.utilitas.desimal_ke_biner(5, 3)
+    uji.sama_dengan(biner, "101")
+
+// Run all tests
+uji.jalankan([
+    uji_buat_mesin,
+    uji_qubit,
+    uji_gerbang,
+    uji_register,
+    uji_sirkuit,
+    uji_utilitas
+])

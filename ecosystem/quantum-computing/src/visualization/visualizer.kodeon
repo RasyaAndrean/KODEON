@@ -1,0 +1,75 @@
+// KODEON Quantum Computing - Visualization
+// Tools for visualizing quantum states and circuits
+
+kelas VisualisasiKuantum:
+    fungsi inisialisasi():
+        ini.warna = {
+            "0": "#4CAF50",  // Green for |0⟩
+            "1": "#F44336",  // Red for |1⟩
+            "+": "#2196F3",  // Blue for |+⟩
+            "-": "#FF9800"   // Orange for |-⟩
+        }
+
+    // Visualize quantum state probabilities as bar chart
+    fungsi visualisasi_probabilitas(keadaan):
+        buat probabilitas = []
+
+        // Calculate probabilities for each basis state
+        untuk setiap amplitudo dalam keadaan:
+            buat prob = amplitudo.nyata * amplitudo.nyata + amplitudo.imajiner * amplitudo.imajiner
+            probabilitas.tambah(prob)
+
+        // Create simple text-based bar chart
+        buat visualisasi = "Probabilitas Keadaan Kuantum:\n"
+        untuk buat i = 0 sampai i < probabilitas.panjang:
+            buat bin_str = desimal_ke_biner(i, akar_kuadrat(probabilitas.panjang).bulat())
+            buat bar = "█".ulang(probabilitas[i] * 20)  // Scale for visualization
+            visualisasi = visualisasi + "|" + bin_str + "⟩: " + bar + " (" + (probabilitas[i] * 100).bulat(2) + "%)\n"
+
+        kembalikan visualisasi
+
+    // Visualize qubit state on Bloch sphere (simplified)
+    fungsi visualisasi_bloch(qubit):
+        buat keadaan = qubit.keadaan
+        buat prob_0 = keadaan[0].nyata * keadaan[0].nyata + keadaan[0].imajiner * keadaan[0].imajiner
+        buat prob_1 = keadaan[1].nyata * keadaan[1].nyata + keadaan[1].imajiner * keadaan[1].imajiner
+
+        buat visualisasi = "Representasi Bloch Sphere (Simplified):\n"
+        visualisasi = visualisasi + "  |0⟩: " + "●".ulang(prob_0 * 10) + " (" + (prob_0 * 100).bulat(1) + "%)\n"
+        visualisasi = visualisasi + "  |1⟩: " + "●".ulang(prob_1 * 10) + " (" + (prob_1 * 100).bulat(1) + "%)\n"
+
+        kembalikan visualisasi
+
+    // Visualize quantum circuit
+    fungsi visualisasi_sirkuit(sirkuit):
+        kembalikan sirkuit.visualisasi()
+
+    // Create measurement histogram
+    fungsi visualisasi_pengukuran(hasil_pengukuran, jumlah_pengukuran):
+        jika hasil_pengukuran.panjang == 0:
+            kembalikan "Tidak ada hasil pengukuran"
+
+        // Count occurrences of each result
+        buat hitung = {}
+        untuk setiap hasil dalam hasil_pengukuran:
+            buat key = hasil.gabung("")
+            jika hitung[key] bukan_tidak_ada:
+                hitung[key] = hitung[key] + 1
+            lain:
+                hitung[key] = 1
+
+        // Create histogram
+        buat visualisasi = "Histogram Pengukuran (" + jumlah_pengukuran + " pengukuran):\n"
+        untuk setiap key dalam hitung:
+            buat persentase = (hitung[key] / jumlah_pengukuran) * 100
+            buat bar = "█".ulang(hitung[key] / jumlah_pengukuran * 30)  // Scale for visualization
+            visualisasi = visualisasi + key + ": " + bar + " (" + persentase.bulat(1) + "%)\n"
+
+        kembalikan visualisasi
+
+// Export visualization functions
+fungsi buat_visualisasi():
+    kembalikan VisualisasiKuantum()
+
+ekspor buat_visualisasi
+ekspor VisualisasiKuantum

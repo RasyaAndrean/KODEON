@@ -1,0 +1,62 @@
+// KODEON Web3/Blockchain - Account
+// Represents a blockchain account
+
+kelas Akun:
+    fungsi inisialisasi():
+        ini.alamat = tidak_ada
+        ini.kunci_pribadi = tidak_ada
+        ini.kunci_publik = tidak_ada
+
+    // Create new account
+    fungsi buat_baru():
+        // Generate key pair
+        ini.kunci_pribadi = utilitas.hasilkan_kunci_pribadi()
+        ini.kunci_publik = utilitas.hasilkan_kunci_publik(ini.kunci_pribadi)
+        ini.alamat = utilitas.hasilkan_alamat(ini.kunci_publik)
+
+        tampilkan("Akun baru dibuat:")
+        tampilkan("  Alamat: " + ini.alamat)
+        tampilkan("  Kunci Publik: " + ini.kunci_publik)
+
+    // Load account from private key
+    fungsi muat_dari_kunci_pribadi(kunci_pribadi):
+        ini.kunci_pribadi = kunci_pribadi
+        ini.kunci_publik = utilitas.hasilkan_kunci_publik(kunci_pribadi)
+        ini.alamat = utilitas.hasilkan_alamat(ini.kunci_publik)
+
+    // Sign data
+    fungsi tandatangani(data):
+        jika ini.kunci_pribadi == tidak_ada:
+            tampilkan("Kesalahan: Akun tidak memiliki kunci pribadi")
+            kembalikan tidak_ada
+
+        kembalikan tanda_tangan.tandatangani(data, ini.kunci_pribadi)
+
+    // Verify signature
+    fungsi verifikasi(data, signature):
+        kembalikan tanda_tangan.verifikasi(data, signature, ini.kunci_publik)
+
+    // Get account balance
+    fungsi dapatkan_saldo(penyedia):
+        jika penyedia bukan_tidak_ada:
+            kembalikan penyedia.dapatkan_saldo(ini.alamat)
+        lain:
+            tampilkan("Kesalahan: Penyedia tidak disediakan")
+            kembalikan 0
+
+    // Export account
+    fungsi ekspor():
+        kembalikan {
+            alamat: ini.alamat,
+            kunci_pribadi: ini.kunci_pribadi,
+            kunci_publik: ini.kunci_publik
+        }
+
+    // Get account information
+    fungsi dapatkan_info():
+        kembalikan {
+            alamat: ini.alamat,
+            kunci_publik: ini.kunci_publik
+        }
+
+ekspor Akun

@@ -1,0 +1,61 @@
+// KODEON Web3/Blockchain - Main Entry Point
+// This file exports all the main components of the web3-blockchain framework
+
+// Core components
+impor "core/web3" sebagai web3_core
+
+// Blockchain components
+impor "blockchain/block" sebagai blok
+impor "blockchain/blockchain" sebagai rantai_blok
+impor "blockchain/node" sebagai node
+
+// Contract components
+impor "contracts/contract" sebagai kontrak
+impor "contracts/abi" sebagai abi
+
+// Wallet components
+impor "wallet/wallet" sebagai dompet
+impor "wallet/account" sebagai akun
+
+// Transaction components
+impor "transactions/transaction" sebagai transaksi
+impor "transactions/receipt" sebagai tanda_terima
+
+// Crypto components
+impor "crypto/hash" sebagai hash
+impor "crypto/signature" sebagai tanda_tangan
+impor "crypto/encryption" sebagai enkripsi
+
+// Provider components
+impor "providers/provider" sebagai penyedia
+impor "providers/http_provider" sebagai penyedia_http
+impor "providers/ws_provider" sebagai penyedia_ws
+
+// Utilities
+impor "utils/helpers" sebagai utilitas
+impor "utils/formatters" sebagai pemformat
+
+// Export main web3 creator
+fungsi buat_web3():
+    kembalikan web3_core.buat_web3()
+
+// Export all components
+ekspor buat_web3
+ekspor web3_core
+ekspor blok
+ekspor rantai_blok
+ekspor node
+ekspor kontrak
+ekspor abi
+ekspor dompet
+ekspor akun
+ekspor transaksi
+ekspor tanda_terima
+ekspor hash
+ekspor tanda_tangan
+ekspor enkripsi
+ekspor penyedia
+ekspor penyedia_http
+ekspor penyedia_ws
+ekspor utilitas
+ekspor pemformat

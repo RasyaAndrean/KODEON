@@ -1,0 +1,14 @@
+// KODEON Voice/Gesture - Utility Exports
+// Centralized export file for all voice/gesture utilities
+
+// Utilities
+ekspor { default sebagai LoggerVoiceGesture } dari './logger-voice-gesture.kodeon'
+ekspor { default sebagai KonverterSuara } dari './konverter-suara.kodeon'
+ekspor { default sebagai PengenalGestur } dari './pengenal-gestur.kodeon'
+ekspor { default sebagai PenghubungPerangkat } dari './penghubung-perangkat.kodeon'
+
+// Export all utilities
+ekspor * dari './logger-voice-gesture.kodeon'
+ekspor * dari './konverter-suara.kodeon'
+ekspor * dari './pengenal-gestur.kodeon'
+ekspor * dari './penghubung-perangkat.kodeon'

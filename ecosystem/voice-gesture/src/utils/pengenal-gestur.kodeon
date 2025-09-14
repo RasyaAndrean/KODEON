@@ -1,0 +1,111 @@
+// KODEON Voice/Gesture - Gesture Recognizer Utility
+// Utility for recognizing and processing gesture data
+
+kelas PengenalGestur {
+    fungsi inisialisasi(opsi) {
+        ini.opsi = opsi || {}
+        ini.perangkat = ini.opsi.perangkat || "kamera"
+        ini.model_pengenalan = tidak_ada
+        ini.gestur_dikenal = []
+        ini.aktif = salah
+    }
+
+    // Initialize gesture recognizer
+    fungsi inisialisasi_pengenal() {
+        // In a real implementation, this would initialize actual gesture recognition models
+        ini.model_pengenalan = "model_pengenalan_gestur_v1"
+        ini.aktif = benar
+        tampilkan("Pengenal gestur diinisialisasi")
+        kembalikan benar
+    }
+
+    // Recognize gesture from input data
+    fungsi kenali_gestur(data_input) {
+        jika bukan ini.aktif {
+            tampilkan("Kesalahan: Pengenal gestur belum diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would analyze actual gesture data
+        // For simulation, we'll recognize common gestures
+        buat gestur_umum = ["tangan_terbuka", "kepalkan_tangan", "gerak_ke_kiri", "gerak_ke_kanan", "angkat_tangan"]
+        buat gestur_terdeteksi = gestur_umum[Math.floor(Math.acak() * gestur_umum.panjang)]
+
+        buat hasil = {
+            gestur: gestur_terdeteksi,
+            kepercayaan: Math.acak() * 0.5 + 0.5, // 50-100% confidence
+            waktu_pengenalan: sekarang(),
+            perangkat: ini.perangkat
+        }
+
+        // Add to known gestures if not already present
+        jika bukan ini.gestur_dikenal.termasuk(gestur_terdeteksi) {
+            ini.gestur_dikenal.tambah(gestur_terdeteksi)
+        }
+
+        tampilkan("Gestur dikenali: " + gestur_terdeteksi + " (Kepercayaan: " + (hasil.kepercayaan * 100).toFixed(2) + "%)")
+
+        kembalikan hasil
+    }
+
+    // Get known gestures
+    fungsi dapatkan_gestur_dikenal() {
+        kembalikan [...ini.gestur_dikenal]
+    }
+
+    // Add custom gesture
+    fungsi tambah_gestur_kustom(nama_gestur) {
+        jika bukan ini.gestur_dikenal.termasuk(nama_gestur) {
+            ini.gestur_dikenal.tambah(nama_gestur)
+            tampilkan("Gestur kustom ditambahkan: " + nama_gestur)
+            kembalikan benar
+        } lain {
+            tampilkan("Gestur sudah ada: " + nama_gestur)
+            kembalikan salah
+        }
+    }
+
+    // Remove gesture
+    fungsi hapus_gestur(nama_gestur) {
+        buat indeks = ini.gestur_dikenal.indexOf(nama_gestur)
+        jika indeks !== -1 {
+            ini.gestur_dikenal.splice(indeks, 1)
+            tampilkan("Gestur dihapus: " + nama_gestur)
+            kembalikan benar
+        } lain {
+            tampilkan("Gestur tidak ditemukan: " + nama_gestur)
+            kembalikan salah
+        }
+    }
+
+    // Set device
+    fungsi atur_perangkat(perangkat) {
+        ini.perangkat = perangkat
+        tampilkan("Perangkat pengenal gestur diatur ke: " + perangkat)
+        kembalikan benar
+    }
+
+    // Get recognizer status
+    fungsi dapatkan_status() {
+        kembalikan {
+            aktif: ini.aktif,
+            perangkat: ini.perangkat,
+            model: ini.model_pengenalan,
+            total_gestur_dikenal: ini.gestur_dikenal.panjang
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // Simulate processing
+        jika Math.acak() > 0.9 {
+            tampilkan("Memproses pengenalan gestur...")
+        }
+    }
+}
+
+ekspor PengenalGestur

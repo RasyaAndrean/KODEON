@@ -1,0 +1,22 @@
+{
+  "name": "@kodeon/runtime",
+  "version": "1.0.0",
+  "description": "KODEON Runtime - Execution environment management for KODEON applications",
+  "main": "src/runtime.kodeon",
+  "scripts": {
+    "test": "kodeon test",
+    "build": "kodeon build",
+    "start": "kodeon run examples/basic-usage.kodeon"
+  },
+  "keywords": [
+    "kodeon",
+    "runtime",
+    "execution",
+    "environment",
+    "process"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

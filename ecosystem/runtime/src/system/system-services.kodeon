@@ -1,0 +1,297 @@
+// KODEON Runtime - System Services
+// System services integration functionality
+
+kelas LayananSistem {
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        ini.layanan = []
+        ini.daemon = []
+        ini.tugas_terjadwal = []
+    }
+
+    // Register service
+    fungsi daftarkan_layanan(nama, implementasi, opsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: LayananSistem tidak diinisialisasi")
+            kembalikan salah
+        }
+
+        opsi = opsi || {}
+
+        buat layanan = {
+            id: ini.layanan.panjang + 1,
+            nama: nama,
+            implementasi: implementasi,
+            opsi: opsi,
+            status: "terdaftar",
+            dibuat: sekarang(),
+            dimulai: tidak_ada,
+            dihentikan: tidak_ada
+        }
+
+        ini.layanan.tambah(layanan)
+        tampilkan("Layanan didaftarkan: " + nama)
+        kembalikan layanan
+    }
+
+    // Start service
+    fungsi mulai_layanan(layanan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: LayananSistem tidak diinisialisasi")
+            kembalikan salah
+        }
+
+        jika tipe(layanan) == "string" {
+            layanan = ini.layanan.cari(fungsi(s) { kembalikan s.nama == layanan })
+        }
+
+        jika bukan layanan {
+            tampilkan("Layanan tidak ditemukan")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would actually start the service
+        // For now, we'll simulate
+        layanan.status = "berjalan"
+        layanan.dimulai = sekarang()
+
+        tampilkan("Layanan dimulai: " + layanan.nama)
+        kembalikan benar
+    }
+
+    // Stop service
+    fungsi hentikan_layanan(layanan) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: LayananSistem tidak diinisialisasi")
+            kembalikan salah
+        }
+
+        jika tipe(layanan) == "string" {
+            layanan = ini.layanan.cari(fungsi(s) { kembalikan s.nama == layanan })
+        }
+
+        jika bukan layanan {
+            tampilkan("Layanan tidak ditemukan")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would actually stop the service
+        // For now, we'll simulate
+        layanan.status = "dihentikan"
+        layanan.dihentikan = sekarang()
+
+        tampilkan("Layanan dihentikan: " + layanan.nama)
+        kembalikan benar
+    }
+
+    // Get service status
+    fungsi dapatkan_status_layanan(layanan) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        jika tipe(layanan) == "string" {
+            layanan = ini.layanan.cari(fungsi(s) { kembalikan s.nama == layanan })
+        }
+
+        jika bukan layanan {
+            kembalikan tidak_ada
+        }
+
+        kembalikan {
+            nama: layanan.nama,
+            status: layanan.status,
+            dibuat: layanan.dibuat,
+            dimulai: layanan.dimulai,
+            dihentikan: layanan.dihentikan,
+            uptime: layanan.dimulai ? sekarang() - layanan.dimulai : 0
+        }
+    }
+
+    // List all services
+    fungsi daftar_layanan() {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.layanan.petakan(fungsi(s) {
+            kembalikan {
+                nama: s.nama,
+                status: s.status,
+                dibuat: s.dibuat
+            }
+        })
+    }
+
+    // Register daemon
+    fungsi daftarkan_daemon(nama, fungsi_daemon, interval) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: LayananSistem tidak diinisialisasi")
+            kembalikan salah
+        }
+
+        buat daemon = {
+            id: ini.daemon.panjang + 1,
+            nama: nama,
+            fungsi: fungsi_daemon,
+            interval: interval || 60000, // Default 1 minute
+            aktif: benar,
+            terakhir_dijalankan: tidak_ada,
+            error_count: 0
+        }
+
+        ini.daemon.tambah(daemon)
+
+        // Start the daemon loop
+        daemon.timer = setInterval(fungsi() {
+            jika daemon.aktif {
+                coba {
+                    daemon.fungsi()
+                    daemon.terakhir_dijalankan = sekarang()
+                    daemon.error_count = 0
+                } tangkap(error) {
+                    daemon.error_count++
+                    tampilkan("Kesalahan daemon " + nama + ": " + error)
+
+                    // Stop daemon if too many errors
+                    jika daemon.error_count > 10 {
+                        daemon.aktif = salah
+                        clearInterval(daemon.timer)
+                        tampilkan("Daemon " + nama + " dihentikan karena terlalu banyak kesalahan")
+                    }
+                }
+            }
+        }, daemon.interval)
+
+        tampilkan("Daemon didaftarkan: " + nama)
+        kembalikan daemon
+    }
+
+    // Start daemon
+    fungsi mulai_daemon(daemon) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika tipe(daemon) == "string" {
+            daemon = ini.daemon.cari(fungsi(d) { kembalikan d.nama == daemon })
+        }
+
+        jika bukan daemon {
+            kembalikan salah
+        }
+
+        daemon.aktif = benar
+        tampilkan("Daemon dimulai: " + daemon.nama)
+        kembalikan benar
+    }
+
+    // Stop daemon
+    fungsi hentikan_daemon(daemon) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika tipe(daemon) == "string" {
+            daemon = ini.daemon.cari(fungsi(d) { kembalikan d.nama == daemon })
+        }
+
+        jika bukan daemon {
+            kembalikan salah
+        }
+
+        daemon.aktif = salah
+        tampilkan("Daemon dihentikan: " + daemon.nama)
+        kembalikan benar
+    }
+
+    // Schedule task
+    fungsi jadwalkan_tugas(waktu, fungsi_tugas, nama) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: LayananSistem tidak diinisialisasi")
+            kembalikan salah
+        }
+
+        buat tugas = {
+            id: ini.tugas_terjadwal.panjang + 1,
+            nama: nama || "Tugas_" + ini.tugas_terjadwal.panjang + 1,
+            waktu: waktu,
+            fungsi: fungsi_tugas,
+            terjadwal: sekarang(),
+            dijalankan: tidak_ada,
+            status: "terjadwal"
+        }
+
+        ini.tugas_terjadwal.tambah(tugas)
+
+        // Schedule the task
+        buat sekarang_waktu = sekarang()
+        buat delay = waktu - sekarang_waktu
+
+        jika delay > 0 {
+            tugas.timeout = setTimeout(fungsi() {
+                coba {
+                    fungsi_tugas()
+                    tugas.dijalankan = sekarang()
+                    tugas.status = "selesai"
+                    tampilkan("Tugas dijalankan: " + tugas.nama)
+                } tangkap(error) {
+                    tugas.status = "gagal"
+                    tampilkan("Kesalahan tugas " + tugas.nama + ": " + error)
+                }
+            }, delay)
+        } lain {
+            tampilkan("Waktu tugas sudah lewat: " + tugas.nama)
+            tugas.status = "lewatted"
+        }
+
+        tampilkan("Tugas dijadwalkan: " + tugas.nama + " pada " + new Date(waktu).toString())
+        kembalikan tugas
+    }
+
+    // Cancel scheduled task
+    fungsi batalkan_tugas(tugas) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        jika tipe(tugas) == "string" {
+            tugas = ini.tugas_terjadwal.cari(fungsi(t) { kembalikan t.nama == tugas })
+        }
+
+        jika bukan tugas {
+            kembalikan salah
+        }
+
+        jika tugas.timeout {
+            clearTimeout(tugas.timeout)
+        }
+
+        tugas.status = "dibatalkan"
+        tampilkan("Tugas dibatalkan: " + tugas.nama)
+        kembalikan benar
+    }
+
+    // List scheduled tasks
+    fungsi daftar_tugas() {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.tugas_terjadwal
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Check and clean up completed tasks
+        ini.tugas_terjadwal = ini.tugas_terjadwal.saring(fungsi(t) {
+            kembalikan t.status == "terjadwal" atau t.status == "lewatted"
+        })
+    }
+}
+
+ekspor LayananSistem

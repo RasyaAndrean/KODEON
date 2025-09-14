@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "theme": "dark",
+  "fontSize": 14,
+  "zoomLevel": 1.0,
+  "layout": "default",
+  "keybindings": "default",
+  "panels": {
+    "editor": {
+      "visible": true,
+      "position": "center",
+      "size": "70%"
+    },
+    "output": {
+      "visible": true,
+      "position": "right",
+      "size": "30%"
+    },
+    "problems": {
+      "visible": true,
+      "position": "bottom",
+      "size": "30%"
+    }
+  },
+  "shortcuts": {
+    "newFile": "Ctrl+N",
+    "openFile": "Ctrl+O",
+    "saveFile": "Ctrl+S",
+    "compile": "F5",
+    "run": "F6",
+    "undo": "Ctrl+Z",
+    "redo": "Ctrl+Y"
+  }
+}

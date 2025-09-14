@@ -1,0 +1,24 @@
+// Conceptual Research Partnerships example
+// This is a placeholder for future implementation
+
+fungsi utama():
+    // This would create a research project in the partnerships system
+    buat_proyek_penelitian("Natural Language Programming Study") sebagai proyek
+
+    // Add collaborators
+    tambah_kolaborator(proyek, "dr. Andi Setiawan", institusi: "Universitas Indonesia")
+    tambah_kolaborator(proyek, "dr. Sarah Johnson", institusi: "MIT")
+
+    // Define research goals
+    atur_tujuan(proyek, "Investigate the cognitive benefits of natural language programming")
+    atur_metodologi(proyek, "Controlled experiments with programming novices")
+
+    // Set timeline
+    atur_jadwal(proyek, mulai: "2025-10-01", selesai: "2026-04-01")
+
+    // Submit for funding
+    ajukan_dana(proyek, jumlah: 50000000, mata_uang: "IDR")
+
+    tampilkan("Research project created successfully!")
+
+    kembalikan 0

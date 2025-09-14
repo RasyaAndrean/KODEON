@@ -1,0 +1,36 @@
+// KODEON Quantum Computing - Quantum Gate Base Class
+// Base class for all quantum gates
+
+kelas GerbangKuantum:
+    fungsi inisialisasi(nama, matriks, jumlah_qubit):
+        ini.nama = nama
+        ini.matriks = matriks
+        ini.jumlah_qubit = jumlah_qubit
+        ini.qubit_target = tidak_ada
+        ini.qubit_kontrol = tidak_ada
+
+    // Set target qubit
+    fungsi atur_target(qubit_target):
+        ini.qubit_target = qubit_target
+
+    // Set control qubit
+    fungsi atur_kontrol(qubit_kontrol):
+        ini.qubit_kontrol = qubit_kontrol
+
+    // Apply the gate to a quantum state
+    fungsi terapkan(keadaan):
+        // In a real implementation, this would apply the gate matrix to the quantum state
+        // For simulation purposes, we'll just return the state unchanged
+        tampilkan("Menerapkan gerbang " + ini.nama)
+        kembalikan keadaan
+
+    // Get gate information
+    fungsi dapatkan_info():
+        kembalikan {
+            nama: ini.nama,
+            jumlah_qubit: ini.jumlah_qubit,
+            target: ini.qubit_target,
+            kontrol: ini.qubit_kontrol
+        }
+
+ekspor GerbangKuantum

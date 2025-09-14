@@ -1,0 +1,37 @@
+// KODEON Neural Networks - Softmax Activation
+// Softmax activation function implementation
+
+kelas AktivasiSoftmax meluas FungsiAktivasi:
+    fungsi inisialisasi():
+        induk.inisialisasi("Softmax")
+
+    // Calculate softmax activation
+    fungsi hitung(input):
+        // Subtract max for numerical stability
+        buat max_val = input.maks()
+        buat exp_values = []
+        buat sum_exp = 0.0
+
+        untuk setiap val dalam input:
+            buat exp_val = e^(val - max_val)
+            exp_values.tambah(exp_val)
+            sum_exp = sum_exp + exp_val
+
+        // Normalize
+        buat hasil = []
+        untuk setiap exp_val dalam exp_values:
+            hasil.tambah(exp_val / sum_exp)
+
+        kembalikan hasil
+
+    // Calculate derivative of softmax
+    fungsi turunan(input):
+        // Softmax derivative is more complex and depends on the context
+        // For simplicity, we'll return a simplified version
+        buat s = ini.hitung(input)
+        buat turunan = []
+        untuk buat i = 0 sampai i < s.panjang:
+            turunan.tambah(s[i] * (1 - s[i]))
+        kembalikan turunan
+
+ekspor AktivasiSoftmax

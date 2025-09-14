@@ -1,0 +1,22 @@
+// KODEON Neural Networks - Adam Optimizer
+// Adam optimizer implementation
+
+kelas OptimizerAdam meluas Optimizer:
+    fungsi inisialisasi(learning_rate, beta1, beta2, epsilon):
+        induk.inisialisasi(learning_rate)
+        ini.beta1 = beta1 jika beta1 bukan_tidak_ada lain 0.9
+        ini.beta2 = beta2 jika beta2 bukan_tidak_ada lain 0.999
+        ini.epsilon = epsilon jika epsilon bukan_tidak_ada lain 1e-8
+        ini.m = tidak_ada  // First moment vector
+        ini.v = tidak_ada  // Second moment vector
+        ini.t = 0  // Time step
+        ini.nama = "Adam"
+
+    // Update weights using Adam
+    fungsi perbarui_bobot(jaringan):
+        // Implementation would update weights using Adam algorithm
+        ini.t = ini.t + 1
+        induk.perbarui_bobot(jaringan)
+        tampilkan("Bobot diperbarui dengan Adam (Learning Rate: " + ini.learning_rate + ", Time Step: " + ini.t + ")")
+
+ekspor OptimizerAdam

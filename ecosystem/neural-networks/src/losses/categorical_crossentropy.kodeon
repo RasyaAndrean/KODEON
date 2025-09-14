@@ -1,0 +1,27 @@
+// KODEON Neural Networks - Categorical Crossentropy Loss
+// Categorical Crossentropy loss function implementation
+
+kelas LossCategoricalCrossentropy meluas FungsiLoss:
+    fungsi inisialisasi():
+        induk.inisialisasi("Categorical Crossentropy")
+
+    // Calculate categorical crossentropy loss
+    fungsi hitung(prediksi, target):
+        buat total = 0.0
+        untuk buat i = 0 sampai i < prediksi.panjang:
+            // Add small epsilon to prevent log(0)
+            buat pred_clipped = maksimum(prediksi[i], 1e-15)
+            total = total - target[i] * log(pred_clipped)
+        kembalikan total
+
+    // Calculate gradient of categorical crossentropy
+    fungsi gradient(prediksi, target):
+        buat gradient = []
+        untuk buat i = 0 sampai i < prediksi.panjang:
+            // Add small epsilon to prevent division by zero
+            buat pred_clipped = maksimum(prediksi[i], 1e-15)
+            buat grad = (pred_clipped - target[i]) / prediksi.panjang
+            gradient.tambah(grad)
+        kembalikan gradient
+
+ekspor LossCategoricalCrossentropy

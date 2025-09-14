@@ -1,0 +1,169 @@
+// KODEON Package Manager Integration - Downloader Utility
+// Package downloading functionality
+
+kelas Downloader {
+    fungsi inisialisasi() {
+        ini.antrian = []
+        ini.aktif = []
+        ini.selesai = []
+        ini.gagal = []
+        ini.kecepatan_maks = 0 // 0 = unlimited
+    }
+
+    // Download package
+    fungsi unduh(url, tujuan, opsi) {
+        tampilkan("Mengunduh dari: " + url + " ke " + tujuan)
+
+        // Add to queue
+        buat unduhan = {
+            url: url,
+            tujuan: tujuan,
+            opsi: opsi || {},
+            status: "antrian",
+            progres: 0,
+            ukuran: 0,
+            diunduh: 0,
+            timestamp: sekarang()
+        }
+
+        ini.antrian.tambah(unduhan)
+        tampilkan("Unduhan ditambahkan ke antrian")
+
+        // Process download (simulated)
+        ini.proses_unduhan(unduhan)
+
+        kembalikan unduhan
+    }
+
+    // Process download
+    fungsi proses_unduhan(unduhan) {
+        // Move from queue to active
+        buat indeks = ini.antrian.cari_indeks(fungsi(u) { kembalikan u.url == unduhan.url })
+        jika indeks != -1 {
+            ini.antrian.hapus_pada(indeks)
+        }
+
+        unduhan.status = "aktif"
+        ini.aktif.tambah(unduhan)
+
+        // Simulate download progress
+        unduhan.ukuran = 1024 * 1024 // 1MB simulated size
+        untuk buat i = 0; i <= 100; i += 10 {
+            unduhan.progres = i
+            unduhan.diunduh = Math.floor(unduhan.ukuran * i / 100)
+            // In a real implementation, this would be async
+            // For now, we'll just simulate
+        }
+
+        // Complete download
+        unduhan.status = "selesai"
+        unduhan.selesai_pada = sekarang()
+
+        // Move from active to completed
+        indeks = ini.aktif.cari_indeks(fungsi(u) { kembalikan u.url == unduhan.url })
+        jika indeks != -1 {
+            ini.aktif.hapus_pada(indeks)
+        }
+
+        ini.selesai.tambah(unduhan)
+        tampilkan("Unduhan selesai: " + unduhan.url)
+    }
+
+    // Cancel download
+    fungsi batalkan(url) {
+        // Check queue
+        buat indeks = ini.antrian.cari_indeks(fungsi(u) { kembalikan u.url == url })
+        jika indeks != -1 {
+            buat unduhan = ini.antrian[indeks]
+            unduhan.status = "dibatalkan"
+            ini.antrian.hapus_pada(indeks)
+            tampilkan("Unduhan dibatalkan dari antrian: " + url)
+            kembalikan benar
+        }
+
+        // Check active downloads
+        indeks = ini.aktif.cari_indeks(fungsi(u) { kembalikan u.url == url })
+        jika indeks != -1 {
+            buat unduhan = ini.aktif[indeks]
+            unduhan.status = "dibatalkan"
+            ini.aktif.hapus_pada(indeks)
+            tampilkan("Unduhan dibatalkan: " + url)
+            kembalikan benar
+        }
+
+        kembalikan salah
+    }
+
+    // Get download progress
+    fungsi dapatkan_progres(url) {
+        // Check active downloads
+        buat unduhan = ini.aktif.cari(fungsi(u) { kembalikan u.url == url })
+        jika unduhan bukan_tidak_ada {
+            kembalikan {
+                status: unduhan.status,
+                progres: unduhan.progres,
+                ukuran: unduhan.ukuran,
+                diunduh: unduhan.diunduh
+            }
+        }
+
+        // Check completed downloads
+        unduhan = ini.selesai.cari(fungsi(u) { kembalikan u.url == url })
+        jika unduhan bukan_tidak_ada {
+            kembalikan {
+                status: unduhan.status,
+                progres: unduhan.progres,
+                ukuran: unduhan.ukuran,
+                diunduh: unduhan.diunduh
+            }
+        }
+
+        kembalikan tidak_ada
+    }
+
+    // Get download queue
+    fungsi dapatkan_antrian() {
+        kembalikan ini.antrian
+    }
+
+    // Get active downloads
+    fungsi dapatkan_aktif() {
+        kembalikan ini.aktif
+    }
+
+    // Get completed downloads
+    fungsi dapatkan_selesai() {
+        kembalikan ini.selesai
+    }
+
+    // Get failed downloads
+    fungsi dapatkan_gagal() {
+        kembalikan ini.gagal
+    }
+
+    // Set maximum download speed
+    fungsi atur_kecepatan_maks(kecepatan) {
+        ini.kecepatan_maks = kecepatan
+        tampilkan("Kecepatan maksimum diatur ke: " + kecepatan + " KB/s")
+    }
+
+    // Get downloader statistics
+    fungsi dapatkan_statistik() {
+        kembalikan {
+            antrian: ini.antrian.panjang,
+            aktif: ini.aktif.panjang,
+            selesai: ini.selesai.panjang,
+            gagal: ini.gagal.panjang,
+            kecepatan_maks: ini.kecepatan_maks
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would process the download queue
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Downloader diperbarui")
+    }
+}
+
+ekspor Downloader

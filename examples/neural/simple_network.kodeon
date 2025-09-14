@@ -1,0 +1,28 @@
+// Simple Neural Network Example
+// This example demonstrates creating and training a simple neural network
+
+// Import neural network modules
+impor "neural/layers" sebagai lapisan
+impor "neural/models" sebagai model
+
+// Create a sequential model
+buat nn = model.buat_model_sequential()
+
+// Add layers to the model
+nn = model.tambah_lapisan(nn, lapisan.lapisan_padat(784, 128))
+nn = model.tambah_lapisan(nn, lapisan.lapisan_aktivasi("relu"))
+nn = model.tambah_lapisan(nn, lapisan.lapisan_dropout(0.2))
+nn = model.tambah_lapisan(nn, lapisan.lapisan_padat(128, 10))
+nn = model.tambah_lapisan(nn, lapisan.lapisan_aktivasi("softmax"))
+
+// Compile the model
+nn = model.kompilasi(nn, "adam", "sparse_categorical_crossentropy")
+
+// Display model information
+tampilkan("Neural Network Model:")
+tampilkan(nn)
+
+// In a real implementation, we would train the model with data
+// model.latih(nn, training_data, training_labels, 10, 32)
+
+kembalikan 0

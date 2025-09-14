@@ -1,0 +1,19 @@
+// KODEON Voice/Gesture - Example Exports
+// Centralized export file for all voice/gesture examples
+
+// Examples
+ekspor { default sebagai ContohDasar } dari './contoh-dasar.kodeon'
+ekspor { default sebagai ContohLanjutan } dari './contoh-lanjutan.kodeon'
+
+// Export all examples
+ekspor * dari './contoh-dasar.kodeon'
+ekspor * dari './contoh-lanjutan.kodeon'// KODEON Voice/Gesture - Example Exports
+// Centralized export file for all voice/gesture examples
+
+// Examples
+ekspor { default sebagai ContohDasar } dari './contoh-dasar.kodeon'
+ekspor { default sebagai ContohLanjutan } dari './contoh-lanjutan.kodeon'
+
+// Export all examples
+ekspor * dari './contoh-dasar.kodeon'
+ekspor * dari './contoh-lanjutan.kodeon'

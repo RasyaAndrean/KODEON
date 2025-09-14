@@ -1,0 +1,174 @@
+// KODEON BCI Integration - Calibration Utility
+// Calibration utilities for BCI applications
+
+kelas Kalibrasi {
+    fungsi inisialisasi() {
+        ini.data_kalibrasi = []
+        ini.parameter = {}
+        ini.dikalibrasi = salah
+        ini.akurasi = 0
+    }
+
+    // Run calibration procedure
+    fungsi jalankan(data_kalibrasi) {
+        tampilkan("Memulai prosedur kalibrasi...")
+
+        // Store calibration data
+        ini.data_kalibrasi = data_kalibrasi
+
+        // Perform calibration steps
+        buat hasil_pra = ini.pra_pemrosesan(data_kalibrasi)
+        buat hasil_ekstraksi = ini.ekstraksi_fitur(hasil_pra)
+        buat hasil_klasifikasi = ini.latih_klasifikasi(hasil_ekstraksi)
+
+        // Evaluate calibration
+        buat evaluasi = ini.evaluasi_kalibrasi(hasil_klasifikasi)
+
+        // Store results
+        ini.akurasi = evaluasi.akurasi
+        ini.dikalibrasi = benar
+
+        tampilkan("Kalibrasi selesai dengan akurasi: " + (ini.akurasi * 100).toFixed(2) + "%")
+
+        kembalikan {
+            berhasil: benar,
+            akurasi: ini.akurasi,
+            evaluasi: evaluasi
+        }
+    }
+
+    // Pre-process calibration data
+    fungsi pra_pemrosesan(data) {
+        tampilkan("Melakukan pra-pemrosesan data kalibrasi...")
+
+        // In a real implementation, this would apply signal processing
+        // For now, we'll just return the data
+        kembalikan data
+    }
+
+    // Extract features from calibration data
+    fungsi ekstraksi_fitur(data) {
+        tampilkan("Mengekstraksi fitur dari data kalibrasi...")
+
+        // In a real implementation, this would extract relevant features
+        // For now, we'll just return the data with some mock features
+        buat data_dengan_fitur = data.map(fungsi(sampel) {
+            kembalikan {
+                ...sampel,
+                fitur: {
+                    alpha_power: Math.random(),
+                    beta_power: Math.random(),
+                    theta_power: Math.random(),
+                    delta_power: Math.random()
+                }
+            }
+        })
+
+        kembalikan data_dengan_fitur
+    }
+
+    // Train classification model
+    fungsi latih_klasifikasi(data) {
+        tampilkan("Melatih model klasifikasi...")
+
+        // In a real implementation, this would train a classification model
+        // For now, we'll just simulate training
+        kembalikan {
+            model_dilatih: benar,
+            jumlah_kelas: 5, // typical BCI classes
+            metode: "LDA"
+        }
+    }
+
+    // Evaluate calibration
+    fungsi evaluasi_kalibrasi(model) {
+        tampilkan("Mengevaluasi hasil kalibrasi...")
+
+        // In a real implementation, this would evaluate the calibration
+        // For now, we'll simulate evaluation results
+        kembalikan {
+            akurasi: Math.random() * 0.3 + 0.7, // 70-100% accuracy
+            presisi: Math.random() * 0.3 + 0.7,
+            recall: Math.random() * 0.3 + 0.7,
+            f1_score: Math.random() * 0.3 + 0.7,
+            matrix_kebingungan: ini.hasilkan_matrix_kebingungan()
+        }
+    }
+
+    // Generate confusion matrix (simulated)
+    fungsi hasilkan_matrix_kebingungan() {
+        // Simulate a confusion matrix
+        buat kelas = ["gerak_kiri", "gerak_kanan", "gerak_atas", "gerak_bawah", "istirahat"]
+        buat matrix = []
+
+        untuk setiap kelas_sebenarnya dalam kelas {
+            buat baris = {}
+            untuk setiap kelas_prediksi dalam kelas {
+                // Higher diagonal values (correct predictions)
+                jika kelas_sebenarnya == kelas_prediksi {
+                    baris[kelas_prediksi] = Math.floor(Math.random() * 50) + 50
+                } lain {
+                    baris[kelas_prediksi] = Math.floor(Math.random() * 30)
+                }
+            }
+            matrix.tambah(baris)
+        }
+
+        kembalikan matrix
+    }
+
+    // Perform online calibration (continuous adjustment)
+    fungsi kalibrasi_online(data_baru) {
+        jika bukan ini.dikalibrasi {
+            tampilkan("Kesalahan: Sistem belum dikalibrasi awal")
+            kembalikan salah
+        }
+
+        tampilkan("Melakukan kalibrasi online...")
+
+        // In a real implementation, this would adjust the model based on new data
+        // For now, we'll just simulate the process
+        ini.akurasi = ini.akurasi * 0.9 + 0.1 * Math.random() // Slight adjustment
+        kembalikan benar
+    }
+
+    // Reset calibration
+    fungsi reset() {
+        ini.data_kalibrasi = []
+        ini.dikalibrasi = salah
+        ini.akurasi = 0
+        tampilkan("Kalibrasi direset")
+    }
+
+    // Get calibration status
+    fungsi dapatkan_status() {
+        kembalikan {
+            dikalibrasi: ini.dikalibrasi,
+            akurasi: ini.akurasi,
+            jumlah_sampel: ini.data_kalibrasi.panjang
+        }
+    }
+
+    // Suggest calibration improvement
+    fungsi sarankan_perbaikan() {
+        jika bukan ini.dikalibrasi {
+            kembalikan ["Lakukan kalibrasi awal terlebih dahulu"]
+        }
+
+        buat saran = []
+
+        jika ini.akurasi < 0.8 {
+            saran.tambah("Pertimbangkan untuk mengumpulkan lebih banyak data kalibrasi")
+            saran.tambah("Periksa kualitas sinyal EEG")
+            saran.tambah("Pastikan lingkungan bebas gangguan")
+        }
+
+        jika ini.data_kalibrasi.panjang < 100 {
+            saran.tambah("Kumpulkan lebih banyak sampel kalibrasi untuk hasil yang lebih baik")
+        }
+
+        kembalikan saran.panjang > 0 ? saran : ["Kalibrasi dalam kondisi baik"]
+    }
+}
+
+ekspor Kalibrasi

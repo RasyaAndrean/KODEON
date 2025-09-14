@@ -1,0 +1,57 @@
+// KODEON Web Framework - Application Tests
+
+// Import testing framework and web framework
+impor "testing" sebagai uji
+impor "web" sebagai web
+
+// Test creating an application
+fungsi uji_buat_aplikasi():
+    buat aplikasi = web.buat_aplikasi()
+    uji.tidak_null(aplikasi)
+    uji.adalah_tipe(aplikasi, "objek")
+
+// Test registering routes
+fungsi uji_daftar_rute():
+    buat aplikasi = web.buat_aplikasi()
+    
+    // Test GET route
+    aplikasi.dapatkan("/test", fungsi(permintaan, respons):
+        respons.kirim("test")
+    )
+    
+    buat rute = aplikasi.cocokkan_rute("GET", "/test")
+    uji.tidak_null(rute)
+    uji.sama_dengan(rute.metode, "GET")
+    uji.sama_dengan(rute.jalur, "/test")
+
+// Test middleware registration
+fungsi uji_daftar_middleware():
+    buat aplikasi = web.buat_aplikasi()
+    
+    fungsi middleware_contoh(permintaan, respons):
+        // Middleware logic
+        respons.header("X-Test", "true")
+    
+    aplikasi.gunakan(middleware_contoh)
+    uji.sama_dengan(aplikasi.middleware.panjang, 1)
+
+// Test request and response objects
+fungsi uji_objek_http():
+    // Test request
+    buat permintaan = web.permintaan("GET", "/test", { "Content-Type": "application/json" }, { data: "test" })
+    uji.sama_dengan(permintaan.metode, "GET")
+    uji.sama_dengan(permintaan.jalur, "/test")
+    uji.sama_dengan(permintaan.header("Content-Type"), "application/json")
+    
+    // Test response
+    buat respons = web.respons()
+    respons.status(200).header("Content-Type", "text/plain").kirim("Hello")
+    uji.sama_dengan(respons.statusCode, 200)
+
+// Run all tests
+uji.jalankan([
+    uji_buat_aplikasi,
+    uji_daftar_rute,
+    uji_daftar_middleware,
+    uji_objek_http
+])

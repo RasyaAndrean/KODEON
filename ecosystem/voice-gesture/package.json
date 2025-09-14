@@ -1,0 +1,37 @@
+{
+  "name": "@kodeon/voice-gesture",
+  "version": "1.0.0",
+  "description": "Natural interaction framework for voice commands and gesture recognition in KODEON",
+  "main": "src/voice-gesture.kodeon",
+  "directories": {
+    "src": "src",
+    "examples": "src/examples",
+    "docs": "src/docs",
+    "tests": "src/tests"
+  },
+  "scripts": {
+    "start": "kodeon run src/voice-gesture.kodeon",
+    "example:basic": "kodeon run src/examples/contoh-dasar.kodeon",
+    "example:advanced": "kodeon run src/examples/contoh-lanjutan.kodeon",
+    "test": "kodeon test src/tests/*.test.kodeon"
+  },
+  "keywords": [
+    "kodeon",
+    "voice",
+    "gesture",
+    "recognition",
+    "natural-interface",
+    "interaction"
+  ],
+  "author": "KODEON Team",
+  "license": "MIT",
+  "dependencies": {
+    "@kodeon/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@kodeon/testing": "^1.0.0"
+  },
+  "engines": {
+    "kodeon": ">=1.0.0"
+  }
+}

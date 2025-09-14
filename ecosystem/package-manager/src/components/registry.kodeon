@@ -1,0 +1,182 @@
+// KODEON Package Manager Integration - Registry Component
+// Package registry for package discovery
+
+kelas Registry {
+    fungsi inisialisasi(url, nama) {
+        ini.url = url || "https://registry.kodeon.dev"
+        ini.nama = nama || "KODEON Registry"
+        ini.paket = []
+        ini.terhubung = salah
+        ini.cache = []
+    }
+
+    // Connect to registry
+    fungsi hubungkan() {
+        // In a real implementation, this would connect to the registry
+        ini.terhubung = benar
+        tampilkan("Terhubung ke registry: " + ini.nama + " di " + ini.url)
+        kembalikan benar
+    }
+
+    // Disconnect from registry
+    fungsi putuskan() {
+        ini.terhubung = salah
+        tampilkan("Terputus dari registry: " + ini.nama)
+    }
+
+    // Search for packages
+    fungsi cari(kueri) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan []
+        }
+
+        // In a real implementation, this would search the registry
+        // For now, we'll simulate some results
+        kembalikan [
+            { nama: "http-client", versi: "1.2.3", deskripsi: "HTTP client library" },
+            { nama: "database-driver", versi: "2.0.1", deskripsi: "Database driver for KODEON" },
+            { nama: "logging-framework", versi: "1.0.0", deskripsi: "Logging framework for KODEON" }
+        ]
+    }
+
+    // Get package information
+    fungsi dapatkan_info(nama) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan tidak_ada
+        }
+
+        // In a real implementation, this would get info from the registry
+        // For now, we'll simulate package info
+        kembalikan {
+            nama: nama,
+            versi: "1.0.0",
+            deskripsi: "Package " + nama + " for KODEON",
+            penulis: "KODEON Team",
+            lisensi: "MIT",
+            dependensi: [],
+            ukuran: "1.2 MB",
+            terakhir_diperbarui: "2025-09-14"
+        }
+    }
+
+    // List all packages
+    fungsi daftar_paket() {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan []
+        }
+
+        // In a real implementation, this would list all packages in the registry
+        // For now, we'll simulate some packages
+        kembalikan [
+            { nama: "http-client", versi: "1.2.3" },
+            { nama: "database-driver", versi: "2.0.1" },
+            { nama: "logging-framework", versi: "1.0.0" },
+            { nama: "web-framework", versi: "3.1.4" },
+            { nama: "testing-library", versi: "1.5.2" }
+        ]
+    }
+
+    // Publish package
+    fungsi publikasikan(paket) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would publish the package to the registry
+        ini.paket.tambah(paket)
+        tampilkan("Paket dipublikasikan: " + paket.nama)
+        kembalikan benar
+    }
+
+    // Remove package
+    fungsi hapus_paket(nama) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan salah
+        }
+
+        buat indeks = ini.paket.cari_indeks(fungsi(p) { kembalikan p.nama == nama })
+        jika indeks != -1 {
+            buat paket = ini.paket[indeks]
+            ini.paket.hapus_pada(indeks)
+            tampilkan("Paket dihapus dari registry: " + nama)
+            kembalikan benar
+        }
+
+        tampilkan("Paket tidak ditemukan di registry: " + nama)
+        kembalikan salah
+    }
+
+    // Update package
+    fungsi perbarui_paket(paket) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan salah
+        }
+
+        buat indeks = ini.paket.cari_indeks(fungsi(p) { kembalikan p.nama == paket.nama })
+        jika indeks != -1 {
+            ini.paket[indeks] = paket
+            tampilkan("Paket diperbarui di registry: " + paket.nama)
+            kembalikan benar
+        }
+
+        tampilkan("Paket tidak ditemukan di registry: " + paket.nama)
+        kembalikan salah
+    }
+
+    // Verify package
+    fungsi verifikasi(nama) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Tidak terhubung ke registry")
+            kembalikan salah
+        }
+
+        // In a real implementation, this would verify package integrity with the registry
+        tampilkan("Memverifikasi paket dengan registry: " + nama)
+        kembalikan benar
+    }
+
+    // Cache package info
+    fungsi cache_info(nama, info) {
+        ini.cache.tambah({
+            nama: nama,
+            info: info,
+            timestamp: sekarang()
+        })
+        tampilkan("Info paket di-cache: " + nama)
+    }
+
+    // Get cached package info
+    fungsi dapatkan_cache(nama) {
+        buat indeks = ini.cache.cari_indeks(fungsi(c) { kembalikan c.nama == nama })
+        jika indeks != -1 {
+            buat cache = ini.cache[indeks]
+            // Check if cache is still valid (e.g., less than 1 hour old)
+            jika sekarang() - cache.timestamp < 3600000 {
+                kembalikan cache.info
+            } lain {
+                // Cache expired, remove it
+                ini.cache.hapus_pada(indeks)
+            }
+        }
+        kembalikan tidak_ada
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // In a real implementation, this would perform periodic tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Registry diperbarui: " + ini.nama)
+    }
+}
+
+ekspor Registry

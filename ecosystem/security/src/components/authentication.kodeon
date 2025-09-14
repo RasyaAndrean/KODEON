@@ -1,0 +1,267 @@
+// KODEON Security Framework - Authentication Component
+// User authentication management
+
+kelas Otentikasi {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.pengguna = []
+        ini.sesi = []
+        ini.metode = []
+        ini.terhubung = salah
+    }
+
+    // Register new user
+    fungsi daftarkan_pengguna(email, password, detail) {
+        // Validate email format
+        jika bukan ini.validasi_email(email) {
+            tampilkan("Format email tidak valid: " + email)
+            kembalikan salah
+        }
+
+        // Check if user already exists
+        jika ini.pengguna.cari(fungsi(p) { kembalikan p.email == email }) {
+            tampilkan("Pengguna sudah terdaftar: " + email)
+            kembalikan salah
+        }
+
+        // Validate password strength
+        jika bukan ini.validasi_password(password) {
+            tampilkan("Password tidak memenuhi syarat keamanan")
+            kembalikan salah
+        }
+
+        // Create user
+        buat pengguna = {
+            id: ini.pengguna.panjang + 1,
+            email: email,
+            password_hash: ini.hash_password(password),
+            detail: detail || {},
+            peran: ["user"], // Default role
+            status: "aktif",
+            dibuat: sekarang(),
+            terakhir_login: tidak_ada,
+            percobaan_gagal: 0
+        }
+
+        ini.pengguna.tambah(pengguna)
+        tampilkan("Pengguna terdaftar: " + email)
+        kembalikan benar
+    }
+
+    // Authenticate user
+    fungsi otentikasi_pengguna(email, password) {
+        buat pengguna = ini.pengguna.cari(fungsi(p) { kembalikan p.email == email })
+        jika bukan pengguna {
+            tampilkan("Pengguna tidak ditemukan: " + email)
+            ini.catat_percobaan_gagal(email)
+            kembalikan salah
+        }
+
+        // Check if account is locked
+        jika pengguna.status == "terkunci" {
+            tampilkan("Akun terkunci: " + email)
+            kembalikan salah
+        }
+
+        // Verify password
+        jika ini.verifikasi_password(password, pengguna.password_hash) {
+            pengguna.terakhir_login = sekarang()
+            pengguna.percobaan_gagal = 0
+            tampilkan("Autentikasi berhasil: " + email)
+
+            // Create session
+            ini.buat_sesi(pengguna)
+            kembalikan benar
+        } lain {
+            tampilkan("Password salah untuk: " + email)
+            ini.catat_percobaan_gagal(email)
+            kembalikan salah
+        }
+    }
+
+    // Create session
+    fungsi buat_sesi(pengguna) {
+        buat sesi = {
+            id: ini.sesi.panjang + 1,
+            pengguna_id: pengguna.id,
+            token: ini.hasilkan_token(),
+            dibuat: sekarang(),
+            berakhir: sekarang() + (ini.konfigurasi.session_timeout || 3600000), // 1 hour default
+            aktif: benar
+        }
+
+        ini.sesi.tambah(sesi)
+        tampilkan("Sesi dibuat untuk pengguna: " + pengguna.email)
+        kembalikan sesi
+    }
+
+    // Validate session
+    fungsi validasi_sesi(token) {
+        buat sesi = ini.sesi.cari(fungsi(s) { kembalikan s.token == token dan s.aktif })
+        jika bukan sesi {
+            kembalikan salah
+        }
+
+        // Check if session has expired
+        jika sekarang() > sesi.berakhir {
+            sesi.aktif = salah
+            tampilkan("Sesi telah berakhir")
+            kembalikan salah
+        }
+
+        kembalikan benar
+    }
+
+    // Logout user
+    fungsi keluar(token) {
+        buat sesi = ini.sesi.cari(fungsi(s) { kembalikan s.token == token })
+        jika sesi {
+            sesi.aktif = salah
+            tampilkan("Pengguna keluar")
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Change password
+    fungsi ubah_password(email, password_lama, password_baru) {
+        buat pengguna = ini.pengguna.cari(fungsi(p) { kembalikan p.email == email })
+        jika bukan pengguna {
+            tampilkan("Pengguna tidak ditemukan: " + email)
+            kembalikan salah
+        }
+
+        // Verify old password
+        jika bukan ini.verifikasi_password(password_lama, pengguna.password_hash) {
+            tampilkan("Password lama salah")
+            kembalikan salah
+        }
+
+        // Validate new password
+        jika bukan ini.validasi_password(password_baru) {
+            tampilkan("Password baru tidak memenuhi syarat keamanan")
+            kembalikan salah
+        }
+
+        // Update password
+        pengguna.password_hash = ini.hash_password(password_baru)
+        tampilkan("Password diubah untuk: " + email)
+        kembalikan benar
+    }
+
+    // Reset password
+    fungsi reset_password(email) {
+        buat pengguna = ini.pengguna.cari(fungsi(p) { kembalikan p.email == email })
+        jika bukan pengguna {
+            tampilkan("Pengguna tidak ditemukan: " + email)
+            kembalikan salah
+        }
+
+        // In a real implementation, this would send a reset link
+        // For now, we'll just generate a new password
+        buat password_baru = ini.hasilkan_password_acak()
+        pengguna.password_hash = ini.hash_password(password_baru)
+        tampilkan("Password direset untuk: " + email)
+        kembalikan password_baru
+    }
+
+    // Validate email format
+    fungsi validasi_email(email) {
+        // Simple email validation
+        buat regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        kembalikan regex.test(email)
+    }
+
+    // Validate password strength
+    fungsi validasi_password(password) {
+        // Check minimum length
+        jika password.panjang < 8 {
+            kembalikan salah
+        }
+
+        // Check for uppercase, lowercase, number, and special character
+        buat has_upper = /[A-Z]/.test(password)
+        buat has_lower = /[a-z]/.test(password)
+        buat has_number = /[0-9]/.test(password)
+        buat has_special = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+
+        kembalikan has_upper dan has_lower dan has_number dan has_special
+    }
+
+    // Hash password
+    fungsi hash_password(password) {
+        // In a real implementation, this would use bcrypt or similar
+        kembalikan "hash_" + password.panjang
+    }
+
+    // Verify password
+    fungsi verifikasi_password(password, hash) {
+        // In a real implementation, this would verify against the hash
+        kembalikan benar
+    }
+
+    // Generate secure token
+    fungsi hasilkan_token() {
+        // In a real implementation, this would generate a cryptographically secure token
+        kembalikan "token_" + Math.random().toString(36).substring(2, 15)
+    }
+
+    // Generate random password
+    fungsi hasilkan_password_acak(panjang) {
+        panjang = panjang || 12
+        buat karakter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
+        buat hasil = ""
+        untuk buat i = 0; i < panjang; i++ {
+            hasil += karakter.charAt(Math.floor(Math.random() * karakter.panjang))
+        }
+        kembalikan hasil
+    }
+
+    // Log failed attempt
+    fungsi catat_percobaan_gagal(email) {
+        buat pengguna = ini.pengguna.cari(fungsi(p) { kembalikan p.email == email })
+        jika pengguna {
+            pengguna.percobaan_gagal++
+
+            // Lock account after too many failed attempts
+            jika pengguna.percobaan_gagal >= (ini.konfigurasi.max_attempts || 5) {
+                pengguna.status = "terkunci"
+                tampilkan("Akun terkunci karena terlalu banyak percobaan gagal: " + email)
+            }
+        }
+    }
+
+    // Unlock account
+    fungsi buka_kunci_akun(email) {
+        buat pengguna = ini.pengguna.cari(fungsi(p) { kembalikan p.email == email })
+        jika pengguna dan pengguna.status == "terkunci" {
+            pengguna.status = "aktif"
+            pengguna.percobaan_gagal = 0
+            tampilkan("Akun dibuka kuncinya: " + email)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Get user information
+    fungsi dapatkan_pengguna(email) {
+        kembalikan ini.pengguna.cari(fungsi(p) { kembalikan p.email == email })
+    }
+
+    // Get active sessions
+    fungsi dapatkan_sesi_aktif() {
+        kembalikan ini.sesi.filter(fungsi(s) { kembalikan s.aktif dan sekarang() <= s.berakhir })
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Clean up expired sessions
+        untuk setiap sesi dalam ini.sesi {
+            jika sesi.aktif dan sekarang() > sesi.berakhir {
+                sesi.aktif = salah
+            }
+        }
+    }
+}
+
+ekspor Otentikasi

@@ -1,0 +1,151 @@
+// KODEON Microservices Integration - Load Balancer Utility
+// Load balancing for Microservices
+
+kelas PenyeimbangBeban {
+    fungsi inisialisasi(tipe, parameter) {
+        ini.tipe = tipe || "round_robin" // "round_robin", "least_connections", "weighted_round_robin"
+        ini.parameter = parameter || {}
+        ini.counters = {}
+        ini.koneksi = {}
+    }
+
+    // Select instance using load balancing algorithm
+    fungsi pilih_instansi(service) {
+        jika typeof service == "array" {
+            // If already an array of instances, select one
+            jika service.panjang == 0 {
+                kembalikan tidak_ada
+            }
+
+            pilih ini.tipe:
+                kasus "round_robin":
+                    kembalikan ini.pilih_round_robin(service)
+                kasus "least_connections":
+                    kembalikan ini.pilih_least_connections(service)
+                kasus "weighted_round_robin":
+                    kembalikan ini.pilih_weighted_round_robin(service)
+                bawaan:
+                    kembalikan ini.pilih_round_robin(service)
+        } lain jika service.instances bukan_tidak_ada {
+            // If service object with instances, select from instances
+            kembalikan ini.pilih_instansi(service.instances)
+        }
+
+        // If single service, return as is
+        kembalikan service
+    }
+
+    // Round Robin selection
+    fungsi pilih_round_robin(instances) {
+        buat serviceKey = instances.map(inst => inst.id).gabung(",")
+
+        jika ini.counters[serviceKey] == tidak_ada {
+            ini.counters[serviceKey] = 0
+        }
+
+        buat indeks = ini.counters[serviceKey] % instances.panjang
+        ini.counters[serviceKey] = indeks + 1
+
+        kembalikan instances[indeks]
+    }
+
+    // Least Connections selection
+    fungsi pilih_least_connections(instances) {
+        buat minConnections = Infinity
+        buat selectedInstance = instances[0]
+
+        untuk setiap instance dalam instances {
+            buat connections = ini.koneksi[instance.id] || 0
+            jika connections < minConnections {
+                minConnections = connections
+                selectedInstance = instance
+            }
+        }
+
+        // Increment connection count for selected instance
+        ini.koneksi[selectedInstance.id] = (ini.koneksi[selectedInstance.id] || 0) + 1
+
+        kembalikan selectedInstance
+    }
+
+    // Weighted Round Robin selection
+    fungsi pilih_weighted_round_robin(instances) {
+        // Get weights from instances or use default
+        buat totalWeight = 0
+        buat weights = []
+
+        untuk setiap instance dalam instances {
+            buat weight = instance.weight || 1
+            weights.tambah(weight)
+            totalWeight = totalWeight + weight
+        }
+
+        // Select based on weights
+        buat serviceKey = instances.map(inst => inst.id).gabung(",")
+        buat counter = ini.counters[serviceKey] || 0
+
+        buat currentWeight = counter % totalWeight
+        buat weightSum = 0
+
+        untuk buat i = 0 sampai i < weights.panjang:
+            weightSum = weightSum + weights[i]
+            jika currentWeight < weightSum {
+                ini.counters[serviceKey] = counter + 1
+                kembalikan instances[i]
+            }
+
+        // Fallback to first instance
+        ini.counters[serviceKey] = counter + 1
+        kembalikan instances[0]
+    }
+
+    // Release connection
+    fungsi lepaskan_koneksi(instanceId) {
+        jika ini.koneksi[instanceId] bukan_tidak_ada {
+            ini.koneksi[instanceId] = Math.max(0, ini.koneksi[instanceId] - 1)
+        }
+    }
+
+    // Set instance weight
+    fungsi atur_berat(instanceId, weight) {
+        // This would typically be set on the instance itself
+        tampilkan("Berat instansi " + instanceId + " diatur ke: " + weight)
+    }
+
+    // Get load balancer metrics
+    fungsi dapatkan_metrik() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            jumlah_counters: Object.keys(ini.counters).panjang,
+            jumlah_koneksi: Object.keys(ini.koneksi).panjang
+        }
+    }
+
+    // Get load balancer information
+    fungsi dapatkan_info() {
+        kembalikan {
+            tipe: ini.tipe,
+            parameter: ini.parameter,
+            counters: ini.counters,
+            koneksi: ini.koneksi
+        }
+    }
+
+    // Reset counters
+    fungsi reset_counter() {
+        ini.counters = {}
+        ini.koneksi = {}
+        tampilkan("Counter load balancer direset")
+    }
+
+    // Update parameters
+    fungsi atur_parameter(parameter_baru) {
+        untuk setiap kunci dalam parameter_baru {
+            ini.parameter[kunci] = parameter_baru[kunci]
+        }
+        tampilkan("Parameter load balancer diperbarui")
+    }
+}
+
+ekspor PenyeimbangBeban

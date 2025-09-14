@@ -1,0 +1,248 @@
+// KODEON Security Framework - Scanner Utility
+// Security vulnerability scanning
+
+kelas Scanner {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.kerentanan = []
+        ini.aturan = ini.muat_aturan_default()
+    }
+
+    // Load default security rules
+    fungsi muat_aturan_default() {
+        kembalikan [
+            {
+                id: "xss_1",
+                nama: "Cross-Site Scripting (XSS) Potensial",
+                pola: /<script[^>]*>.*?<\/script\s*>|on\w+\s*=\s*["'][^"']*["']/gi,
+                tingkat_keparahan: "tinggi",
+                deskripsi: "Potensi script injection dalam input pengguna"
+            },
+            {
+                id: "sql_1",
+                nama: "SQL Injection Potensial",
+                pola: /('|"|`)\s*(union|select|insert|update|delete|drop|create|alter|exec|execute)\s+/gi,
+                tingkat_keparahan: "tinggi",
+                deskripsi: "Potensi SQL injection dalam query"
+            },
+            {
+                id: "csrf_1",
+                nama: "CSRF Token Hilang",
+                pola: /<form[^>]*>(?!.*csrf)/i,
+                tingkat_keparahan: "sedang",
+                deskripsi: "Form tanpa token CSRF protection"
+            },
+            {
+                id: "crypto_1",
+                nama: "Fungsi Kriptografi Lemah",
+                pola: /\b(md5|sha1)\s*\(/gi,
+                tingkat_keparahan: "sedang",
+                deskripsi: "Penggunaan fungsi hashing yang tidak direkomendasikan"
+            },
+            {
+                id: "auth_1",
+                nama: "Password dalam Kode",
+                pola: /\b(password|passwd|pwd)\s*=\s*["'][^"']+["']/gi,
+                tingkat_keparahan: "tinggi",
+                deskripsi: "Password hardcoded dalam kode sumber"
+            }
+        ]
+    }
+
+    // Scan code for vulnerabilities
+    fungsi pindai_kode(kode, opsi) {
+        opsi = opsi || {}
+        buat bahasa = opsi.bahasa || "kodeon"
+        buat kerentanan_ditemukan = []
+
+        tampilkan("Memindai kode untuk kerentanan keamanan...")
+
+        // Apply rules based on language
+        untuk setiap aturan dalam ini.aturan {
+            jika ini.seharusnya_terapkan_aturan(aturan, bahasa) {
+                buat hasil = ini.terapkan_aturan(aturan, kode)
+                jika hasil.panjang > 0 {
+                    untuk setiap temuan dalam hasil {
+                        kerentanan_ditemukan.tambah({
+                            id: aturan.id,
+                            nama: aturan.nama,
+                            baris: temuan.baris,
+                            posisi: temuan.posisi,
+                            tingkat_keparahan: aturan.tingkat_keparahan,
+                            deskripsi: aturan.deskripsi,
+                            kode: temuan.kode
+                        })
+                    }
+                }
+            }
+        }
+
+        // Store findings
+        untuk setiap kerentanan dalam kerentanan_ditemukan {
+            ini.kerentanan.tambah(kerentanan)
+        }
+
+        tampilkan("Ditemukan " + kerentanan_ditemukan.panjang + " kerentanan keamanan")
+        kembalikan kerentanan_ditemukan
+    }
+
+    // Apply rule to code
+    fungsi terapkan_aturan(aturan, kode) {
+        buat hasil = []
+        buat baris_array = kode.split("\n")
+
+        untuk buat i = 0; i < baris_array.panjang; i++ {
+            buat baris = baris_array[i]
+            buat cocok = aturan.pola.exec(baris)
+
+            selama cocok != tidak_ada {
+                hasil.tambah({
+                    baris: i + 1,
+                    posisi: cocok.index,
+                    kode: baris.trim()
+                })
+                cocok = aturan.pola.exec(baris)
+            }
+        }
+
+        kembalikan hasil
+    }
+
+    // Check if rule should be applied based on language
+    fungsi seharusnya_terapkan_aturan(aturan, bahasa) {
+        // For now, apply all rules to all languages
+        kembalikan benar
+    }
+
+    // Scan file for vulnerabilities
+    fungsi pindai_file(jalur_file) {
+        // In a real implementation, this would read and scan a file
+        // For now, we'll simulate file scanning
+        tampilkan("Memindai file untuk kerentanan: " + jalur_file)
+        kembalikan []
+    }
+
+    // Scan directory for vulnerabilities
+    fungsi pindai_direktori(jalur_direktori) {
+        // In a real implementation, this would scan all files in a directory
+        // For now, we'll simulate directory scanning
+        tampilkan("Memindai direktori untuk kerentanan: " + jalur_direktori)
+        kembalikan []
+    }
+
+    // Get vulnerability findings
+    fungsi dapatkan_kerentanan(filter) {
+        jika bukan filter {
+            kembalikan ini.kerentanan
+        }
+
+        kembalikan ini.kerentanan.filter(fungsi(kerentanan) {
+            untuk setiap kunci dalam filter {
+                jika kerentanan[kunci] != filter[kunci] {
+                    kembalikan salah
+                }
+            }
+            kembalikan benar
+        })
+    }
+
+    // Get vulnerability by severity
+    fungsi dapatkan_kerentanan_berdasarkan_tingkat_keparahan(tingkat) {
+        kembalikan ini.kerentanan.filter(fungsi(kerentanan) {
+            kembalikan kerentanan.tingkat_keparahan == tingkat
+        })
+    }
+
+    // Generate security report
+    fungsi hasilkan_laporan(format) {
+        format = format || "text"
+        buat ringkasan = ini.hasilkan_ringkasan()
+
+        jika format == "json" {
+            kembalikan JSON.stringify(ringkasan, tidak_ada, 2)
+        } lain jika format == "text" {
+            kembalikan ini.format_laporan_teks(ringkasan)
+        } lain {
+            kembalikan ringkasan
+        }
+    }
+
+    // Generate summary of findings
+    fungsi hasilkan_ringkasan() {
+        buat ringkasan = {
+            total_kerentanan: ini.kerentanan.panjang,
+            berdasarkan_tingkat_keparahan: {
+                tinggi: 0,
+                sedang: 0,
+                rendah: 0
+            },
+            berdasarkan_jenis: {},
+            waktu_pemindaian: sekarang()
+        }
+
+        untuk setiap kerentanan dalam ini.kerentanan {
+            // Count by severity
+            ringkasan.berdasarkan_tingkat_keparahan[kerentanan.tingkat_keparahan]++
+
+            // Count by type
+            jika bukan ringkasan.berdasarkan_jenis[kerentanan.nama] {
+                ringkasan.berdasarkan_jenis[kerentanan.nama] = 0
+            }
+            ringkasan.berdasarkan_jenis[kerentanan.nama]++
+        }
+
+        kembalikan ringkasan
+    }
+
+    // Format text report
+    fungsi format_laporan_teks(ringkasan) {
+        buat laporan = "=== LAPORAN KERENTANAN KEAMANAN ===\n"
+        laporan += "Tanggal: " + new Date().toString() + "\n\n"
+        laporan += "Total Kerentanan: " + ringkasan.total_kerentanan + "\n\n"
+
+        laporan += "Berdasarkan Tingkat Keparahan:\n"
+        laporan += "- Tinggi: " + ringkasan.berdasarkan_tingkat_keparahan.tinggi + "\n"
+        laporan += "- Sedang: " + ringkasan.berdasarkan_tingkat_keparahan.sedang + "\n"
+        laporan += "- Rendah: " + ringkasan.berdasarkan_tingkat_keparahan.rendah + "\n\n"
+
+        laporan += "Berdasarkan Jenis:\n"
+        untuk setiap jenis dalam Object.keys(ringkasan.berdasarkan_jenis) {
+            laporan += "- " + jenis + ": " + ringkasan.berdasarkan_jenis[jenis] + "\n"
+        }
+
+        kembalikan laporan
+    }
+
+    // Add custom rule
+    fungsi tambah_aturan(aturan) {
+        ini.aturan.tambah(aturan)
+        tampilkan("Aturan keamanan ditambahkan: " + aturan.nama)
+    }
+
+    // Remove rule
+    fungsi hapus_aturan(id) {
+        buat indeks = ini.aturan.cari_indeks(fungsi(a) { kembalikan a.id == id })
+        jika indeks != -1 {
+            buat aturan = ini.aturan[indeks]
+            ini.aturan.hapus_pada(indeks)
+            tampilkan("Aturan keamanan dihapus: " + aturan.nama)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Clear findings
+    fungsi bersihkan_kerentanan() {
+        ini.kerentanan = []
+        tampilkan("Temuan kerentanan dibersihkan")
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic scanning tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Scanner diperbarui")
+    }
+}
+
+ekspor Scanner

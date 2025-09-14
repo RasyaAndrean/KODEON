@@ -1,0 +1,148 @@
+// KODEON Neural Networks - Sequential Model
+// Sequential model implementation
+
+kelas ModelSequential:
+    fungsi inisialisasi():
+        ini.lapisan = []
+        ini.nama = "Sequential"
+        ini.kompilasi_selesai = salah
+
+    // Add a layer to the model
+    fungsi tambah(lapisan):
+        ini.lapisan.tambah(lapisan)
+        tampilkan("Lapisan " + lapisan.nama + " ditambahkan ke model")
+
+    // Compile the model
+    fungsi kompilasi(optimizer, loss):
+        ini.optimizer = optimizer
+        ini.loss = loss
+        ini.kompilasi_selesai = benar
+        tampilkan("Model telah dikompilasi")
+
+    // Forward pass through the model
+    fungsi maju(input):
+        buat output = input
+
+        untuk setiap lapisan dalam ini.lapisan:
+            output = lapisan.maju(output)
+
+        kembalikan output
+
+    // Backward pass through the model
+    fungsi mundur(gradient):
+        buat grad = gradient
+
+        // Backpropagate through layers in reverse order
+        untuk buat i = ini.lapisan.panjang - 1 sampai i >= 0:
+            grad = ini.lapisan[i].mundur(grad)
+
+        kembalikan grad
+
+    // Train the model
+    fungsi latih(data_latih, label_latih, epochs, batch_size):
+        jika bukan ini.kompilasi_selesai:
+            tampilkan("Kesalahan: Model belum dikompilasi")
+            kembalikan tidak_ada
+
+        tampilkan("Memulai pelatihan model selama " + epochs + " epochs")
+
+        buat riwayat = {
+            loss: [],
+            akurasi: []
+        }
+
+        untuk buat epoch = 1 sampai epoch <= epochs:
+            buat total_loss = 0
+            buat total_akurasi = 0
+            buat jumlah_batch = 0
+
+            // Process data in batches
+            untuk buat i = 0 sampai i < data_latih.panjang:
+                jika i % batch_size == 0:
+                    // Get batch
+                    buat akhir_batch = minimum(i + batch_size, data_latih.panjang)
+                    buat batch_data = []
+                    buat batch_label = []
+
+                    untuk buat j = i sampai j < akhir_batch:
+                        batch_data.tambah(data_latih[j])
+                        batch_label.tambah(label_latih[j])
+
+                    // Train on batch
+                    buat hasil_batch = ini.latih_batch(batch_data, batch_label)
+                    total_loss = total_loss + hasil_batch.loss
+                    total_akurasi = total_akurasi + hasil_batch.akurasi
+                    jumlah_batch = jumlah_batch + 1
+
+            // Calculate average loss and accuracy for this epoch
+            buat rata_rata_loss = total_loss / jumlah_batch
+            buat rata_rata_akurasi = total_akurasi / jumlah_batch
+
+            riwayat.loss.tambah(rata_rata_loss)
+            riwayat.akurasi.tambah(rata_rata_akurasi)
+
+            jika epoch % 10 == 0:
+                tampilkan("Epoch " + epoch + "/" + epochs + " - Loss: " + rata_rata_loss.bulat(4) + " - Akurasi: " + (rata_rata_akurasi * 100).bulat(2) + "%")
+
+        tampilkan("Pelatihan selesai!")
+        kembalikan riwayat
+
+    // Train on a single batch
+    fungsi latih_batch(batch_data, batch_label):
+        buat total_loss = 0
+        buat total_akurasi = 0
+
+        untuk buat i = 0 sampai i < batch_data.panjang:
+            // Forward pass
+            buat prediksi = ini.maju(batch_data[i])
+
+            // Calculate loss
+            buat loss = ini.loss.hitung(prediksi, batch_label[i])
+            total_loss = total_loss + loss
+
+            // Calculate accuracy
+            buat akurasi = ini.hitung_akurasi(prediksi, batch_label[i])
+            total_akurasi = total_akurasi + akurasi
+
+            // Backward pass
+            buat gradient = ini.loss.gradient(prediksi, batch_label[i])
+            ini.mundur(gradient)
+
+            // Update weights
+            ini.perbarui_bobot()
+
+        kembalikan {
+            loss: total_loss / batch_data.panjang,
+            akurasi: total_akurasi / batch_data.panjang
+        }
+
+    // Update weights in all layers
+    fungsi perbarui_bobot():
+        untuk setiap lapisan dalam ini.lapisan:
+            jika lapisan.perbarui_bobot bukan_tidak_ada:
+                lapisan.perbarui_bobot(ini.optimizer.learning_rate)
+
+    // Calculate accuracy
+    fungsi hitung_akurasi(prediksi, label_sebenarnya):
+        // Simple accuracy calculation
+        buat benar = 0
+        untuk buat i = 0 sampai i < prediksi.panjang:
+            jika prediksi[i].bulat() == label_sebenarnya[i].bulat():
+                benar = benar + 1
+        kembalikan benar / prediksi.panjang
+
+    // Predict using the model
+    fungsi prediksi(input_data):
+        kembalikan ini.maju(input_data)
+
+    // Summary of the model
+    fungsi ringkasan():
+        tampilkan("Model: " + ini.nama)
+        tampilkan("Jumlah lapisan: " + ini.lapisan.panjang)
+        tampilkan("")
+        tampilkan("Lapisan:")
+        untuk buat i = 0 sampai i < ini.lapisan.panjang:
+            buat info = ini.lapisan[i].dapatkan_info()
+            tampilkan((i+1) + ". " + info.nama + " (" + info.jumlah_input + " -> " + info.jumlah_output + ")")
+
+ekspor ModelSequential

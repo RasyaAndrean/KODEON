@@ -1,0 +1,209 @@
+// KODEON Runtime - Process Executor
+// Process execution functionality
+
+kelas Executor {
+    fungsi inisialisasi() {
+        ini.terhubung = benar
+        ini.proses_berjalan = []
+        ini.hasil_eksekusi = []
+    }
+
+    // Execute command
+    fungsi eksekusi(perintah, opsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Executor tidak diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        opsi = opsi || {}
+
+        buat proses = {
+            id: ini.proses_berjalan.panjang + 1,
+            perintah: perintah,
+            opsi: opsi,
+            dimulai: sekarang(),
+            selesai: tidak_ada,
+            status: "berjalan",
+            stdout: "",
+            stderr: "",
+            kode_keluar: tidak_ada
+        }
+
+        ini.proses_berjalan.tambah(proses)
+
+        tampilkan("Mengeksekusi perintah: " + perintah)
+
+        // In a real implementation, this would execute the actual command
+        // For now, we'll simulate execution
+
+        // Simulate process completion after random time
+        setTimeout(fungsi() {
+            proses.selesai = sekarang()
+            proses.status = "selesai"
+            proses.kode_keluar = Math.acak() > 0.1 ? 0 : 1 // 90% success rate
+            proses.stdout = "Output dari perintah: " + perintah
+            proses.stderr = proses.kode_keluar == 0 ? "" : "Kesalahan saat mengeksekusi: " + perintah
+
+            // Move to results
+            ini.hasil_eksekusi.tambah(proses)
+            ini.proses_berjalan = ini.proses_berjalan.saring(fungsi(p) { kembalikan p.id bukan proses.id })
+
+            tampilkan("Perintah selesai: " + perintah + " (kode: " + proses.kode_keluar + ")")
+        }, Math.acak() * 2000 + 500) // 0.5-2.5 seconds
+
+        kembalikan proses
+    }
+
+    // Execute command synchronously
+    fungsi eksekusi_sinkron(perintah, opsi) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Executor tidak diinisialisasi")
+            kembalikan tidak_ada
+        }
+
+        opsi = opsi || {}
+
+        tampilkan("Mengeksekusi perintah secara sinkron: " + perintah)
+
+        // In a real implementation, this would execute the command and wait for completion
+        // For now, we'll simulate synchronous execution
+
+        buat hasil = {
+            perintah: perintah,
+            opsi: opsi,
+            dimulai: sekarang(),
+            selesai: sekarang() + 100, // Simulate 100ms execution
+            kode_keluar: Math.acak() > 0.1 ? 0 : 1, // 90% success rate
+            stdout: "Output sinkron dari perintah: " + perintah,
+            stderr: ""
+        }
+
+        jika hasil.kode_keluar bukan 0 {
+            hasil.stderr = "Kesalahan sinkron saat mengeksekusi: " + perintah
+        }
+
+        ini.hasil_eksekusi.tambah(hasil)
+        tampilkan("Perintah sinkron selesai: " + perintah + " (kode: " + hasil.kode_keluar + ")")
+
+        kembalikan hasil
+    }
+
+    // Get running processes
+    fungsi dapatkan_proses_berjalan() {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.proses_berjalan
+    }
+
+    // Get execution results
+    fungsi dapatkan_hasil() {
+        jika bukan ini.terhubung {
+            kembalikan []
+        }
+
+        kembalikan ini.hasil_eksekusi
+    }
+
+    // Kill running process
+    fungsi hentikan_proses(proses_id) {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        buat proses = ini.proses_berjalan.cari(fungsi(p) { kembalikan p.id == proses_id })
+
+        jika bukan proses {
+            tampilkan("Proses tidak ditemukan: " + proses_id)
+            kembalikan salah
+        }
+
+        proses.status = "dihentikan"
+        proses.selesai = sekarang()
+        proses.kode_keluar = -1
+        proses.stderr = "Proses dihentikan oleh pengguna"
+
+        // Move to results
+        ini.hasil_eksekusi.tambah(proses)
+        ini.proses_berjalan = ini.proses_berjalan.saring(fungsi(p) { kembalikan p.id bukan proses_id })
+
+        tampilkan("Proses dihentikan: " + proses_id)
+        kembalikan benar
+    }
+
+    // Execute batch commands
+    fungsi eksekusi_batch(perintah_array, paralel) {
+        jika bukan ini.terhubung {
+            tampilkan("Kesalahan: Executor tidak diinisialisasi")
+            kembalikan []
+        }
+
+        paralel = paralel || salah
+        buat hasil = []
+
+        jika paralel {
+            tampilkan("Mengeksekusi batch perintah secara paralel (" + perintah_array.panjang + " perintah)")
+
+            untuk setiap perintah dalam perintah_array {
+                buat proses = ini.eksekusi(perintah)
+                hasil.tambah(proses)
+            }
+        } lain {
+            tampilkan("Mengeksekusi batch perintah secara serial (" + perintah_array.panjang + " perintah)")
+
+            // In a real implementation, this would execute commands one by one
+            // For now, we'll just simulate
+            untuk setiap perintah dalam perintah_array {
+                buat hasil_tunggal = ini.eksekusi_sinkron(perintah)
+                hasil.tambah(hasil_tunggal)
+            }
+        }
+
+        kembalikan hasil
+    }
+
+    // Get process by ID
+    fungsi dapatkan_proses(proses_id) {
+        jika bukan ini.terhubung {
+            kembalikan tidak_ada
+        }
+
+        // Check running processes first
+        buat proses = ini.proses_berjalan.cari(fungsi(p) { kembalikan p.id == proses_id })
+
+        jika bukan proses {
+            // Check execution results
+            proses = ini.hasil_eksekusi.cari(fungsi(p) { kembalikan p.id == proses_id })
+        }
+
+        kembalikan proses
+    }
+
+    // Clear results
+    fungsi hapus_hasil() {
+        jika bukan ini.terhubung {
+            kembalikan salah
+        }
+
+        ini.hasil_eksekusi = []
+        kembalikan benar
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.terhubung {
+            kembalikan
+        }
+
+        // Update process statuses
+        untuk setiap proses dalam ini.proses_berjalan {
+            // Simulate process progress
+            jika Math.acak() > 0.95 {
+                proses.stdout += "\nProses masih berjalan..."
+            }
+        }
+    }
+}
+
+ekspor Executor

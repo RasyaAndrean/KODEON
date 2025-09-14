@@ -1,0 +1,255 @@
+// KODEON Performance Optimization - Monitor Component
+// Real-time performance monitoring
+
+kelas Monitor {
+    fungsi inisialisasi(nama, konfigurasi) {
+        ini.nama = nama || "Monitor"
+        ini.konfigurasi = konfigurasi || {}
+        ini.aktif = salah
+        ini.interval = konfigurasi.interval || 1000
+        ini.metrik = {
+            cpu: [],
+            memori: [],
+            io: [],
+            jaringan: []
+        }
+        ini.alerts = []
+        ini.thresholds = konfigurasi.thresholds || {
+            cpu: 80,
+            memori: 80,
+            io: 1000
+        }
+    }
+
+    // Start monitoring
+    fungsi mulai() {
+        jika ini.aktif {
+            tampilkan("Monitoring sudah aktif")
+            kembalikan salah
+        }
+
+        ini.aktif = benar
+        ini.mulai_waktu = sekarang()
+        tampilkan("Monitoring dimulai: " + ini.nama)
+        kembalikan benar
+    }
+
+    // Stop monitoring
+    fungsi berhenti() {
+        jika bukan ini.aktif {
+            tampilkan("Monitoring tidak aktif")
+            kembalikan salah
+        }
+
+        ini.aktif = salah
+        ini.berhenti_waktu = sekarang()
+        ini.durasi = ini.berhenti_waktu - ini.mulai_waktu
+        tampilkan("Monitoring dihentikan: " + ini.nama + " (Durasi: " + ini.durasi + "ms)")
+        kembalikan benar
+    }
+
+    // Record CPU metric
+    fungsi catat_cpu(penggunaan, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Monitoring tidak aktif, tidak dapat mencatat metrik")
+            kembalikan salah
+        }
+
+        buat metrik = {
+            timestamp: sekarang(),
+            penggunaan: penggunaan,
+            informasi: informasi || {}
+        }
+
+        ini.metrik.cpu.tambah(metrik)
+
+        // Check for alerts
+        jika penggunaan > ini.thresholds.cpu {
+            ini.buat_alert("CPU", penggunaan, ini.thresholds.cpu)
+        }
+
+        kembalikan metrik
+    }
+
+    // Record memory metric
+    fungsi catat_memori(penggunaan, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Monitoring tidak aktif, tidak dapat mencatat metrik")
+            kembalikan salah
+        }
+
+        buat metrik = {
+            timestamp: sekarang(),
+            penggunaan: penggunaan,
+            informasi: informasi || {}
+        }
+
+        ini.metrik.memori.tambah(metrik)
+
+        // Check for alerts
+        jika penggunaan > ini.thresholds.memori {
+            ini.buat_alert("Memori", penggunaan, ini.thresholds.memori)
+        }
+
+        kembalikan metrik
+    }
+
+    // Record I/O metric
+    fungsi catat_io(operasi, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Monitoring tidak aktif, tidak dapat mencatat metrik")
+            kembalikan salah
+        }
+
+        buat metrik = {
+            timestamp: sekarang(),
+            operasi: operasi,
+            informasi: informasi || {}
+        }
+
+        ini.metrik.io.tambah(metrik)
+
+        // Check for alerts
+        jika operasi.kecepatan > ini.thresholds.io {
+            ini.buat_alert("I/O", operasi.kecepatan, ini.thresholds.io)
+        }
+
+        kembalikan metrik
+    }
+
+    // Record network metric
+    fungsi catat_jaringan(lalu_lintas, informasi) {
+        jika bukan ini.aktif {
+            // tampilkan("Monitoring tidak aktif, tidak dapat mencatat metrik")
+            kembalikan salah
+        }
+
+        buat metrik = {
+            timestamp: sekarang(),
+            lalu_lintas: lalu_lintas,
+            informasi: informasi || {}
+        }
+
+        ini.metrik.jaringan.tambah(metrik)
+        kembalikan metrik
+    }
+
+    // Create alert
+    fungsi buat_alert(tipe, nilai, threshold) {
+        buat alert = {
+            id: ini.alerts.panjang + 1,
+            tipe: tipe,
+            nilai: nilai,
+            threshold: threshold,
+            timestamp: sekarang(),
+            pesan: tipe + " melebihi threshold (" + nilai + " > " + threshold + ")"
+        }
+
+        ini.alerts.tambah(alert)
+        tampilkan("ALERT: " + alert.pesan)
+        kembalikan alert
+    }
+
+    // Get metrics data
+    fungsi dapatkan_metrik() {
+        kembalikan ini.metrik
+    }
+
+    // Get alerts
+    fungsi dapatkan_alerts() {
+        kembalikan ini.alerts
+    }
+
+    // Clear alerts
+    fungsi bersihkan_alerts() {
+        ini.alerts = []
+        tampilkan("Alerts dibersihkan: " + ini.nama)
+    }
+
+    // Get metrics summary
+    fungsi dapatkan_ringkasan() {
+        buat ringkasan = {
+            nama: ini.nama,
+            aktif: ini.aktif,
+            interval: ini.interval,
+            thresholds: ini.thresholds
+        }
+
+        // Calculate averages if we have data
+        jika ini.metrik.cpu.panjang > 0 {
+            buat total_cpu = 0
+            untuk setiap metrik dalam ini.metrik.cpu {
+                total_cpu += metrik.penggunaan
+            }
+            ringkasan.rata_rata_cpu = total_cpu / ini.metrik.cpu.panjang
+        }
+
+        jika ini.metrik.memori.panjang > 0 {
+            buat total_memori = 0
+            untuk setiap metrik dalam ini.metrik.memori {
+                total_memori += metrik.penggunaan
+            }
+            ringkasan.rata_rata_memori = total_memori / ini.metrik.memori.panjang
+        }
+
+        ringkasan.total_alerts = ini.alerts.panjang
+
+        kembalikan ringkasan
+    }
+
+    // Set threshold
+    fungsi atur_threshold(tipe, nilai) {
+        ini.thresholds[tipe] = nilai
+        tampilkan("Threshold " + tipe + " diatur ke: " + nilai)
+    }
+
+    // Get current status
+    fungsi dapatkan_status() {
+        kembalikan {
+            nama: ini.nama,
+            aktif: ini.aktif,
+            durasi: ini.durasi || (ini.aktif ? sekarang() - ini.mulai_waktu : 0),
+            metrik_count: {
+                cpu: ini.metrik.cpu.panjang,
+                memori: ini.metrik.memori.panjang,
+                io: ini.metrik.io.panjang,
+                jaringan: ini.metrik.jaringan.panjang
+            },
+            alerts: ini.alerts.panjang
+        }
+    }
+
+    // Export monitoring data
+    fungsi ekspor_data(format) {
+        format = format || "json"
+        buat data = {
+            nama: ini.nama,
+            konfigurasi: ini.konfigurasi,
+            metrik: ini.metrik,
+            alerts: ini.alerts,
+            status: ini.dapatkan_status()
+        }
+
+        jika format == "json" {
+            kembalikan JSON.stringify(data)
+        } lain jika format == "csv" {
+            // In a real implementation, this would convert to CSV
+            kembalikan "CSV format not implemented yet"
+        } lain {
+            kembalikan data
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        jika bukan ini.aktif {
+            kembalikan
+        }
+
+        // In a real implementation, this would collect real metrics
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Monitor diperbarui: " + ini.nama)
+    }
+}
+
+ekspor Monitor

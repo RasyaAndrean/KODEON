@@ -1,0 +1,29 @@
+// Neural Network Example in KODEON
+
+// Create a simple neural network
+jaringan myNetwork = ()
+
+// Add layers
+lapisan.input(784)
+lapisan.tersembunyi(128, "relu")
+lapisan.keluaran(10, "softmax")
+
+// Define tensor data
+tensor inputData = [1.0, 2.0, 3.0]
+tensor outputData = [0.1, 0.8, 0.1]
+
+// Create model
+model myModel = myNetwork
+
+// Define loss function and optimizer
+fungsi_hilang.kategorikal_silang_entropi()
+optimisasi.adam(0.001)
+
+// Train the model
+latih(myModel, inputData, outputData, 10, 32)
+
+// Make predictions
+prediksi hasil = prediksi(myModel, inputData)
+
+// Compute gradients
+gradien(myNetwork)

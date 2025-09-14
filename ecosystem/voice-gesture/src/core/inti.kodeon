@@ -1,0 +1,8 @@
+// KODEON Voice/Gesture - Core Exports
+// Centralized export file for all voice/gesture core modules
+
+// Core engine
+ekspor { default sebagai IntiVoiceGesture } dari './inti-voice-gesture.kodeon'
+
+// Export all core modules
+ekspor * dari './inti-voice-gesture.kodeon'

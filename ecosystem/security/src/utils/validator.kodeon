@@ -1,0 +1,276 @@
+// KODEON Security Framework - Validator Utility
+// Input validation and sanitization
+
+kelas Validator {
+    fungsi inisialisasi(konfigurasi) {
+        ini.konfigurasi = konfigurasi || {}
+        ini.aturan = konfigurasi.aturan || {}
+    }
+
+    // Validate email format
+    fungsi validasi_email(email) {
+        // More comprehensive email validation
+        buat regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        buat valid = regex.test(email)
+
+        jika bukan valid {
+            tampilkan("Format email tidak valid: " + email)
+        }
+
+        kembalikan valid
+    }
+
+    // Validate password strength
+    fungsi validasi_password(password) {
+        buat masalah = []
+
+        // Check minimum length
+        jika password.panjang < 8 {
+            masalah.tambah("Password harus minimal 8 karakter")
+        }
+
+        // Check for uppercase letter
+        jika bukan /[A-Z]/.test(password) {
+            masalah.tambah("Password harus mengandung huruf besar")
+        }
+
+        // Check for lowercase letter
+        jika bukan /[a-z]/.test(password) {
+            masalah.tambah("Password harus mengandung huruf kecil")
+        }
+
+        // Check for number
+        jika bukan /[0-9]/.test(password) {
+            masalah.tambah("Password harus mengandung angka")
+        }
+
+        // Check for special character
+        jika bukan /[!@#$%^&*(),.?":{}|<>]/.test(password) {
+            masalah.tambah("Password harus mengandung karakter khusus")
+        }
+
+        jika masalah.panjang > 0 {
+            untuk setiap masalah dalam masalah {
+                tampilkan(masalah)
+            }
+            kembalikan salah
+        }
+
+        kembalikan benar
+    }
+
+    // Validate URL format
+    fungsi validasi_url(url) {
+        coba {
+            buat url_obj = new URL(url)
+            kembalikan benar
+        } tangkap(error) {
+            tampilkan("Format URL tidak valid: " + url)
+            kembalikan salah
+        }
+    }
+
+    // Validate phone number format
+    fungsi validasi_telepon(nomor) {
+        // Simple phone number validation (Indonesian format)
+        buat regex = /^(\+62|62|0)(\d{8,15})$/
+        buat valid = regex.test(nomor)
+
+        jika bukan valid {
+            tampilkan("Format nomor telepon tidak valid: " + nomor)
+        }
+
+        kembalikan valid
+    }
+
+    // Sanitize input to prevent XSS
+    fungsi sanitasi_input(input) {
+        jika typeof input != "string" {
+            kembalikan input
+        }
+
+        kembalikan input
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#x27;")
+    }
+
+    // Validate and sanitize string input
+    fungsi validasi_dan_sanitasi_string(input, opsi) {
+        opsi = opsi || {}
+        buat maks_panjang = opsi.maks_panjang || 1000
+        buat min_panjang = opsi.min_panjang || 1
+        buat diperlukan = opsi.diperlukan || salah
+
+        // Check if required
+        jika diperlukan dan (input == tidak_ada atau input == "") {
+            tampilkan("Input diperlukan")
+            kembalikan tidak_ada
+        }
+
+        // Check if string
+        jika input != tidak_ada dan typeof input != "string" {
+            tampilkan("Input harus berupa string")
+            kembalikan tidak_ada
+        }
+
+        // Check length
+        jika input != tidak_ada {
+            jika input.panjang < min_panjang {
+                tampilkan("Input terlalu pendek (minimal " + min_panjang + " karakter)")
+                kembalikan tidak_ada
+            }
+
+            jika input.panjang > maks_panjang {
+                tampilkan("Input terlalu panjang (maksimal " + maks_panjang + " karakter)")
+                kembalikan tidak_ada
+            }
+
+            // Sanitize input
+            kembalikan ini.sanitasi_input(input)
+        }
+
+        kembalikan input
+    }
+
+    // Validate number input
+    fungsi validasi_angka(angka, opsi) {
+        opsi = opsi || {}
+        buat min = opsi.min
+        buat max = opsi.max
+        buat integer = opsi.integer || salah
+        buat diperlukan = opsi.diperlukan || salah
+
+        // Check if required
+        jika diperlukan dan (angka == tidak_ada atau angka == "") {
+            tampilkan("Angka diperlukan")
+            kembalikan salah
+        }
+
+        // Check if number
+        jika angka != tidak_ada dan (typeof angka != "number" atau isNaN(angka)) {
+            tampilkan("Input harus berupa angka")
+            kembalikan salah
+        }
+
+        // Check integer
+        jika integer dan angka != tidak_ada dan angka != Math.floor(angka) {
+            tampilkan("Angka harus berupa integer")
+            kembalikan salah
+        }
+
+        // Check min/max
+        jika angka != tidak_ada {
+            jika min != tidak_ada dan angka < min {
+                tampilkan("Angka terlalu kecil (minimal " + min + ")")
+                kembalikan salah
+            }
+
+            jika max != tidak_ada dan angka > max {
+                tampilkan("Angka terlalu besar (maksimal " + max + ")")
+                kembalikan salah
+            }
+        }
+
+        kembalikan benar
+    }
+
+    // Validate array input
+    fungsi validasi_array(array, opsi) {
+        opsi = opsi || {}
+        buat min_panjang = opsi.min_panjang || 0
+        buat maks_panjang = opsi.maks_panjang
+        buat tipe_elemen = opsi.tipe_elemen
+        buat diperlukan = opsi.diperlukan || salah
+
+        // Check if required
+        jika diperlukan dan (array == tidak_ada atau bukan Array.isArray(array)) {
+            tampilkan("Array diperlukan")
+            kembalikan salah
+        }
+
+        // Check if array
+        jika array != tidak_ada dan bukan Array.isArray(array) {
+            tampilkan("Input harus berupa array")
+            kembalikan salah
+        }
+
+        // Check length
+        jika array != tidak_ada {
+            jika array.panjang < min_panjang {
+                tampilkan("Array terlalu pendek (minimal " + min_panjang + " elemen)")
+                kembalikan salah
+            }
+
+            jika maks_panjang != tidak_ada dan array.panjang > maks_panjang {
+                tampilkan("Array terlalu panjang (maksimal " + maks_panjang + " elemen)")
+                kembalikan salah
+            }
+
+            // Check element types
+            jika tipe_elemen != tidak_ada {
+                untuk setiap elemen dalam array {
+                    jika typeof elemen != tipe_elemen {
+                        tampilkan("Elemen array harus berupa " + tipe_elemen)
+                        kembalikan salah
+                    }
+                }
+            }
+        }
+
+        kembalikan benar
+    }
+
+    // Prevent SQL injection
+    fungsi cegah_sql_injection(input) {
+        jika typeof input != "string" {
+            kembalikan input
+        }
+
+        // Simple SQL injection prevention
+        kembalikan input
+            .replace(/'/g, "''")
+            .replace(/"/g, '""')
+            .replace(/;/g, "")
+            .replace(/--/g, "")
+            .replace(/\/\*/g, "")
+            .replace(/\*\//g, "")
+    }
+
+    // Validate JSON input
+    fungsi validasi_json(json_string) {
+        coba {
+            buat obj = JSON.parse(json_string)
+            kembalikan obj
+        } tangkap(error) {
+            tampilkan("Format JSON tidak valid: " + error.message)
+            kembalikan tidak_ada
+        }
+    }
+
+    // Add custom validation rule
+    fungsi tambah_aturan(nama, fungsi_validasi) {
+        ini.aturan[nama] = fungsi_validasi
+        tampilkan("Aturan validasi ditambahkan: " + nama)
+    }
+
+    // Apply custom validation rule
+    fungsi terapkan_aturan(nama, input) {
+        jika ini.aturan[nama] {
+            kembalikan ini.aturan[nama](input)
+        }
+        tampilkan("Aturan validasi tidak ditemukan: " + nama)
+        kembalikan salah
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // In a real implementation, this would perform periodic validation tasks
+        // For now, we'll just log that the update loop ran
+        // tampilkan("Validator diperbarui")
+    }
+}
+
+ekspor Validator

@@ -1,0 +1,164 @@
+// KODEON Sustainable Technology - Basic Usage Example
+// Demonstrates how to use the KODEON Sustainable Technology component
+
+// Import the sustainable tech component
+impor "sustainable-tech" sebagai sustainable
+
+// Import specific modules
+impor sustainable.inti.IntiSustainable
+impor sustainable.komponen.{PelacakKarbon, OptimizerEnergi, MonitorSumberDaya}
+impor sustainable.utilitas.{LoggerSustainable, Analyzer, Reporter}
+impor sustainable.energi.{EfisiensiCPU, EfisiensiMemori, EfisiensiJaringan}
+impor sustainable.karbon.{KalkulatorKarbon, KompensasiKarbon, LaporanKarbon}
+
+// Initialize the sustainable technology framework
+fungsi utama() {
+    tampilkan("=== Contoh Penggunaan KODEON Sustainable Technology ===")
+
+    // Create sustainable tech instance
+    buat st = sustainable.Sustainable()
+
+    // Initialize sustainable technology framework
+    buat berhasil = st.inisialisasi_sustainable({
+        lingkungan: "pengembangan",
+        mode: "optimal",
+        pelacakan_karbon: benar,
+        optimasi_energi: benar
+    })
+
+    jika bukan berhasil {
+        tampilkan("Gagal menginisialisasi sustainable technology")
+        kembalikan 1
+    }
+
+    tampilkan("Sustainable technology berhasil diinisialisasi")
+
+    // Add components
+    buat pelacak_karbon = st.tambah_pelacak_karbon(PelacakKarbon())
+    buat optimizer_energi = st.tambah_optimizer_energi(OptimizerEnergi())
+    buat monitor_sumber_daya = st.tambah_monitor_sumber_daya(MonitorSumberDaya())
+
+    // Add utilities
+    buat logger = st.tambah_logger_sustainable(LoggerSustainable({ level: "info", kategori: "sustainable" }))
+    buat analyzer = st.tambah_analyzer(Analyzer())
+    buat reporter = st.tambah_reporter(Reporter())
+
+    // Add energy modules
+    buat efisiensi_cpu = st.tambah_efisiensi_cpu(EfisiensiCPU())
+    buat efisiensi_memori = st.tambah_efisiensi_memori(EfisiensiMemori())
+    buat efisiensi_jaringan = st.tambah_efisiensi_jaringan(EfisiensiJaringan())
+
+    // Add carbon modules
+    buat kalkulator_karbon = st.tambah_kalkulator_karbon(KalkulatorKarbon())
+    buat kompensasi_karbon = st.tambah_kompensasi_karbon(KompensasiKarbon())
+    buat laporan_karbon = st.tambah_laporan_karbon(LaporanKarbon())
+
+    // Initialize components
+    pelacak_karbon.inisialisasi()
+    optimizer_energi.inisialisasi()
+    monitor_sumber_daya.inisialisasi()
+
+    // Start monitoring an application
+    buat app = st.mulai_pantau_aplikasi("contoh_aplikasi.kodeon", {
+        argumen: ["--mode", "production"],
+        lingkungan: { NODE_ENV: "production" }
+    })
+
+    jika bukan app {
+        tampilkan("Gagal memantau aplikasi")
+        st.hentikan()
+        kembalikan 1
+    }
+
+    tampilkan("Aplikasi dipantau dengan ID: " + app.id)
+
+    // Track some carbon emissions
+    pelacak_karbon.lacak_emisi("server", 15.5, { sumber: "AWS", lokasi: "us-east-1" })
+    pelacak_karbon.lacak_emisi("jaringan", 2.3, { sumber: "CDN", lokasi: "global" })
+    pelacak_karbon.lacak_emisi("komputasi", 8.7, { sumber: "CPU", lokasi: "local" })
+
+    // Add some carbon offset
+    kompensasi_karbon.tambah_kompensasi("pohon1", 100, { tujuan: "reforestasi" })
+    kompensasi_karbon.tambah_kompensasi("surya1", 5, { tujuan: "energi_terbarukan" })
+
+    // Get sustainability metrics
+    buat metrik = st.dapatkan_metrik()
+    tampilkan("Metrik karbon total: " + metrik.karbon.total.toFixed(2) + " kg CO2")
+    tampilkan("Penggunaan CPU saat ini: " + metrik.sumber_daya.cpu_penggunaan.toFixed(2) + "%")
+
+    // Get optimization recommendations
+    buat rekomendasi = st.dapatkan_rekomendasi()
+    tampilkan("Jumlah rekomendasi: " + rekomendasi.panjang)
+
+    untuk setiap item dalam rekomendasi {
+        tampilkan("- " + item.deskripsi)
+    }
+
+    // Log some sustainability messages
+    logger.info("Aplikasi mulai dipantau", { app_id: app.id })
+    logger.catat_emisi_karbon("server", 15.5, "kg CO2")
+    logger.catat_konsumsi_energi("CPU", 250, "kWh")
+    logger.catat_optimasi("Pengurangan penggunaan memori", "15% penghematan energi")
+
+    // Analyze some data
+    buat dataset_cpu = [45, 52, 48, 60, 55, 47, 50, 53, 49, 51]
+    buat dataset_memori = [65, 70, 68, 75, 72, 69, 71, 73, 67, 66]
+
+    analyzer.tambah_data(dataset_cpu, { jenis: "cpu", unit: "persen" })
+    analyzer.tambah_data(dataset_memori, { jenis: "memori", unit: "persen" })
+
+    buat analisis_cpu = analyzer.analisis_data(1)
+    buat analisis_memori = analyzer.analisis_data(2)
+
+    jika analisis_cpu {
+        tampilkan("Analisis CPU - Rata-rata: " + analisis_cpu.hasil.mean.toFixed(2) + "%")
+    }
+
+    jika analisis_memori {
+        tampilkan("Analisis Memori - Rata-rata: " + analisis_memori.hasil.mean.toFixed(2) + "%")
+    }
+
+    // Calculate carbon footprint
+    buat data_penggunaan = {
+        cpu: 50,      // 50% CPU usage
+        memori: 256,  // 256 GB memory
+        disk: 500,    // 500 GB disk
+        jaringan: 1000 // 1000 MB network
+    }
+
+    buat jejak_karbon = kalkulator_karbon.hitung_jejak_karbon(data_penggunaan, 24) // 24 hours
+    tampilkan("Jejak karbon dihitung: " + jejak_karbon.toFixed(4) + " kg CO2 per hari")
+
+    // Generate a carbon report
+    buat data_laporan = {
+        total_emisi: 26.5,
+        total_kompensasi: 12.8,
+        emisi_per_sumber: {
+            "server": 15.5,
+            "jaringan": 2.3,
+            "komputasi": 8.7
+        },
+        sumber_emisi_terbesar: "server"
+    }
+
+    buat laporan = laporan_karbon.buat_laporan(data_laporan, "standar")
+    jika laporan {
+        tampilkan("Laporan karbon dibuat: " + laporan.id)
+        tampilkan("Status karbon: " + laporan.konten.ringkasan.status)
+    }
+
+    // Simulate some work
+    untuk buat i = 0; i < 10; i++ {
+        st.perbarui()
+        tunggu(100) // Wait 100ms
+    }
+
+    // Clean up
+    st.hentikan()
+    tampilkan("Sustainable technology dihentikan")
+
+    kembalikan 0
+}
+
+// Run the example
+utama()

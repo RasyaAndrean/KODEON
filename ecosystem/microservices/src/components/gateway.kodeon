@@ -1,0 +1,208 @@
+// KODEON Microservices Integration - Gateway Component
+// API Gateway for Microservices
+
+kelas Gateway {
+    fungsi inisialisasi(nama, host, port) {
+        ini.nama = nama || "API Gateway"
+        ini.host = host || "localhost"
+        ini.port = port || 8080
+        ini.routes = {}
+        ini.middleware = []
+        ini.services = {}
+        ini.loadBalancer = tidak_ada
+        ini.cache = {}
+        ini.cacheTimeout = 300000 // 5 minutes
+    }
+
+    // Add route
+    fungsi tambah_route(path, service, targetPath) {
+        ini.routes[path] = {
+            service: service,
+            targetPath: targetPath || path,
+            middleware: []
+        }
+        tampilkan("Route ditambahkan: " + path + " -> " + service.nama)
+    }
+
+    // Remove route
+    fungsi hapus_route(path) {
+        jika ini.routes[path] bukan_tidak_ada {
+            hapus ini.routes[path]
+            tampilkan("Route dihapus: " + path)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Add middleware
+    fungsi tambah_middleware(middleware) {
+        ini.middleware.tambah(middleware)
+        tampilkan("Middleware ditambahkan ke Gateway: " + ini.nama)
+    }
+
+    // Remove middleware
+    fungsi hapus_middleware(middleware) {
+        buat indeks = ini.middleware.cari_indeks(middleware)
+        jika indeks != -1 {
+            ini.middleware.hapus_pada(indeks)
+            tampilkan("Middleware dihapus dari Gateway: " + ini.nama)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Add service
+    fungsi tambah_layanan(service) {
+        ini.services[service.nama] = service
+        tampilkan("Layanan ditambahkan ke Gateway: " + service.nama)
+    }
+
+    // Remove service
+    fungsi hapus_layanan(service) {
+        jika ini.services[service.nama] bukan_tidak_ada {
+            hapus ini.services[service.nama]
+            tampilkan("Layanan dihapus dari Gateway: " + service.nama)
+            kembalikan benar
+        }
+        kembalikan salah
+    }
+
+    // Set load balancer
+    fungsi atur_load_balancer(loadBalancer) {
+        ini.loadBalancer = loadBalancer
+        tampilkan("Load balancer diatur untuk Gateway: " + ini.nama)
+    }
+
+    // Handle request
+    fungsi tangani_permintaan(permintaan) {
+        // Apply global middleware
+        untuk setiap mw dalam ini.middleware {
+            buat hasil = mw(permintaan)
+            jika hasil.status >= 400 {
+                kembalikan hasil
+            }
+        }
+
+        // Find matching route
+        buat route = ini.temukan_route(permintaan.path)
+
+        jika route == tidak_ada {
+            kembalikan {
+                status: 404,
+                data: { pesan: "Route tidak ditemukan" }
+            }
+        }
+
+        // Check cache first
+        buat cacheKey = permintaan.method + ":" + permintaan.path
+        jika ini.cache[cacheKey] bukan_tidak_ada {
+            buat cacheEntry = ini.cache[cacheKey]
+            jika Date.now() - cacheEntry.timestamp < ini.cacheTimeout {
+                tampilkan("Respons diambil dari cache untuk: " + permintaan.path)
+                kembalikan cacheEntry.data
+            } lain {
+                // Cache expired, remove it
+                hapus ini.cache[cacheKey]
+            }
+        }
+
+        // Apply route middleware
+        untuk setiap mw dalam route.middleware {
+            buat hasil = mw(permintaan)
+            jika hasil.status >= 400 {
+                kembalikan hasil
+            }
+        }
+
+        // Route to service
+        buat service = route.service
+
+        // Use load balancer if available
+        jika ini.loadBalancer bukan_tidak_ada {
+            service = ini.loadBalancer.pilih_instansi(service)
+        }
+
+        // Forward request to service
+        buat respons = service.tangani_permintaan({
+            ...permintaan,
+            path: route.targetPath
+        })
+
+        // Cache response if successful
+        jika respons.status == 200 {
+            ini.cache[cacheKey] = {
+                data: respons,
+                timestamp: Date.now()
+            }
+        }
+
+        kembalikan respons
+    }
+
+    // Find matching route
+    fungsi temukan_route(path) {
+        // Exact match first
+        jika ini.routes[path] bukan_tidak_ada {
+            kembalikan ini.routes[path]
+        }
+
+        // Prefix match
+        untuk setiap routePath dalam ini.routes {
+            jika path.dimulai_dengan(routePath + "/") atau path == routePath {
+                kembalikan ini.routes[routePath]
+            }
+        }
+
+        kembalikan tidak_ada
+    }
+
+    // Set cache timeout
+    fungsi atur_cache_timeout(timeout) {
+        ini.cacheTimeout = timeout
+        tampilkan("Cache timeout diatur ke: " + timeout + " ms")
+    }
+
+    // Clear cache
+    fungsi bersihkan_cache() {
+        ini.cache = {}
+        tampilkan("Cache dibersihkan untuk Gateway: " + ini.nama)
+    }
+
+    // Get gateway metrics
+    fungsi dapatkan_metrik() {
+        kembalikan {
+            nama: ini.nama,
+            host: ini.host,
+            port: ini.port,
+            jumlah_routes: Object.keys(ini.routes).panjang,
+            jumlah_services: Object.keys(ini.services).panjang,
+            jumlah_cache_entries: Object.keys(ini.cache).panjang
+        }
+    }
+
+    // Get gateway information
+    fungsi dapatkan_info() {
+        kembalikan {
+            nama: ini.nama,
+            host: ini.host,
+            port: ini.port,
+            routes: Object.keys(ini.routes),
+            services: Object.keys(ini.services),
+            middleware: ini.middleware.panjang,
+            loadBalancer: ini.loadBalancer bukan_tidak_ada
+        }
+    }
+
+    // Update loop
+    fungsi perbarui() {
+        // Clean up expired cache entries
+        buat sekarang = Date.now()
+        untuk setiap cacheKey dalam ini.cache {
+            jika sekarang - ini.cache[cacheKey].timestamp > ini.cacheTimeout * 2 {
+                hapus ini.cache[cacheKey]
+            }
+        }
+    }
+}
+
+ekspor Gateway

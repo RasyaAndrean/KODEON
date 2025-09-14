@@ -1,408 +1,175 @@
 # KODEON Security Framework
 
-The KODEON Security Framework provides comprehensive security features built directly into the language and platform, ensuring that security is a fundamental aspect of every KODEON application rather than an afterthought.
+Natural language security framework for KODEON programming language.
+
+## Overview
+
+The KODEON Security Framework provides a comprehensive set of security tools and utilities for securing KODEON applications. It supports both Indonesian and English programming constructs, making security implementation accessible to a wider audience.
 
 ## Features
 
-### Zero-Trust Security Model
+-   **Dual Language Support**: Write security code in both Indonesian (Bahasa Indonesia) and English
+-   **Authentication**: User authentication with multiple methods (password, biometric, OAuth)
+-   **Authorization**: Role-based and attribute-based access control
+-   **Encryption**: Symmetric and asymmetric encryption algorithms
+-   **Hashing**: Secure hashing functions for passwords and data integrity
+-   **Digital Signatures**: Digital signature generation and verification
+-   **Secure Communication**: TLS/SSL implementation for secure data transmission
+-   **Input Validation**: Protection against common vulnerabilities (XSS, SQL injection)
+-   **Security Auditing**: Security event logging and monitoring
+-   **Vulnerability Scanning**: Automated security vulnerability detection
+-   **Cross-Platform**: Works on Windows, macOS, and Linux
 
-Implement security by default with built-in zero-trust principles:
+## Installation
+
+```bash
+# Security framework is part of the KODEON ecosystem
+# No additional installation required
+```
+
+## Quick Start
+
+### Basic Authentication Setup
 
 ```kodeon
-// Built-in security
-fungsi sensitive_operation(user_data):
-    @require_authentication
-    @verify_permissions(["admin", "manager"])
-    @encrypt_at_rest
-    @audit_log
+// Import the Security framework
+impor Security
 
-    // Function implementation
-    return processed_data
+// Create Security instance
+buat security = Security()
+
+// Initialize security framework
+security.inisialisasi_keamanan({
+    mode: "strict",
+    log_level: "info"
+})
+
+// Create user authentication
+impor otentikasi.Otentikasi
+buat auth = Otentikasi()
+
+// Register a new user
+auth.daftarkan_pengguna("user@example.com", "password123")
+
+// Authenticate user
+jika auth.otentikasi_pengguna("user@example.com", "password123") {
+    tampilkan("Autentikasi berhasil")
+} lain {
+    tampilkan("Autentikasi gagal")
+}
 ```
 
-### Compliance Automation
-
-Automated compliance checking for industry standards:
+### Encryption Usage
 
 ```kodeon
-// Compliance validation
-@compliance(gdpr, soc2, iso27001)
-fungsi handle_user_data(user_data):
-    // Function implementation
-    // Automatic compliance checks applied
-    return processed_data
+// Import encryption utilities
+impor enkripsi.{Enkripsi, Hashing}
+
+// Encrypt data
+buat data_rahasia = "Data penting"
+buat kunci = "kunci_rahasia"
+buat data_terenkripsi = Enkripsi.enkripsi_aes(data_rahasia, kunci)
+
+// Decrypt data
+buat data_asli = Enkripsi.dekripsi_aes(data_terenkripsi, kunci)
+
+// Hash password
+buat password = "password123"
+buat hash = Hashing.hash_bcrypt(password)
 ```
 
-### Built-in Encryption
-
-Native encryption capabilities:
+### Authorization Setup
 
 ```kodeon
-// Data encryption
-data_rahasia = "informasi sensitif"
-data_terenkripsi = enkripsi(data_rahasia, kunci_enkripsi)
-data_asli = deskripsi(data_terenkripsi, kunci_enkripsi)
+// Import authorization component
+impor komponen.Otorisasi
+
+// Create authorization instance
+buat authz = Otorisasi()
+
+// Define roles
+authz.tambah_peran("admin", ["baca", "tulis", "hapus"])
+authz.tambah_peran("user", ["baca"])
+
+// Assign role to user
+authz.berikan_peran("user@example.com", "admin")
+
+// Check permission
+jika authz.periksa_izin("user@example.com", "hapus") {
+    tampilkan("Pengguna diizinkan menghapus")
+} lain {
+    tampilkan("Pengguna tidak diizinkan menghapus")
+}
 ```
 
-### Secure Communication
+## Components
 
-Encrypted communication channels:
+### Core Modules
 
-```kodeon
-// Secure API communication
-api_endpoint aman "https://api.perusahaan.com/data":
-    sertifikat_ssl = periksa_dan_validasi()
-    enkripsi_payload = true
-    autentikasi = jwt
+-   `IntiSecurity`: Security framework core functionality
 
-    saat request(data):
-        return kirim_data_terenkripsi(data)
-```
+### Security Components
 
-## Security Features
+-   `Otentikasi`: User authentication management
+-   `Otorisasi`: Access control and permissions
+-   `Enkripsi`: Data encryption and decryption
+-   `Audit`: Security event logging and monitoring
 
-### Authentication & Authorization
+### Utilities
 
-Comprehensive identity management:
+-   `Hashing`: Secure hashing functions
+-   `Signature`: Digital signature utilities
+-   `Validator`: Input validation and sanitization
+-   `Scanner`: Security vulnerability scanning
 
-```kodeon
-// Authentication system
-buat sistem_auth:
-    provider "google_oauth":
-        client_id = env("GOOGLE_CLIENT_ID")
-        client_secret = env("GOOGLE_CLIENT_SECRET")
+### Authentication
 
-    provider "github_oauth":
-        client_id = env("GITHUB_CLIENT_ID")
-        client_secret = env("GITHUB_CLIENT_SECRET")
+-   `PasswordAuth`: Password-based authentication
+-   `BiometricAuth`: Biometric authentication
+-   `OAuth`: OAuth integration
 
-    provider "email_password":
-        min_password_length = 12
-        require_special_chars = true
-        max_login_attempts = 5
+### Encryption
 
-    // Role-based access control
-    peran "admin":
-        permissions = ["create_user", "delete_user", "modify_settings"]
-
-    peran "user":
-        permissions = ["view_profile", "edit_profile"]
-
-// Secure function with authentication
-@require_auth
-@role("admin")
-fungsi delete_user(user_id):
-    // Only accessible to authenticated admins
-    hapus_pengguna_dari_database(user_id)
-```
-
-### Data Protection
-
-Advanced data security features:
-
-```kodeon
-// Data protection policies
-buat data_protection_policy "user_data":
-    encryption_at_rest = true
-    encryption_in_transit = true
-    data_retention = "2 years"
-    anonymization_threshold = "30 days"
-
-    pii_fields = ["email", "phone", "address"]
-    untuk field dalam pii_fields:
-        @encrypt(field)
-        @access_log(field)
-
-    saat data_accessed(user, field):
-        jika not user.has_permission("view_pii"):
-            tolak_access()
-            log_security_event("Unauthorized PII access attempt", user)
-
-    saat data_deleted(permanently=true):
-        // Secure data wiping
-        secure_wipe_data(field)
-
-// Apply policy to data structures
-@apply_policy("user_data")
-struktur User:
-    id integer
-    name string
-    email string  // Will be automatically encrypted
-    phone string  // Will be automatically encrypted
-    address string  // Will be automatically encrypted
-```
-
-### Vulnerability Scanning
-
-Integrated security analysis:
-
-```kodeon
-// Security scanning
-@security_scan(level="thorough")
-fungsi process_payment(card_data):
-    // Function will be automatically scanned for:
-    // - SQL injection vulnerabilities
-    // - Cross-site scripting risks
-    // - Insecure data handling
-    // - Authentication bypasses
-    // - Buffer overflow risks
-
-    payment_result = charge_card(card_data)
-    return payment_result
-```
-
-### Threat Detection
-
-Real-time security monitoring:
-
-```kodeon
-// Threat detection system
-buat threat_detection_system:
-    anomaly_detection = aktif
-    behavioral_analysis = aktif
-    log_analysis = aktif
-
-    saat unusual_activity_detected(activity):
-        threat_level = analyze_threat(activity)
-        jika threat_level > 0.8:
-            alert_security_team(activity)
-            isolate_affected_systems()
-            log_threat_incident(activity, threat_level)
-
-    saat known_vulnerability_exploited(vulnerability):
-        apply_security_patch(vulnerability)
-        notify_affected_users()
-        update_threat_intelligence(vulnerability)
-
-// Apply threat detection to applications
-@monitor_security
-aplikasi "banking_app":
-    // Application automatically monitored for security threats
-```
-
-## Implementation Plan
-
-### Phase 1 (Months 1-4)
-
-- Basic authentication framework
-- Encryption utilities
-- Security annotations
-- Simple compliance checking
-
-### Phase 2 (Months 5-8)
-
-- Advanced authorization system
-- Threat detection engine
-- Vulnerability scanning
-- Data protection policies
-
-### Phase 3 (Months 9-12)
-
-- Zero-trust architecture
-- Automated compliance
-- AI-powered threat analysis
-- Quantum-resistant cryptography
-
-## Technical Architecture
-
-```
-┌─────────────────────────────┐
-│    Security Annotations     │
-├─────────────────────────────┤
-│  Authentication Engine      │
-├─────────────────────────────┤
-│    Authorization System     │
-├─────────────────────────────┤
-│  Encryption Services        │
-├─────────────────────────────┤
-│    Threat Detection         │
-├─────────────────────────────┤
-│  Compliance Automation      │
-└─────────────────────────────┘
-```
-
-## Integration with KODEON Core
-
-The security framework integrates with KODEON through:
-
-- Specialized security syntax annotations
-- Runtime security enforcement
-- Compiler-level security checks
-- Integrated monitoring and logging
-
-## Security Libraries
-
-The security framework includes several specialized libraries:
-
-### Authentication Library
-
-Provides authentication capabilities:
-
-- OAuth integration
-- Multi-factor authentication
-- Session management
-- Token handling
-
-### Encryption Library
-
-Implements encryption features:
-
-- Symmetric encryption
-- Asymmetric encryption
-- Hash functions
-- Digital signatures
-
-### Authorization Library
-
-Handles access control:
-
-- Role-based access control (RBAC)
-- Attribute-based access control (ABAC)
-- Permission management
-- Policy enforcement
-
-### Threat Intelligence Library
-
-Implements threat detection:
-
-- Anomaly detection
-- Behavioral analysis
-- Log analysis
-- Incident response
+-   `SymmetricEncryption`: Symmetric encryption algorithms
+-   `AsymmetricEncryption`: Asymmetric encryption algorithms
 
 ## API Reference
 
-### Security Annotations
+### Security Class
+
+Main class for security operations in KODEON applications.
 
 ```kodeon
-@require_authentication
-@verify_permissions(["role1", "role2"])
-@encrypt_at_rest
-@audit_log
-@compliance(standard1, standard2)
+kelas Security {
+    fungsi inisialisasi()  // Initialize security framework
+    fungsi inisialisasi_keamanan(konfigurasi)  // Initialize security settings
+    fungsi matikan_keamanan()  // Shutdown security framework
+    fungsi tambah_pengguna(email, password)  // Add user
+    fungsi otentikasi(email, password)  // Authenticate user
+    fungsi otorisasi(pengguna, izin)  // Authorize user action
+    fungsi enkripsi(data, kunci)  // Encrypt data
+    fungsi dekripsi(data, kunci)  // Decrypt data
+    fungsi hash(data)  // Hash data
+    fungsi tanda_tangan(data, kunci)  // Sign data
+    fungsi verifikasi_tanda_tangan(data, tanda_tangan, kunci)  // Verify signature
+    fungsi validasi_input(data)  // Validate input
+    fungsi pindai_kerentanan(kode)  // Scan for vulnerabilities
+    fungsi catat_kejadian(kejadian)  // Log security event
+    fungsi perbarui()  // Update loop
+}
 ```
 
-### Authentication Functions
+## Examples
 
-```kodeon
-auth = buat_auth_system()
-auth.authenticate(user, password)
-auth.authorize(user, permission)
-auth.generate_token(user)
-```
+Check the [examples](examples/) directory for complete usage examples:
 
-### Encryption Functions
-
-```kodeon
-encrypted = enkripsi(data, key)
-decrypted = deskripsi(encrypted, key)
-hash_value = hash(data)
-signature = sign(data, private_key)
-```
-
-## Compliance Standards
-
-### GDPR Compliance
-
-- Data protection by design
-- Privacy by default
-- Data subject rights automation
-- Breach notification system
-
-### SOC 2 Compliance
-
-- Security principle implementation
-- Availability monitoring
-- Processing integrity checks
-- Confidentiality protection
-- Privacy controls
-
-### ISO 27001 Compliance
-
-- Information security management
-- Risk assessment automation
-- Security control implementation
-- Continuous improvement processes
-
-### PCI DSS Compliance
-
-- Cardholder data protection
-- Network security controls
-- Vulnerability management
-- Access control measures
-
-## Development Status
-
-This is a planned module for the advanced development roadmap. Implementation will follow the 36-month roadmap:
-
-- **Phase 1** (Months 7-9): Security framework foundation
-- **Phase 2** (Months 10-12): Advanced security features
-- **Phase 3** (Months 13-15): Compliance automation
-
-## Best Practices
-
-### Secure Coding Guidelines
-
-```kodeon
-// Example of secure coding practices
-@sanitize_input
-@validate_output
-@limit_execution_time(30_seconds)
-@log_security_events
-fungsi transfer_funds(from_account, to_account, amount):
-    // Validate inputs
-    jika not valid_account(from_account):
-        log_security_event("Invalid from account", from_account)
-        return error("Invalid account")
-
-    jika not valid_account(to_account):
-        log_security_event("Invalid to account", to_account)
-        return error("Invalid account")
-
-    // Check authorization
-    jika not user_owns_account(current_user, from_account):
-        log_security_event("Unauthorized transfer attempt", current_user)
-        return error("Unauthorized")
-
-    // Implement transfer with transaction safety
-    transaction:
-        debit(from_account, amount)
-        credit(to_account, amount)
-        log_transaction(from_account, to_account, amount)
-
-    return success
-```
-
-### Security Testing
-
-```kodeon
-// Security testing framework
-test_security fungsi transfer_funds:
-    test_case "valid_transfer":
-        input = {from: "acc123", to: "acc456", amount: 100}
-        expected = success
-        verify_no_security_violations()
-
-    test_case "invalid_from_account":
-        input = {from: "invalid", to: "acc456", amount: 100}
-        expected = error
-        verify_security_log_created()
-
-    test_case "unauthorized_transfer":
-        input = {from: "acc789", to: "acc456", amount: 100}
-        expected = error
-        verify_access_denied_logged()
-```
+-   [Basic Usage](examples/basic-usage.kodeon): Comprehensive example showing security setup
+-   [Advanced Features](examples/advanced.kodeon): Advanced features like encryption and authorization
 
 ## Contributing
 
-We welcome contributions to the security framework. To contribute:
+Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-1. Fork the repository
-2. Create a branch for your changes
-3. Implement your security features
-4. Submit a pull request
+## License
 
-Please follow the [Security Development Guidelines](docs/security-development-guidelines.md) when contributing to ensure the highest security standards.
-
-Note: Security development requires special expertise in cybersecurity. Contributors should have appropriate qualifications or work under supervision of security professionals.
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
